@@ -80,6 +80,7 @@ pyspec: $(VENV) setup.py pyproject.toml
 	    mkdir -p "./tests/core/pyspec/eth2spec/$$dir"; \
 	    cp "./build/lib/eth2spec/$$dir/mainnet.py" "./tests/core/pyspec/eth2spec/$$dir/mainnet.py"; \
 	    cp "./build/lib/eth2spec/$$dir/minimal.py" "./tests/core/pyspec/eth2spec/$$dir/minimal.py"; \
+	    cp "./build/lib/eth2spec/$$dir/gnosis.py" "./tests/core/pyspec/eth2spec/$$dir/gnosis.py"; \
 	done
 
 ###############################################################################

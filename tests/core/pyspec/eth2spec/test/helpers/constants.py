@@ -87,8 +87,9 @@ AFTER_ELECTRA_PRE_POST_FORKS = ELECTRA_TRANSITION_UPGRADES_AND_AFTER.items()
 #
 MAINNET = PresetBaseName("mainnet")
 MINIMAL = PresetBaseName("minimal")
+GNOSIS = PresetBaseName("gnosis")
 
-ALL_PRESETS = (MINIMAL, MAINNET)
+ALL_PRESETS = (MINIMAL, MAINNET, GNOSIS)
 
 
 #

@@ -1,0 +1,15 @@
+name: Check Gnosis Sync
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 */4 * * *'
+
+jobs:
+  check-sync:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check gnosis preset/config is synced with gnosischain/specs
+      run: bash scripts/check_gnosis_sync.sh

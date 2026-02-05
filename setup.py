@@ -140,12 +140,14 @@ def _load_curdleproofs_crs(preset_name):
 
 ALL_KZG_SETUPS = {
     'minimal': _load_kzg_trusted_setups('minimal'),
-    'mainnet': _load_kzg_trusted_setups('mainnet')
+    'mainnet': _load_kzg_trusted_setups('mainnet'),
+    'gnosis': _load_kzg_trusted_setups('mainnet'),
 }
 
 ALL_CURDLEPROOFS_CRS = {
     'minimal': _load_curdleproofs_crs('minimal'),
     'mainnet': _load_curdleproofs_crs('mainnet'),
+    'gnosis': _load_curdleproofs_crs('mainnet'),
 }
 
 
@@ -526,6 +528,7 @@ class PySpecCommand(Command):
         self.build_targets = """
                 minimal:presets/minimal:configs/minimal.yaml
                 mainnet:presets/mainnet:configs/mainnet.yaml
+                gnosis:presets/gnosis:configs/gnosis.yaml
         """
 
     def finalize_options(self):
