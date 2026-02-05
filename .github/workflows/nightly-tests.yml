@@ -1,8 +1,8 @@
-name: Nightly mainnet tests
+name: Nightly gnosis tests
 
 defaults:
   run:
-    shell: zsh {0}
+    shell: bash
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ on:
 
 jobs:
   tests:
-    runs-on: [self-hosted-ghr-custom, size-s-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -30,8 +30,6 @@ jobs:
           - deneb
           - electra
           - fulu
-          - eip7441
-          - eip7732
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -40,4 +38,4 @@ jobs:
         with:
           python-version: '3.12'
       - name: test-${{ matrix.fork }}
-        run: make test preset=mainnet fork=${{ matrix.fork }}
+        run: make test preset=gnosis fork=${{ matrix.fork }}

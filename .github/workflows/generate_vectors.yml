@@ -2,7 +2,7 @@ name: Run test vector generation
 
 defaults:
   run:
-    shell: zsh {0}
+    shell: bash
 
 on:
   workflow_dispatch:
@@ -18,12 +18,12 @@ on:
 jobs:
   generate-tests:
     timeout-minutes: 720  # 12 hours
-    runs-on: [self-hosted-ghr-custom, size-xl-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          repository: 'ethereum/consensus-specs'
+          repository: 'gnosischain/consensus-specs'
           path: 'consensus-specs'
           ref: ${{ inputs.ref || 'dev' }}
       - name: Setup Python
@@ -34,7 +34,7 @@ jobs:
       - name: Generate tests
         run: |
           cd consensus-specs
-          make -j$(nproc) gen_all threads=1 verbose=true 2>&1 | tee ../consensustestgen.log
+          make -j$(nproc) gen_all preset=gnosis threads=1 verbose=true 2>&1 | tee ../consensustestgen.log
           cp -r presets/ ../consensus-spec-tests/presets
           cp -r configs/ ../consensus-spec-tests/configs
           find . -type d -empty -delete
@@ -48,23 +48,17 @@ jobs:
         run: |
           cd consensus-spec-tests
           tar -czvf general.tar.gz tests/general
-          tar -czvf minimal.tar.gz tests/minimal
-          tar -czvf mainnet.tar.gz tests/mainnet
+          tar -czvf gnosis.tar.gz tests/gnosis
       - name: Upload general.tar.gz
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: General Test Configuration
           path: consensus-spec-tests/general.tar.gz
-      - name: Upload minimal.tar.gz
+      - name: Upload gnosis.tar.gz
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: Minimal Test Configuration
-          path: consensus-spec-tests/minimal.tar.gz
-      - name: Upload mainnet.tar.gz
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: Mainnet Test Configuration
-          path: consensus-spec-tests/mainnet.tar.gz
+          name: Gnosis Test Configuration
+          path: consensus-spec-tests/gnosis.tar.gz
       - name: Upload consensustestgen
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
