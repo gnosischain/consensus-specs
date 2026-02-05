@@ -635,7 +635,7 @@ def create_provider(
                 preset_name="general",
                 runner_name="kzg",
                 handler_name=handler_name,
-                suite_name="kzg-mainnet",
+                suite_name="kzg-gnosis",
                 case_name=case_name,
                 case_fn=case_fn,
             )

@@ -4,8 +4,8 @@ import random
 from eth2spec.gen_helpers.gen_base import gen_runner, gen_typing
 from eth2spec.test.helpers.typing import PresetBaseName
 
-from eth2spec.phase0 import mainnet as spec_mainnet, minimal as spec_minimal
-from eth2spec.test.helpers.constants import PHASE0, MINIMAL, MAINNET
+from eth2spec.phase0 import gnosis as spec_gnosis
+from eth2spec.test.helpers.constants import PHASE0, GNOSIS
 
 
 def generate_random_bytes(rng=random.Random(5566)):
@@ -42,10 +42,8 @@ def create_provider(preset_name: PresetBaseName) -> gen_typing.TestProvider:
         return
 
     def cases_fn() -> Iterable[gen_typing.TestCase]:
-        if preset_name == MAINNET:
-            spec = spec_mainnet
-        elif preset_name == MINIMAL:
-            spec = spec_minimal
+        if preset_name == GNOSIS:
+            spec = spec_gnosis
         else:
             raise Exception(f"unrecognized preset: {preset_name}")
         for case_name, case_fn in shuffling_test_cases(spec):
@@ -63,4 +61,4 @@ def create_provider(preset_name: PresetBaseName) -> gen_typing.TestProvider:
 
 
 if __name__ == "__main__":
-    gen_runner.run_generator("shuffling", [create_provider(MINIMAL), create_provider(MAINNET)])
+    gen_runner.run_generator("shuffling", [create_provider(GNOSIS)])

@@ -15,34 +15,26 @@ ELECTRA = SpecForkName("electra")
 
 # Experimental phases (not included in default "ALL_PHASES"):
 FULU = SpecForkName("fulu")
-EIP7441 = SpecForkName("eip7441")
-EIP7732 = SpecForkName("eip7732")
-EIP7805 = SpecForkName("eip7805")
 
 #
 # SpecFork settings
 #
 
-# The forks that are deployed on Mainnet
-MAINNET_FORKS = (PHASE0, ALTAIR, BELLATRIX, CAPELLA, DENEB)
-LATEST_FORK = MAINNET_FORKS[-1]
+# The forks that are deployed on Gnosis
+GNOSIS_FORKS = (PHASE0, ALTAIR, BELLATRIX, CAPELLA, DENEB)
+LATEST_FORK = GNOSIS_FORKS[-1]
 # The forks that pytest can run with.
-# Note: when adding a new fork here, all tests from previous forks with decorator `with_X_and_later`
-#       will run on the new fork. To skip this behaviour, add the fork to `ALLOWED_TEST_RUNNER_FORKS`
 ALL_PHASES = (
-    # Formal forks
-    *MAINNET_FORKS,
+    *GNOSIS_FORKS,
     ELECTRA,
     FULU,
-    # Experimental patches
-    EIP7732,
 )
 # The forks that have light client specs
-LIGHT_CLIENT_TESTING_FORKS = (*[item for item in MAINNET_FORKS if item != PHASE0], ELECTRA)
+LIGHT_CLIENT_TESTING_FORKS = (*[item for item in GNOSIS_FORKS if item != PHASE0], ELECTRA)
 # The forks that output to the test vectors.
-TESTGEN_FORKS = (*MAINNET_FORKS, ELECTRA, FULU, EIP7441, EIP7732)
+TESTGEN_FORKS = (*GNOSIS_FORKS, ELECTRA, FULU)
 # Forks allowed in the test runner `--fork` flag, to fail fast in case of typos
-ALLOWED_TEST_RUNNER_FORKS = (*ALL_PHASES, EIP7441)
+ALLOWED_TEST_RUNNER_FORKS = ALL_PHASES
 
 # NOTE: the same definition as in `pysetup/md_doc_paths.py`
 PREVIOUS_FORK_OF = {
@@ -53,11 +45,7 @@ PREVIOUS_FORK_OF = {
     CAPELLA: BELLATRIX,
     DENEB: CAPELLA,
     ELECTRA: DENEB,
-    # Experimental patches
     FULU: ELECTRA,
-    EIP7441: CAPELLA,
-    EIP7732: ELECTRA,
-    EIP7805: ELECTRA,
 }
 
 # For fork transition tests
@@ -89,7 +77,8 @@ MAINNET = PresetBaseName("mainnet")
 MINIMAL = PresetBaseName("minimal")
 GNOSIS = PresetBaseName("gnosis")
 
-ALL_PRESETS = (MINIMAL, MAINNET, GNOSIS)
+# Only gnosis is available in this fork
+ALL_PRESETS = (GNOSIS,)
 
 
 #
