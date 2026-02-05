@@ -9,11 +9,7 @@ ALL_EXECUTABLE_SPEC_NAMES = \
 	capella   \
 	deneb     \
 	electra   \
-	fulu      \
-	eip6800   \
-	eip7441   \
-	eip7732   \
-  eip7805
+	fulu
 
 # A list of fake targets.
 .PHONY: \
@@ -78,8 +74,6 @@ pyspec: $(VENV) setup.py pyproject.toml
 	@$(PYTHON_VENV) -m uv pip install --reinstall-package=eth2spec .[docs,lint,test,generator]
 	@for dir in $(ALL_EXECUTABLE_SPEC_NAMES); do \
 	    mkdir -p "./tests/core/pyspec/eth2spec/$$dir"; \
-	    cp "./build/lib/eth2spec/$$dir/mainnet.py" "./tests/core/pyspec/eth2spec/$$dir/mainnet.py"; \
-	    cp "./build/lib/eth2spec/$$dir/minimal.py" "./tests/core/pyspec/eth2spec/$$dir/minimal.py"; \
 	    cp "./build/lib/eth2spec/$$dir/gnosis.py" "./tests/core/pyspec/eth2spec/$$dir/gnosis.py"; \
 	done
 
@@ -106,7 +100,7 @@ test: MAYBE_TEST := $(if $(k),-k=$(k))
 # Parallelism makes debugging difficult (print doesn't work).
 test: MAYBE_PARALLEL := $(if $(k),,-n auto)
 test: MAYBE_FORK := $(if $(fork),--fork=$(fork))
-test: PRESET := --preset=$(if $(preset),$(preset),minimal)
+test: PRESET := --preset=$(if $(preset),$(preset),gnosis)
 test: BLS := --bls-type=$(if $(bls),$(bls),fastest)
 test: pyspec
 	@mkdir -p $(TEST_REPORT_DIR)
@@ -124,7 +118,7 @@ test: pyspec
 # Coverage
 ###############################################################################
 
-TEST_PRESET_TYPE ?= minimal
+TEST_PRESET_TYPE ?= gnosis
 COV_HTML_OUT=$(PYSPEC_DIR)/.htmlcov
 COV_INDEX_FILE=$(COV_HTML_OUT)/index.html
 COVERAGE_SCOPE := $(foreach S,$(ALL_EXECUTABLE_SPEC_NAMES), --cov=eth2spec.$S.$(TEST_PRESET_TYPE))
@@ -262,13 +256,11 @@ detect_errors: $(TEST_VECTOR_DIR)
 
 # Generate KZG trusted setups for testing.
 kzg_setups: pyspec
-	@for preset in minimal mainnet; do \
-		$(PYTHON_VENV) $(SCRIPTS_DIR)/gen_kzg_trusted_setups.py \
-			--secret=1337 \
-			--g1-length=4096 \
-			--g2-length=65 \
-			--output-dir $(CURDIR)/presets/$$preset/trusted_setups; \
-	done
+	$(PYTHON_VENV) $(SCRIPTS_DIR)/gen_kzg_trusted_setups.py \
+		--secret=1337 \
+		--g1-length=4096 \
+		--g2-length=65 \
+		--output-dir $(CURDIR)/presets/gnosis/trusted_setups
 
 ###############################################################################
 # Cleaning
