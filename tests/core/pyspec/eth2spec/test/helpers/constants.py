@@ -50,6 +50,10 @@ PREVIOUS_FORK_OF = {
     DENEB: CAPELLA,
     ELECTRA: DENEB,
     FULU: ELECTRA,
+    # Keep for decorator compatibility
+    EIP7441: CAPELLA,
+    EIP7732: ELECTRA,
+    EIP7805: ELECTRA,
 }
 
 # For fork transition tests
