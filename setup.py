@@ -139,15 +139,11 @@ def _load_curdleproofs_crs(preset_name):
 
 
 ALL_KZG_SETUPS = {
-    'minimal': _load_kzg_trusted_setups('minimal'),
-    'mainnet': _load_kzg_trusted_setups('mainnet'),
-    'gnosis': _load_kzg_trusted_setups('mainnet'),
+    'gnosis': _load_kzg_trusted_setups('gnosis'),
 }
 
 ALL_CURDLEPROOFS_CRS = {
-    'minimal': _load_curdleproofs_crs('minimal'),
-    'mainnet': _load_curdleproofs_crs('mainnet'),
-    'gnosis': _load_curdleproofs_crs('mainnet'),
+    'gnosis': _load_curdleproofs_crs('gnosis'),
 }
 
 
@@ -306,7 +302,7 @@ def get_spec(file_name: Path, preset: Dict[str, str], config: Dict[str, str], pr
                         })
 
             # Make a type map from the spec definition
-            # We'll apply this to the file config (ie mainnet.yaml)
+            # We'll apply this to the file config (ie gnosis.yaml)
             type_map: dict[str,str] = {}
             pattern = re.compile(r'^(\w+)\(.*\)$')
             for entry in list_of_records:
@@ -327,13 +323,8 @@ def get_spec(file_name: Path, preset: Dict[str, str], config: Dict[str, str], pr
                         new_entry[k] = v
                 list_of_records_config.append(new_entry)
 
-            # For mainnet, check that the spec config & file config are the same
-            # For minimal, we expect this to be different; just use the file config
-            if preset_name == "mainnet":
-                assert list_of_records == list_of_records_config, \
-                    f"list of records mismatch: {list_of_records} vs {list_of_records_config}"
-            elif preset_name == "minimal":
-                list_of_records = list_of_records_config
+            # For gnosis, use the file config (gnosis has different values than spec defaults)
+            list_of_records = list_of_records_config
 
             # Set the config variable and reset the global variable
             config_vars[list_of_records_name] = list_of_records
@@ -384,12 +375,8 @@ def get_spec(file_name: Path, preset: Dict[str, str], config: Dict[str, str], pr
 
                     value_def = _parse_value(name, value)
                     if name in preset:
-                        if preset_name == "mainnet":
-                            check_yaml_matches_spec(name, preset, value_def)
                         preset_vars[name] = VariableDefinition(value_def.type_name, preset[name], value_def.comment, None)
                     elif name in config:
-                        if preset_name == "mainnet":
-                            check_yaml_matches_spec(name, config, value_def)
                         config_vars[name] = VariableDefinition(value_def.type_name, config[name], value_def.comment, None)
                     else:
                         if name in ('ENDIANNESS', 'KZG_ENDIANNESS'):
@@ -526,8 +513,6 @@ class PySpecCommand(Command):
         self.md_doc_paths = ''
         self.out_dir = 'pyspec_output'
         self.build_targets = """
-                minimal:presets/minimal:configs/minimal.yaml
-                mainnet:presets/mainnet:configs/mainnet.yaml
                 gnosis:presets/gnosis:configs/gnosis.yaml
         """
 
@@ -585,8 +570,8 @@ class PySpecCommand(Command):
 
         if not self.dry_run:
             with open(os.path.join(self.out_dir, '__init__.py'), 'w') as out:
-                # `mainnet` is the default spec.
-                out.write("from . import mainnet as spec  # noqa:F401\n")
+                # `gnosis` is the default spec.
+                out.write("from . import gnosis as spec  # noqa:F401\n")
 
 
 class BuildPyCommand(build_py):
