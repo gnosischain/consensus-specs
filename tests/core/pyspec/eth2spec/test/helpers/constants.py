@@ -15,6 +15,10 @@ ELECTRA = SpecForkName("electra")
 
 # Experimental phases (not included in default "ALL_PHASES"):
 FULU = SpecForkName("fulu")
+# These are not available for gnosis but kept for import compatibility
+EIP7441 = SpecForkName("eip7441")
+EIP7732 = SpecForkName("eip7732")
+EIP7805 = SpecForkName("eip7805")
 
 #
 # SpecFork settings
