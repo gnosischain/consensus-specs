@@ -88,6 +88,7 @@ def test_activation_queue_no_activation_no_finality(spec, state):
 
 
 @with_all_phases
+@with_presets([MINIMAL])  # gnosis churn limits differ
 @spec_state_test
 def test_activation_queue_sorting(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
@@ -166,6 +167,7 @@ def run_test_activation_queue_efficiency(spec, state):
 
 
 @with_all_phases
+@with_presets([MINIMAL])  # gnosis churn limits differ
 @spec_state_test
 def test_activation_queue_efficiency_min(spec, state):
     assert spec.get_validator_churn_limit(state) == spec.config.MIN_PER_EPOCH_CHURN_LIMIT
@@ -350,6 +352,7 @@ def test_activation_queue_activation_and_ejection__1(spec, state):
 
 
 @with_all_phases
+@with_presets([MINIMAL])  # gnosis churn limits differ
 @spec_state_test
 def test_activation_queue_activation_and_ejection__churn_limit(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
@@ -358,6 +361,7 @@ def test_activation_queue_activation_and_ejection__churn_limit(spec, state):
 
 
 @with_all_phases
+@with_presets([MINIMAL])  # gnosis churn limits differ
 @spec_state_test
 def test_activation_queue_activation_and_ejection__exceed_churn_limit(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
