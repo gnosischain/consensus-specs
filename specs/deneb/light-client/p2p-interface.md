@@ -19,7 +19,9 @@
 
 ## Networking
 
-The [Capella light client networking specification](../../capella/light-client/p2p-interface.md) is extended to exchange [Deneb light client data](./sync-protocol.md).
+The
+[Capella light client networking specification](../../capella/light-client/p2p-interface.md)
+is extended to exchange [Deneb light client data](./sync-protocol.md).
 
 ### The gossip domain: gossipsub
 
@@ -29,7 +31,7 @@ The [Capella light client networking specification](../../capella/light-client/p
 
 ###### `light_client_finality_update`
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Message SSZ type                    |
 | ------------------------------------------------------ | ----------------------------------- |
@@ -40,7 +42,7 @@ The [Capella light client networking specification](../../capella/light-client/p
 
 ###### `light_client_optimistic_update`
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Message SSZ type                      |
 | ------------------------------------------------------ | ------------------------------------- |
@@ -55,7 +57,7 @@ The [Capella light client networking specification](../../capella/light-client/p
 
 ##### GetLightClientBootstrap
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type              |
 | ------------------------------------------------------ | ------------------------------ |
@@ -66,7 +68,7 @@ The [Capella light client networking specification](../../capella/light-client/p
 
 ##### LightClientUpdatesByRange
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response chunk SSZ type     |
 | ------------------------------------------------------ | --------------------------- |
@@ -77,7 +79,7 @@ The [Capella light client networking specification](../../capella/light-client/p
 
 ##### GetLightClientFinalityUpdate
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type                   |
 | ------------------------------------------------------ | ----------------------------------- |
@@ -88,7 +90,7 @@ The [Capella light client networking specification](../../capella/light-client/p
 
 ##### GetLightClientOptimisticUpdate
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type                     |
 | ------------------------------------------------------ | ------------------------------------- |

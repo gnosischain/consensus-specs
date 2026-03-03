@@ -1,0 +1,99 @@
+from .typing import PresetBaseName, SpecForkName
+
+#
+# SpecForkName
+#
+
+# Some of the Spec module functionality is exposed here to deal with phase-specific changes.
+PHASE0 = SpecForkName("phase0")
+ALTAIR = SpecForkName("altair")
+BELLATRIX = SpecForkName("bellatrix")
+CAPELLA = SpecForkName("capella")
+DENEB = SpecForkName("deneb")
+ELECTRA = SpecForkName("electra")
+FULU = SpecForkName("fulu")
+GLOAS = SpecForkName("gloas")
+HEZE = SpecForkName("heze")
+
+# Experimental phases (not included in default "ALL_PHASES"):
+# These are not available for gnosis but kept for import compatibility
+EIP7441 = SpecForkName("eip7441")
+EIP7928 = SpecForkName("eip7928")
+EIP8025 = SpecForkName("eip8025")
+
+#
+# SpecFork settings
+#
+
+# The forks that are deployed on Gnosis
+GNOSIS_FORKS = (PHASE0, ALTAIR, BELLATRIX, CAPELLA, DENEB, ELECTRA)
+LATEST_FORK = GNOSIS_FORKS[-1]
+# The forks that pytest can run with.
+ALL_PHASES = (
+    *GNOSIS_FORKS,
+    ELECTRA,
+    FULU,
+)
+# The forks that have light client specs
+LIGHT_CLIENT_TESTING_FORKS = (*[item for item in GNOSIS_FORKS if item != PHASE0], ELECTRA)
+# The forks that output to the test vectors.
+TESTGEN_FORKS = (*GNOSIS_FORKS, ELECTRA, FULU)
+# Forks allowed in the test runner `--fork` flag, to fail fast in case of typos
+ALLOWED_TEST_RUNNER_FORKS = ALL_PHASES
+
+# NOTE: the same definition as in `pysetup/md_doc_paths.py`
+PREVIOUS_FORK_OF = {
+    # post_fork_name: pre_fork_name
+    PHASE0: None,
+    ALTAIR: PHASE0,
+    BELLATRIX: ALTAIR,
+    CAPELLA: BELLATRIX,
+    DENEB: CAPELLA,
+    ELECTRA: DENEB,
+    FULU: ELECTRA,
+    # Keep for decorator compatibility
+    EIP7441: CAPELLA,
+    EIP7928: FULU,
+    EIP8025: FULU,
+}
+
+# For fork transition tests
+POST_FORK_OF = {
+    # pre_fork_name: post_fork_name
+    PHASE0: ALTAIR,
+    ALTAIR: BELLATRIX,
+    BELLATRIX: CAPELLA,
+    CAPELLA: DENEB,
+    DENEB: ELECTRA,
+    ELECTRA: FULU,
+    FULU: GLOAS,
+    GLOAS: HEZE,
+}
+
+ALL_PRE_POST_FORKS = POST_FORK_OF.items()
+DENEB_TRANSITION_UPGRADES_AND_AFTER = {
+    key: value for key, value in POST_FORK_OF.items() if key not in [PHASE0, ALTAIR, BELLATRIX]
+}
+ELECTRA_TRANSITION_UPGRADES_AND_AFTER = {
+    key: value
+    for key, value in POST_FORK_OF.items()
+    if key not in [PHASE0, ALTAIR, BELLATRIX, CAPELLA]
+}
+AFTER_DENEB_PRE_POST_FORKS = DENEB_TRANSITION_UPGRADES_AND_AFTER.items()
+AFTER_ELECTRA_PRE_POST_FORKS = ELECTRA_TRANSITION_UPGRADES_AND_AFTER.items()
+
+#
+# Config and Preset
+#
+MAINNET = PresetBaseName("mainnet")
+MINIMAL = PresetBaseName("minimal")
+GNOSIS = PresetBaseName("gnosis")
+
+# Only gnosis is available in this fork
+ALL_PRESETS = (GNOSIS,)
+
+
+#
+# Number
+#
+UINT64_MAX = 2**64 - 1
