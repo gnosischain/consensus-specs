@@ -6,7 +6,7 @@ on:
 jobs:
   release:
     timeout-minutes: 1440 # 24 hours
-    runs-on: [self-hosted-ghr-custom, size-xl-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: read
