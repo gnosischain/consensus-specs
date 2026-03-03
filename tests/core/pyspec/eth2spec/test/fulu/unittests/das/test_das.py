@@ -73,7 +73,7 @@ def test_recover_matrix(spec):
 @single_phase
 def test_get_extended_sample_count__1(spec):
     rng = random.Random(1111)
-    allowed_failures = rng.randint(0, spec.config.NUMBER_OF_COLUMNS // 2)
+    allowed_failures = rng.randint(0, spec.NUMBER_OF_COLUMNS // 2)
     spec.get_extended_sample_count(allowed_failures)
 
 
@@ -82,7 +82,7 @@ def test_get_extended_sample_count__1(spec):
 @single_phase
 def test_get_extended_sample_count__2(spec):
     rng = random.Random(2222)
-    allowed_failures = rng.randint(0, spec.config.NUMBER_OF_COLUMNS // 2)
+    allowed_failures = rng.randint(0, spec.NUMBER_OF_COLUMNS // 2)
     spec.get_extended_sample_count(allowed_failures)
 
 
@@ -91,7 +91,7 @@ def test_get_extended_sample_count__2(spec):
 @single_phase
 def test_get_extended_sample_count__3(spec):
     rng = random.Random(3333)
-    allowed_failures = rng.randint(0, spec.config.NUMBER_OF_COLUMNS // 2)
+    allowed_failures = rng.randint(0, spec.NUMBER_OF_COLUMNS // 2)
     spec.get_extended_sample_count(allowed_failures)
 
 
@@ -107,7 +107,7 @@ def test_get_extended_sample_count__lower_bound(spec):
 @spec_test
 @single_phase
 def test_get_extended_sample_count__upper_bound(spec):
-    allowed_failures = spec.config.NUMBER_OF_COLUMNS // 2
+    allowed_failures = spec.NUMBER_OF_COLUMNS // 2
     spec.get_extended_sample_count(allowed_failures)
 
 
@@ -115,7 +115,7 @@ def test_get_extended_sample_count__upper_bound(spec):
 @spec_test
 @single_phase
 def test_get_extended_sample_count__upper_bound_exceed(spec):
-    allowed_failures = spec.config.NUMBER_OF_COLUMNS // 2 + 1
+    allowed_failures = spec.NUMBER_OF_COLUMNS // 2 + 1
     expect_assertion_error(lambda: spec.get_extended_sample_count(allowed_failures))
 
 
