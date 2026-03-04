@@ -222,7 +222,7 @@ TEST_REPORT_DIR = $(PYSPEC_DIR)/test-reports
 test: MAYBE_TEST := $(if $(k),-k=$(k))
 # Disable parallelism when running a specific test.
 # Parallelism makes debugging difficult (print doesn't work).
-test: MAYBE_PARALLEL := $(if $(k),,-n logical)
+test: MAYBE_PARALLEL := $(if $(k),,-n logical --dist=worksteal)
 test: MAYBE_FORK := $(if $(fork),--fork=$(fork))
 test: PRESET := $(if $(filter fw,$(component)),,--preset=$(if $(preset),$(preset),gnosis))
 test: BLS := $(if $(filter fw,$(component)),,--bls-type=$(if $(bls),$(bls),fastest))
@@ -352,26 +352,6 @@ reftests: _pyspec
 		$(MAYBE_TESTS) \
 		$(MAYBE_FORKS) \
 		$(MAYBE_PRESETS)
-
-# Run all generators then check for errors.
-gen_all: $(GENERATOR_TARGETS)
-	@$(MAKE) detect_errors
-
-# Detect errors in generators.
-detect_errors: $(TEST_VECTOR_DIR)
-	@if [ -f $(GENERATOR_ERROR_LOG_FILE) ]; then \
-		echo "[ERROR] $(GENERATOR_ERROR_LOG_FILE) file exists"; \
-		exit 1; \
-	fi
-	@echo "[PASSED] no errors detected"
-
-# Generate KZG trusted setups for testing.
-kzg_setups: pyspec
-	$(PYTHON_VENV) $(SCRIPTS_DIR)/gen_kzg_trusted_setups.py \
-		--secret=1337 \
-		--g1-length=4096 \
-		--g2-length=65 \
-		--output-dir $(CURDIR)/presets/gnosis/trusted_setups
 
 # Generate compliance tests (fork choice).
 comptests: FC_GEN_CONFIG := $(if $(fc_gen_config),$(fc_gen_config),tiny)
