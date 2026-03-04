@@ -3,7 +3,7 @@ from eth_utils import (
     int_to_big_endian,
 )
 
-from eth_consensus_specs.fulu import mainnet as spec
+from eth_consensus_specs.fulu import gnosis as spec
 from eth_consensus_specs.utils import bls
 
 ###############################################################################

@@ -37,7 +37,7 @@ def pytest_addoption(parser):
         "--preset",
         action="store",
         type=str,
-        default="minimal",
+        default="gnosis",
         help="preset: make the pyspec use the specified preset",
     )
     parser.addoption(
@@ -138,7 +138,7 @@ def _apply_ckzg(request):
     ts_path = (
         request.config.rootdir
         / "presets"
-        / "mainnet"
+        / "gnosis"
         / "trusted_setups"
         / "trusted_setup_4096.json"
     )

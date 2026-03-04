@@ -4,7 +4,7 @@ from .manifest import Manifest, manifest
 def test_manifest_decorator_basic():
     """Test that the manifest decorator adds manifest attribute to function."""
 
-    @manifest(fork_name="phase0", preset_name="minimal")
+    @manifest(fork_name="phase0", preset_name="gnosis")
     def test_function():
         return "test"
 
@@ -19,7 +19,7 @@ def test_manifest_decorator_all_params():
 
     @manifest(
         fork_name="deneb",
-        preset_name="mainnet",
+        preset_name="gnosis",
         runner_name="state_test",
         handler_name="block_processing",
         suite_name="attestation",
@@ -38,7 +38,7 @@ def test_manifest_decorator_all_params():
 
 def test_manifest_override():
     """Test that Manifest.override() works correctly."""
-    base_manifest = Manifest(fork_name="phase0", preset_name="minimal")
+    base_manifest = Manifest(fork_name="phase0", preset_name="gnosis")
     override_manifest = Manifest(fork_name="altair", runner_name="test")
 
     result = override_manifest.override(base_manifest)

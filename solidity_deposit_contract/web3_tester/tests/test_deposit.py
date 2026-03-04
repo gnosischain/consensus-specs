@@ -2,7 +2,7 @@ from random import randint
 import pytest
 import eth_utils
 
-from eth_consensus_specs.phase0.mainnet import DepositData
+from eth_consensus_specs.phase0.gnosis import DepositData
 from eth_consensus_specs.utils.ssz.ssz_typing import List
 from eth_consensus_specs.utils.ssz.ssz_impl import hash_tree_root
 

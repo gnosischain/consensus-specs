@@ -2,7 +2,7 @@ from random import Random
 
 from lru import LRU
 
-from eth_consensus_specs.phase0.mainnet import (
+from eth_consensus_specs.phase0.gnosis import (
     VALIDATOR_REGISTRY_LIMIT,  # equal everywhere, fine to import
 )
 from eth_consensus_specs.test.helpers.attestations import (

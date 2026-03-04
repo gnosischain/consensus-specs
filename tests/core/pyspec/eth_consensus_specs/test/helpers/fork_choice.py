@@ -3,7 +3,7 @@ from typing import Any, NamedTuple
 
 from eth_utils import encode_hex
 
-from eth_consensus_specs.fulu.mainnet import DataColumnSidecar
+from eth_consensus_specs.fulu.gnosis import DataColumnSidecar
 from eth_consensus_specs.test.context import expect_assertion_error
 from eth_consensus_specs.test.exceptions import BlockNotFoundException
 from eth_consensus_specs.test.helpers.attestations import (
