@@ -140,8 +140,7 @@ def parse_build_targets(targets_str: str) -> list[BuildTarget]:
     Parse build target strings in format: name:preset_dir:config_file
 
     Example:
-        minimal:presets/minimal:configs/minimal.yaml
-        mainnet:presets/mainnet:configs/mainnet.yaml
+        gnosis:presets/gnosis:configs/gnosis.yaml
     """
     build_targets = []
     for target in targets_str.strip().split():
@@ -241,9 +240,9 @@ def generate_fork_specs(
         if verbose:
             print(f"    Wrote: {output_file} ({len(spec_str):,} bytes)")
 
-    # Create __init__.py that imports mainnet as default
+    # Create __init__.py that imports gnosis as default
     init_file = out_dir / "__init__.py"
-    init_file.write_text("from . import mainnet as spec  # noqa:F401\n")
+    init_file.write_text("from . import gnosis as spec  # noqa:F401\n")
 
     if verbose:
         print(f"  Wrote: {init_file}")
@@ -267,7 +266,7 @@ Examples:
 
   # Use custom build targets
   python pysetup/generate_specs.py --fork phase0 \\
-      --build-targets "minimal:presets/minimal:configs/minimal.yaml"
+      --build-targets "gnosis:presets/gnosis:configs/gnosis.yaml"
         """,
     )
 
@@ -294,7 +293,7 @@ Examples:
     parser.add_argument(
         "--build-targets",
         type=str,
-        default="minimal:presets/minimal:configs/minimal.yaml mainnet:presets/mainnet:configs/mainnet.yaml",
+        default="gnosis:presets/gnosis:configs/gnosis.yaml",
         help="Space-separated build targets in format 'name:preset_dir:config_file'",
     )
 

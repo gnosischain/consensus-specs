@@ -318,9 +318,8 @@ class MarkdownToSpec:
             list_of_records_name, type_map
         )
 
-        # For mainnet, check that the spec config & file config are the same
-        # For minimal, we expect this to be different; just use the file config
-        if self.preset_name == "mainnet":
+        # For gnosis, check that the spec config & file config are the same
+        if self.preset_name == "gnosis":
             assert list_of_records_spec == list_of_records_config_file, (
                 f"list of records mismatch: {list_of_records_spec} vs {list_of_records_config_file}"
             )
@@ -554,13 +553,11 @@ def _load_curdleproofs_crs(preset_name: str) -> dict[str, list[str]]:
 
 
 ALL_KZG_SETUPS = {
-    "minimal": _load_kzg_trusted_setups("minimal"),
-    "mainnet": _load_kzg_trusted_setups("mainnet"),
+    "gnosis": _load_kzg_trusted_setups("gnosis"),
 }
 
 ALL_CURDLEPROOFS_CRS = {
-    "minimal": _load_curdleproofs_crs("minimal"),
-    "mainnet": _load_curdleproofs_crs("mainnet"),
+    "gnosis": _load_curdleproofs_crs("gnosis"),
 }
 
 
