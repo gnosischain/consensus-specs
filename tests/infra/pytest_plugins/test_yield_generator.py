@@ -125,14 +125,14 @@ class TestInferManifest:
 
     def test_callspec_preset(self):
         """Preset is extracted from callspec.params when present."""
-        callspec = SimpleNamespace(params={"preset": "mainnet"})
+        callspec = SimpleNamespace(params={"preset": "gnosis"})
         stub = _make_stub(
             name="test_valid",
             path=Path("/x/bls/test_verify.py"),
             callspec=callspec,
         )
         SpecTestFunction._infer_manifest(stub)
-        assert stub.manifest.preset_name == "mainnet"
+        assert stub.manifest.preset_name == "gnosis"
 
     def test_obj_suite_name(self):
         """suite_name from the test function object is used when present."""

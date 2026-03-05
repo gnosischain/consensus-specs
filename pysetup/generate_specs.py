@@ -104,7 +104,7 @@ def build_spec(
 
     Args:
         fork: The fork name (e.g., 'phase0', 'altair', 'bellatrix')
-        preset_name: The preset name (e.g., 'minimal', 'mainnet')
+        preset_name: The preset name (e.g., 'gnosis')
         source_files: List of markdown spec files to parse
         preset_files: List of preset YAML files to load
         config_file: Path to config YAML file
