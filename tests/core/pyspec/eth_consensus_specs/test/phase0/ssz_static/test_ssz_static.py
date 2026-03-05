@@ -11,7 +11,7 @@ from eth_consensus_specs.test.context import (
     with_phases,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MAINNET, MINIMAL, TESTGEN_FORKS
+from eth_consensus_specs.test.helpers.constants import GNOSIS, TESTGEN_FORKS
 from eth_consensus_specs.utils.ssz.ssz_impl import (
     hash_tree_root,
     serialize,
@@ -121,9 +121,9 @@ def _create_test_cases():
         """
         ssz_type_to_specs = {}
 
-        # Check all forks using MINIMAL preset
+        # Check all forks using GNOSIS preset
         for fork in TESTGEN_FORKS:
-            spec = spec_targets[MINIMAL][fork]
+            spec = spec_targets[GNOSIS][fork]
 
             # Get all SSZ types for this spec
             ssz_type_names = _get_spec_ssz_types_names(spec)
@@ -138,9 +138,9 @@ def _create_test_cases():
 
     settings = []
     for mode in random_value.RandomizationMode:
-        settings.append((MINIMAL, mode, False, 30))
-    settings.append((MINIMAL, random_value.RandomizationMode.mode_random, True, 30))
-    settings.append((MAINNET, random_value.RandomizationMode.mode_random, False, 5))
+        settings.append((GNOSIS, mode, False, 30))
+    settings.append((GNOSIS, random_value.RandomizationMode.mode_random, True, 30))
+    settings.append((GNOSIS, random_value.RandomizationMode.mode_random, False, 5))
 
     ssz_type_to_specs = _get_ssz_types_to_specs_mapping()
 

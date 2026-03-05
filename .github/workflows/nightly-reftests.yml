@@ -22,7 +22,7 @@ on:
 
 jobs:
   generate-tests:
-    timeout-minutes: 720  # 12 hours
+    timeout-minutes: 720 # 12 hours
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

@@ -22,10 +22,10 @@ To run all tests:
 make test
 ```
 
-To run all tests under the minimal preset:
+To run all tests under the gnosis preset:
 
 ```shell
-make test preset=minimal
+make test preset=gnosis
 ```
 
 Or, to run a specific test function specify `k=<test-name>`:
@@ -43,7 +43,7 @@ make test fork=phase0
 Note: these options can be used together, like:
 
 ```shell
-make test preset=minimal k=test_verify_kzg_proof fork=deneb
+make test preset=gnosis k=test_verify_kzg_proof fork=deneb
 ```
 
 ### How to view code coverage report
