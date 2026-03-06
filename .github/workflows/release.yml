@@ -65,17 +65,11 @@ jobs:
           cd consensus-specs
           make test component=fw
 
-      # Ensure minimal tests pass
-      - name: Run tests for minimal
+      # Ensure gnosis tests pass
+      - name: Run tests for gnosis
         run: |
           cd consensus-specs
-          make test component=pyspec preset=minimal
-
-      # Ensure mainnet tests pass
-      - name: Run tests for mainnet
-        run: |
-          cd consensus-specs
-          make test component=pyspec preset=mainnet
+          make test component=pyspec preset=gnosis
 
       # Write reference tests to the spec tests repo
       - name: Generate reference tests
@@ -88,8 +82,7 @@ jobs:
         run: |
           cd consensus-spec-tests
           tar -czvf general.tar.gz tests/general
-          tar -czvf minimal.tar.gz tests/minimal
-          tar -czvf mainnet.tar.gz tests/mainnet
+          tar -czvf gnosis.tar.gz tests/gnosis
 
       # Upload tarballs and publish the release
       - name: Upload reference test tarballs and publish
@@ -97,8 +90,7 @@ jobs:
           tag="${{ steps.tag.outputs.name }}"
           gh release upload "$tag" \
             consensus-spec-tests/general.tar.gz \
-            consensus-spec-tests/minimal.tar.gz \
-            consensus-spec-tests/mainnet.tar.gz
+            consensus-spec-tests/gnosis.tar.gz
           gh release edit "$tag" --draft=false
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
