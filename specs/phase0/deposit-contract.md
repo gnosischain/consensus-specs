@@ -30,17 +30,17 @@ specification.
 
 ## Configuration
 
-*Note*: The default mainnet configuration values are included here for
-specification-design purposes. The different configurations for mainnet,
+*Note*: The default gnosis mainnet configuration values are included here for
+specification-design purposes. The different configurations for gnosis mainnet,
 testnets, and YAML-based testing can be found in the
 [`configs/constant_presets`](../../configs) directory. These configurations are
 updated for releases and may be out of sync during `dev` changes.
 
 | Name                       | Value                                        |
 | -------------------------- | -------------------------------------------- |
-| `DEPOSIT_CHAIN_ID`         | `1`                                          |
-| `DEPOSIT_NETWORK_ID`       | `1`                                          |
-| `DEPOSIT_CONTRACT_ADDRESS` | `0x00000000219ab540356cBB839Cbe05303d7705Fa` |
+| `DEPOSIT_CHAIN_ID`         | `100`                                        |
+| `DEPOSIT_NETWORK_ID`       | `100`                                        |
+| `DEPOSIT_CONTRACT_ADDRESS` | `0xbabe2bed00000000000000000000000000000003` |
 
 ## Staking deposit contract
 

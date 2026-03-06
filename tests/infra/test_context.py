@@ -4,14 +4,14 @@ from eth_consensus_specs.test.context import (
     get_copy_of_spec,
     with_config_overrides,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.specs import spec_targets
 
 
 # Test helper to get a spec instance for testing
 def get_test_spec():
-    """Get a minimal phase0 spec for testing."""
-    targets = spec_targets[MINIMAL]
+    """Get a gnosis phase0 spec for testing."""
+    targets = spec_targets[GNOSIS]
     return targets["phase0"]
 
 
