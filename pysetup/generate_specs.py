@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Standalone script to generate Ethereum consensus specs from markdown files.
+Standalone script to generate Gnosis consensus specs from markdown files.
 
 This script parses markdown specification files and generates Python modules
 for each fork (phase0, altair, bellatrix, capella, deneb, electra, etc.)
-with different presets (minimal, mainnet).
+with the gnosis preset.
 
 The generated Python modules are written to the output directory and can be
 imported as part of the eth_consensus_specs package.
