@@ -12,14 +12,6 @@ CAPELLA = SpecForkName("capella")
 DENEB = SpecForkName("deneb")
 ELECTRA = SpecForkName("electra")
 FULU = SpecForkName("fulu")
-GLOAS = SpecForkName("gloas")
-HEZE = SpecForkName("heze")
-
-# Experimental phases (not included in default "ALL_PHASES"):
-# These are not available for gnosis but kept for import compatibility
-EIP7441 = SpecForkName("eip7441")
-EIP7928 = SpecForkName("eip7928")
-EIP8025 = SpecForkName("eip8025")
 
 #
 # SpecFork settings
@@ -30,14 +22,14 @@ GNOSIS_FORKS = (PHASE0, ALTAIR, BELLATRIX, CAPELLA, DENEB, ELECTRA)
 LATEST_FORK = GNOSIS_FORKS[-1]
 # The forks that pytest can run with.
 ALL_PHASES = (
+    # Formal forks
     *GNOSIS_FORKS,
-    ELECTRA,
     FULU,
 )
 # The forks that have light client specs
-LIGHT_CLIENT_TESTING_FORKS = (*[item for item in GNOSIS_FORKS if item != PHASE0], ELECTRA)
+LIGHT_CLIENT_TESTING_FORKS = [item for item in GNOSIS_FORKS if item != PHASE0] + [FULU]
 # The forks that output to the test vectors.
-TESTGEN_FORKS = (*GNOSIS_FORKS, ELECTRA, FULU)
+TESTGEN_FORKS = (*GNOSIS_FORKS, FULU)
 # Forks allowed in the test runner `--fork` flag, to fail fast in case of typos
 ALLOWED_TEST_RUNNER_FORKS = ALL_PHASES
 
@@ -51,10 +43,6 @@ PREVIOUS_FORK_OF = {
     DENEB: CAPELLA,
     ELECTRA: DENEB,
     FULU: ELECTRA,
-    # Keep for decorator compatibility
-    EIP7441: CAPELLA,
-    EIP7928: FULU,
-    EIP8025: FULU,
 }
 
 # For fork transition tests
@@ -85,12 +73,10 @@ AFTER_ELECTRA_PRE_POST_FORKS = ELECTRA_TRANSITION_UPGRADES_AND_AFTER.items()
 #
 # Config and Preset
 #
-MAINNET = PresetBaseName("mainnet")
-MINIMAL = PresetBaseName("minimal")
 GNOSIS = PresetBaseName("gnosis")
 
-# Only gnosis is available in this fork
-ALL_PRESETS = (GNOSIS,)
+# Only gnosis is available
+ALL_PRESETS = (GNOSIS)
 
 
 #

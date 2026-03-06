@@ -1241,28 +1241,3 @@ def test_eth1_data_votes_no_consensus(spec, state):
 
     yield "blocks", blocks
     yield "post", state
-
-
-# NOTE: random ops tests disabled for gnosis - they generate invalid edge cases for gnosis params
-# @with_all_phases
-# @spec_state_test
-# def test_full_random_operations_0(spec, state):
-#     yield from run_test_full_random_operations(spec, state, rng=Random(2020))
-
-
-# @with_all_phases
-# @spec_state_test
-# def test_full_random_operations_1(spec, state):
-#     yield from run_test_full_random_operations(spec, state, rng=Random(2021))
-
-
-# @with_all_phases
-# @spec_state_test
-# def test_full_random_operations_2(spec, state):
-#     yield from run_test_full_random_operations(spec, state, rng=Random(2022))
-
-
-# @with_all_phases
-# @spec_state_test
-# def test_full_random_operations_3(spec, state):
-#     yield from run_test_full_random_operations(spec, state, rng=Random(2023))
