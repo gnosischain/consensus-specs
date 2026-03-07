@@ -10,7 +10,7 @@ def test_manifest_decorator_basic():
 
     assert hasattr(test_function, "manifest")
     assert test_function.manifest.fork_name == "phase0"
-    assert test_function.manifest.preset_name == "minimal"
+    assert test_function.manifest.preset_name == "gnosis"
     assert test_function() == "test"
 
 
@@ -29,22 +29,22 @@ def test_manifest_decorator_all_params():
         return "test"
 
     assert test_function.manifest.fork_name == "deneb"
-    assert test_function.manifest.preset_name == "mainnet"
+    assert test_function.manifest.preset_name == "gnosis"
     assert test_function.manifest.runner_name == "state_test"
     assert test_function.manifest.handler_name == "block_processing"
     assert test_function.manifest.suite_name == "attestation"
     assert test_function.manifest.case_name == "valid_attestation"
 
 
-def test_manifest_override():
-    """Test that Manifest.override() works correctly."""
-    base_manifest = Manifest(fork_name="phase0", preset_name="gnosis")
-    override_manifest = Manifest(fork_name="altair", runner_name="test")
+def test_manifest_with_defaults():
+    """Test that Manifest.with_defaults() works correctly."""
+    defaults = Manifest(fork_name="phase0", preset_name="gnosis")
+    partial = Manifest(fork_name="altair", runner_name="test")
 
     result = partial.with_defaults(defaults)
 
     assert result.fork_name == "altair"  # Explicit value takes precedence
-    assert result.preset_name == "minimal"  # Falls back to defaults
+    assert result.preset_name == "gnosis"  # Falls back to defaults
     assert result.runner_name == "test"  # From partial
     assert result.handler_name is None
     assert result.suite_name is None
