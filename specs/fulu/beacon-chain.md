@@ -53,8 +53,8 @@ SHOULD be sorted by epoch in ascending order. The blob schedule MAY be empty.
 
 <!-- list-of-records:blob_schedule -->
 
-|  Epoch | Max Blobs Per Block |                             Date |
-| -----: | ------------------: | -------------------------------: |
+| Epoch | Max Blobs Per Block | Date |
+| ----: | ------------------: | ---: |
 
 ## Beacon chain state transition function
 

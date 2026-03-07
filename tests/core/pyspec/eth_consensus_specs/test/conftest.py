@@ -158,11 +158,7 @@ def _apply_ckzg(request):
     Patch all spec modules to use ckzg for KZG functions.
     """
     ts_path = (
-        request.config.rootdir
-        / "presets"
-        / "gnosis"
-        / "trusted_setups"
-        / "trusted_setup_4096.json"
+        request.config.rootdir / "presets" / "gnosis" / "trusted_setups" / "trusted_setup_4096.json"
     )
     ts = load_trusted_setup(ts_path)
 

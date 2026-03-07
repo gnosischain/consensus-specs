@@ -25,9 +25,9 @@ from .helpers.constants import (
     ELECTRA,
     FULU,
     GLOAS,
+    GNOSIS,
     HEZE,
     LIGHT_CLIENT_TESTING_FORKS,
-    GNOSIS,
     PHASE0,
     POST_FORK_OF,
 )

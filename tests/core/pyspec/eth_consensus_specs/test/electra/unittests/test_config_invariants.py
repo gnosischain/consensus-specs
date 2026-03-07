@@ -17,4 +17,3 @@ def test_processing_pending_partial_withdrawals(spec):
 @single_phase
 def test_networking(spec):
     assert spec.config.MAX_BLOBS_PER_BLOCK_ELECTRA <= spec.MAX_BLOB_COMMITMENTS_PER_BLOCK
-

@@ -7,8 +7,8 @@ networks or tests.
 
 Standard configs:
 
-- [`gnosis.yaml`](./gnosis.yaml): Gnosis Mainnet configuration, used in spec-testing
-  along with the [`gnosis`](../presets/gnosis) preset.
+- [`gnosis.yaml`](./gnosis.yaml): Gnosis Mainnet configuration, used in
+  spec-testing along with the [`gnosis`](../presets/gnosis) preset.
 
 Not all network configurations are in scope for the specification, see
 [`github.com/eth-clients/eth2-networks`](https://github.com/eth-clients/eth2-networks)

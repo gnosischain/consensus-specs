@@ -1,5 +1,3 @@
-from random import Random
-
 from eth_consensus_specs.test.context import (
     always_bls,
     dump_skipping_message,
@@ -46,7 +44,6 @@ from eth_consensus_specs.test.helpers.forks import (
 from eth_consensus_specs.test.helpers.keys import pubkeys
 from eth_consensus_specs.test.helpers.multi_operations import (
     run_slash_and_exit,
-    run_test_full_random_operations,
 )
 from eth_consensus_specs.test.helpers.proposer_slashings import (
     check_proposer_slashing_effect,
@@ -130,7 +127,7 @@ def test_empty_block_transition(spec, state):
 @with_all_phases
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(

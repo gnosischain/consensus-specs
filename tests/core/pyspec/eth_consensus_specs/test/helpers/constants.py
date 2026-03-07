@@ -80,7 +80,7 @@ AFTER_ELECTRA_PRE_POST_FORKS = ELECTRA_TRANSITION_UPGRADES_AND_AFTER.items()
 GNOSIS = PresetBaseName("gnosis")
 
 # Only gnosis is available
-ALL_PRESETS = (GNOSIS)
+ALL_PRESETS = GNOSIS
 
 
 #

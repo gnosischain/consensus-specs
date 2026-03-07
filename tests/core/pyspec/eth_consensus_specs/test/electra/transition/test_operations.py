@@ -7,8 +7,8 @@ from eth_consensus_specs.test.context import (
 from eth_consensus_specs.test.helpers.constants import (
     AFTER_ELECTRA_PRE_POST_FORKS,
     GLOAS,
-    HEZE,
     GNOSIS,
+    HEZE,
 )
 from eth_consensus_specs.test.helpers.fork_transition import (
     OperationType,
