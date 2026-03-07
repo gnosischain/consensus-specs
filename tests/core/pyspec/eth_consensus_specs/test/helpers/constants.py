@@ -15,6 +15,10 @@ FULU = SpecForkName("fulu")
 GLOAS = SpecForkName("gloas")
 HEZE = SpecForkName("heze")
 
+# Experimental phases (not included in default "ALL_PHASES"):
+EIP7928 = SpecForkName("eip7928")
+EIP8025 = SpecForkName("eip8025")
+
 #
 # SpecFork settings
 #
@@ -47,6 +51,9 @@ PREVIOUS_FORK_OF = {
     FULU: ELECTRA,
     GLOAS: FULU,
     HEZE: GLOAS,
+    # Experimental patches
+    EIP7928: FULU,
+    EIP8025: FULU,
 }
 
 # For fork transition tests
