@@ -12,6 +12,8 @@ CAPELLA = SpecForkName("capella")
 DENEB = SpecForkName("deneb")
 ELECTRA = SpecForkName("electra")
 FULU = SpecForkName("fulu")
+GLOAS = SpecForkName("gloas")
+HEZE = SpecForkName("heze")
 
 #
 # SpecFork settings
@@ -43,6 +45,8 @@ PREVIOUS_FORK_OF = {
     DENEB: CAPELLA,
     ELECTRA: DENEB,
     FULU: ELECTRA,
+    GLOAS: FULU,
+    HEZE: GLOAS,
 }
 
 # For fork transition tests
