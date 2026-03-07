@@ -128,9 +128,9 @@ tests/<config name>/<fork or phase name>/<test runner name>/<test handler name>/
 
 ### `<config name>/`
 
-Configs are upper level, useful for sanity checks during development.
-As a top level dir, it is not duplicated, and the used config can be copied
-right into this directory as reference.
+Configs are upper level, useful for sanity checks during development. As a top
+level dir, it is not duplicated, and the used config can be copied right into
+this directory as reference.
 
 ### `<fork or phase name>/`
 
@@ -242,10 +242,9 @@ The runtime-configurables may be different for specific tests. When present,
 this replaces the default runtime-config that comes with the otherwise
 compile-time preset settings.
 
-The format matches that of the `gnosis.yaml` config,
-see the [`/configs`](../../configs/README.md#format) documentation. Config
-values that are introduced at a later fork may be omitted from tests of previous
-forks.
+The format matches that of the `gnosis.yaml` config, see the
+[`/configs`](../../configs/README.md#format) documentation. Config values that
+are introduced at a later fork may be omitted from tests of previous forks.
 
 ## Config sourcing
 

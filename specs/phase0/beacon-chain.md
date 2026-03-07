@@ -322,22 +322,22 @@ and other types of chain instances may use a different configuration.
 
 ### Genesis settings
 
-| Name                                 | Value                                          |
-| ------------------------------------ | ---------------------------------------------- |
-| `MIN_GENESIS_ACTIVE_VALIDATOR_COUNT` | `uint64(2**12)` (= 4,096)                      |
-| `MIN_GENESIS_TIME`                   | `uint64(1638968400)` (Dec 8, 2021, 1pm UTC)    |
-| `GENESIS_FORK_VERSION`               | `Version('0x00000064')`                        |
-| `GENESIS_DELAY`                      | `uint64(6000)` (~100 minutes)                  |
+| Name                                 | Value                                       |
+| ------------------------------------ | ------------------------------------------- |
+| `MIN_GENESIS_ACTIVE_VALIDATOR_COUNT` | `uint64(2**12)` (= 4,096)                   |
+| `MIN_GENESIS_TIME`                   | `uint64(1638968400)` (Dec 8, 2021, 1pm UTC) |
+| `GENESIS_FORK_VERSION`               | `Version('0x00000064')`                     |
+| `GENESIS_DELAY`                      | `uint64(6000)` (~100 minutes)               |
 
 ### Time parameters
 
-| Name                                  | Value                     |     Unit     |  Duration  |
-| ------------------------------------- | ------------------------- | :----------: | :--------: |
-| `SLOT_DURATION_MS`                    | `uint64(5000)`            | milliseconds |  5 seconds |
-| `SECONDS_PER_ETH1_BLOCK`              | `uint64(6)`               |   seconds    |  6 seconds |
-| `MIN_VALIDATOR_WITHDRAWABILITY_DELAY` | `uint64(2**8)` (= 256)    |    epochs    |            |
-| `SHARD_COMMITTEE_PERIOD`              | `uint64(2**8)` (= 256)    |    epochs    |            |
-| `ETH1_FOLLOW_DISTANCE`                | `uint64(2**10)` (= 1,024) | Eth1 blocks  |            |
+| Name                                  | Value                     |     Unit     | Duration  |
+| ------------------------------------- | ------------------------- | :----------: | :-------: |
+| `SLOT_DURATION_MS`                    | `uint64(5000)`            | milliseconds | 5 seconds |
+| `SECONDS_PER_ETH1_BLOCK`              | `uint64(6)`               |   seconds    | 6 seconds |
+| `MIN_VALIDATOR_WITHDRAWABILITY_DELAY` | `uint64(2**8)` (= 256)    |    epochs    |           |
+| `SHARD_COMMITTEE_PERIOD`              | `uint64(2**8)` (= 256)    |    epochs    |           |
+| `ETH1_FOLLOW_DISTANCE`                | `uint64(2**10)` (= 1,024) | Eth1 blocks  |           |
 
 ### Validator cycle
 

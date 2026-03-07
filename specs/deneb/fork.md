@@ -18,10 +18,10 @@ This document describes the process of Deneb upgrade.
 
 Warning: this configuration is not definitive.
 
-| Name                 | Value                                            |
-| -------------------- | ------------------------------------------------ |
-| `DENEB_FORK_VERSION` | `Version('0x04000064')`                          |
-| `DENEB_FORK_EPOCH`   | `Epoch(889856)`                                  |
+| Name                 | Value                   |
+| -------------------- | ----------------------- |
+| `DENEB_FORK_VERSION` | `Version('0x04000064')` |
+| `DENEB_FORK_EPOCH`   | `Epoch(889856)`         |
 
 ## Fork to Deneb
 

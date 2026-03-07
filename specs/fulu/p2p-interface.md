@@ -61,9 +61,9 @@ specifications of previous upgrades, and assumes them as pre-requisite.
 
 *[New in Fulu:EIP7594]*
 
-| Name                                           | Value                    | Description                                                               |
-| ---------------------------------------------- | ------------------------ | ------------------------------------------------------------------------- |
-| `DATA_COLUMN_SIDECAR_SUBNET_COUNT`             | `128`                    | The number of data column sidecar subnets used in the gossipsub protocol  |
+| Name                                           | Value                     | Description                                                               |
+| ---------------------------------------------- | ------------------------- | ------------------------------------------------------------------------- |
+| `DATA_COLUMN_SIDECAR_SUBNET_COUNT`             | `128`                     | The number of data column sidecar subnets used in the gossipsub protocol  |
 | `MIN_EPOCHS_FOR_DATA_COLUMN_SIDECARS_REQUESTS` | `2**14` (= 16,384 epochs) | The minimum epoch range over which a node must serve data column sidecars |
 
 ### Containers
