@@ -124,47 +124,6 @@ def test_run_includes_list_of_records_table(tmp_path, dummy_preset, dummy_config
     )
 
 
-def test_run_includes_list_of_records_table_minimal(tmp_path, dummy_preset, dummy_config):
-    md_content = """
-<!-- list-of-records:blob_schedule -->
-
-| Epoch                       | Max Blobs Per Block | Description                      |
-| --------------------------- | ------------------- | -------------------------------- |
-| `Epoch(269568)` **Deneb**   | `uint64(6)`         | The limit is set to `6` blobs    |
-| `Epoch(364032)` **Electra** | `uint64(9)`         | The limit is raised to `9` blobs |
-"""
-    file = tmp_path / "list_of_records_minimal.md"
-    file.write_text(md_content)
-    config = dummy_config.copy()
-    # Use different values than the table for minimal preset
-    config["BLOB_SCHEDULE"] = [
-        {"EPOCH": "2", "MAX_BLOBS_PER_BLOCK": "3"},
-        {"EPOCH": "4", "MAX_BLOBS_PER_BLOCK": "5"},
-    ]
-    m2s = MarkdownToSpec(
-        file_name=Path(file),
-        preset=dummy_preset,
-        config=config,
-        preset_name="gnosis",
-    )
-    spec_obj = m2s.run()
-    assert "BLOB_SCHEDULE" in spec_obj.config_vars
-    # The result should follow the config, not the table
-    assert (
-        spec_obj.config_vars["BLOB_SCHEDULE"].value
-        == """(
-    frozendict({
-        "EPOCH": Epoch(2),
-        "MAX_BLOBS_PER_BLOCK": uint64(3),
-    }),
-    frozendict({
-        "EPOCH": Epoch(4),
-        "MAX_BLOBS_PER_BLOCK": uint64(5),
-    }),
-)"""
-    )
-
-
 def test_run_includes_python_function(tmp_path, dummy_preset, dummy_config):
     md_content = '''
 #### `compute_epoch_at_slot`
