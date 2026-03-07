@@ -17,7 +17,7 @@ from eth_consensus_specs.test.helpers.capella.fork import (
 from eth_consensus_specs.test.helpers.constants import (
     BELLATRIX,
     CAPELLA,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.random import randomize_state
 from eth_consensus_specs.test.utils import with_meta_tags
@@ -81,8 +81,8 @@ def test_capella_fork_random_misc_balances(spec, phases, state):
 
 @with_phases(phases=[BELLATRIX], other_phases=[CAPELLA])
 @with_presets(
-    [MINIMAL],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    [GNOSIS],
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(

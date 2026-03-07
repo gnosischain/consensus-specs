@@ -10,7 +10,7 @@ from eth_consensus_specs.test.helpers.attestations import (
     next_epoch_with_attestations,
     state_transition_with_full_block,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.light_client import (
     create_update,
     sample_blob_schedule,
@@ -75,7 +75,7 @@ def test_process_light_client_update_not_timeout(spec, state):
     },
 )
 @spec_state_test_with_matching_config
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_process_light_client_update_at_period_boundary(spec, state):
     genesis_block, store = setup_test(spec, state)
 
@@ -115,7 +115,7 @@ def test_process_light_client_update_at_period_boundary(spec, state):
     },
 )
 @spec_state_test_with_matching_config
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_process_light_client_update_timeout(spec, state):
     genesis_block, store = setup_test(spec, state)
 
@@ -155,7 +155,7 @@ def test_process_light_client_update_timeout(spec, state):
     },
 )
 @spec_state_test_with_matching_config
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_process_light_client_update_finality_updated(spec, state):
     _, store = setup_test(spec, state)
 

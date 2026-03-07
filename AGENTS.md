@@ -238,7 +238,7 @@ class PendingConsolidation(Container):
 
 **Presets** (compile-time) define protocol limits that affect type sizes:
 
-- Located in `presets/mainnet/` and `presets/minimal/`
+- Located in `presets/gnosis/`
 - Examples: `MAX_VALIDATORS_PER_COMMITTEE`, `SLOTS_PER_EPOCH`
 - Changing these requires recompiling
 
@@ -250,8 +250,7 @@ class PendingConsolidation(Container):
 - Can be changed without recompilation
 
 When adding new constants, determine if they affect type sizes (preset) or are
-just network parameters (config). Preset values go in both `mainnet/` and
-`minimal/` directories.
+just network parameters (config). Preset values go in `gnosis/` directory.
 
 **Important**: Do not create presets or configs that are derived from other
 presets or configs. Each value should be defined independently.
@@ -275,11 +274,8 @@ the project standards.
 ### Running tests
 
 ```bash
-# Run all minimal preset tests (~30 minutes)
+# Run all gnosis preset tests
 make test
-
-# Run all mainnet preset tests (~5 hours)
-make test preset=mainnet
 
 # Run tests for a specific fork
 make test fork=deneb
@@ -288,7 +284,7 @@ make test fork=deneb
 make test k=deposit  # Runs all tests with "deposit" in the name
 
 # Combine options
-make test preset=mainnet fork=deneb k=test_verify_kzg_proof
+make test preset=gnosis fork=deneb k=test_verify_kzg_proof
 ```
 
 When testing, focus on what might have been impacted by the changes. Running the
@@ -298,14 +294,12 @@ and any later forks. This may require multiple commands with different
 `fork=<fork>` options, as there is currently no single command to run tests for
 a given fork and all subsequent forks.
 
-Use `preset=minimal` (the default) while developing and iterating on changes.
-Once everything works, run the same targeted tests with `preset=mainnet` as a
-final sanity check before committing.
+Use `preset=gnosis` (the default) while developing and iterating on changes.
 
 ### Generating reference tests
 
 ```bash
-# Generate all reference tests (runs both presets by default)
+# Generate all reference tests (gnosis preset by default)
 make reftests
 
 # AI agents should use verbose mode (default view uses dynamic tables)
@@ -321,7 +315,7 @@ make reftests k=verify_kzg_proof verbose=true
 make reftests runner=bls verbose=true
 
 # Combine options
-make reftests preset=mainnet fork=deneb k=verify_kzg_proof verbose=true
+make reftests preset=gnosis fork=deneb k=verify_kzg_proof verbose=true
 ```
 
 Reference tests are written to the `../consensus-spec-tests` directory, which is
@@ -459,8 +453,7 @@ Adding a new fork (e.g., "foobar") requires updates to many files:
 
 **6. Presets (if the fork has preset values):**
 
-- `presets/mainnet/foobar.yaml`
-- `presets/minimal/foobar.yaml`
+- `presets/gnosis/foobar.yaml`
 
 ## Important notes
 

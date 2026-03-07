@@ -5,7 +5,7 @@ from eth_consensus_specs.test.context import (
 )
 from eth_consensus_specs.test.helpers.constants import (
     AFTER_DENEB_PRE_POST_FORKS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fork_transition import (
     do_fork,
@@ -44,7 +44,7 @@ def mock_activated_validators(spec, state, mock_activations):
         for pre, post in AFTER_DENEB_PRE_POST_FORKS
     ]
 )
-@with_presets([MINIMAL], reason="churn limit update needs enough validators")
+@with_presets([GNOSIS], reason="churn limit update needs enough validators")
 def test_higher_churn_limit_to_lower(state, fork_epoch, spec, post_spec, pre_tag, post_tag):
     """
     Test if churn limit goes from high to low due to EIP-7514.

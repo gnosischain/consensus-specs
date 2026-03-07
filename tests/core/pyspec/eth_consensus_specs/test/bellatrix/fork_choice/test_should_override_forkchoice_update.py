@@ -12,7 +12,7 @@ from eth_consensus_specs.test.helpers.block import (
 from eth_consensus_specs.test.helpers.constants import (
     BELLATRIX,
     GLOAS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fork_choice import (
     apply_next_epoch_with_attestations,
@@ -32,7 +32,7 @@ from eth_consensus_specs.test.helpers.state import (
 
 @with_all_phases_from_to(BELLATRIX, GLOAS)
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_should_override_forkchoice_update__false(spec, state):
     test_steps = []
     # Initialization

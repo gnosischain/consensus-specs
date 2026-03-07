@@ -9,8 +9,7 @@ from eth_consensus_specs.test.context import (
 from eth_consensus_specs.test.helpers.constants import (
     CAPELLA,
     GLOAS,
-    MAINNET,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.execution_payload import (
     build_empty_execution_payload,
@@ -115,7 +114,7 @@ def test_success_mixed_fully_and_partial_withdrawable(spec, state):
 
 
 @with_all_phases_from_to(CAPELLA, GLOAS)
-@with_presets([MAINNET], reason="too few validators with minimal config")
+@with_presets([GNOSIS], reason="too few validators with minimal config")
 @spec_state_test
 def test_success_all_fully_withdrawable_in_one_sweep(spec, state):
     assert len(state.validators) <= spec.MAX_VALIDATORS_PER_WITHDRAWALS_SWEEP
@@ -138,7 +137,7 @@ def test_success_all_fully_withdrawable_in_one_sweep(spec, state):
 
 
 @with_all_phases_from_to(CAPELLA, GLOAS)
-@with_presets([MINIMAL], reason="too many validators with mainnet config")
+@with_presets([GNOSIS], reason="too many validators with mainnet config")
 @spec_state_test
 def test_success_all_fully_withdrawable(spec, state):
     assert len(state.validators) > spec.MAX_VALIDATORS_PER_WITHDRAWALS_SWEEP
@@ -161,7 +160,7 @@ def test_success_all_fully_withdrawable(spec, state):
 
 
 @with_all_phases_from_to(CAPELLA, GLOAS)
-@with_presets([MAINNET], reason="too few validators with minimal config")
+@with_presets([GNOSIS], reason="too few validators with minimal config")
 @spec_state_test
 def test_success_all_partially_withdrawable_in_one_sweep(spec, state):
     assert len(state.validators) <= spec.MAX_VALIDATORS_PER_WITHDRAWALS_SWEEP
@@ -184,7 +183,7 @@ def test_success_all_partially_withdrawable_in_one_sweep(spec, state):
 
 
 @with_all_phases_from_to(CAPELLA, GLOAS)
-@with_presets([MINIMAL], reason="too many validators with mainnet config")
+@with_presets([GNOSIS], reason="too many validators with mainnet config")
 @spec_state_test
 def test_success_all_partially_withdrawable(spec, state):
     assert len(state.validators) > spec.MAX_VALIDATORS_PER_WITHDRAWALS_SWEEP
@@ -864,7 +863,7 @@ def test_success_max_partial_withdrawable(spec, state):
 
 
 @with_capella_and_later
-@with_presets([MINIMAL], reason="not enough validators with mainnet config")
+@with_presets([GNOSIS], reason="not enough validators with mainnet config")
 @spec_state_test
 def test_success_max_plus_one_withdrawable(spec, state):
     # Sanity check that this test works for this state

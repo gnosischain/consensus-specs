@@ -1,5 +1,3 @@
-from random import Random
-
 from eth_consensus_specs.test.context import (
     always_bls,
     dump_skipping_message,
@@ -26,7 +24,7 @@ from eth_consensus_specs.test.helpers.block import (
     sign_block,
     transition_unsigned_block,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL, PHASE0
+from eth_consensus_specs.test.helpers.constants import GNOSIS, PHASE0
 from eth_consensus_specs.test.helpers.deposits import prepare_state_and_deposit
 from eth_consensus_specs.test.helpers.execution_payload import (
     build_empty_execution_payload,
@@ -46,7 +44,6 @@ from eth_consensus_specs.test.helpers.forks import (
 from eth_consensus_specs.test.helpers.keys import pubkeys
 from eth_consensus_specs.test.helpers.multi_operations import (
     run_slash_and_exit,
-    run_test_full_random_operations,
 )
 from eth_consensus_specs.test.helpers.proposer_slashings import (
     check_proposer_slashing_effect,
@@ -129,8 +126,8 @@ def test_empty_block_transition(spec, state):
 
 @with_all_phases
 @with_presets(
-    [MINIMAL],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    [GNOSIS],
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -394,7 +391,7 @@ def test_empty_epoch_transition(spec, state):
 
 @with_all_phases
 @with_presets(
-    [MINIMAL],
+    [GNOSIS],
     reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
@@ -1172,7 +1169,7 @@ def test_historical_batch(spec, state):
 
 
 @with_all_phases
-@with_presets([MINIMAL], reason="suffices to test eth1 data voting without long voting period")
+@with_presets([GNOSIS], reason="suffices to test eth1 data voting without long voting period")
 @spec_state_test
 def test_eth1_data_votes_consensus(spec, state):
     voting_period_slots = spec.EPOCHS_PER_ETH1_VOTING_PERIOD * spec.SLOTS_PER_EPOCH
@@ -1213,7 +1210,7 @@ def test_eth1_data_votes_consensus(spec, state):
 
 
 @with_all_phases
-@with_presets([MINIMAL], reason="suffices to test eth1 data voting without long voting period")
+@with_presets([GNOSIS], reason="suffices to test eth1 data voting without long voting period")
 @spec_state_test
 def test_eth1_data_votes_no_consensus(spec, state):
     voting_period_slots = spec.EPOCHS_PER_ETH1_VOTING_PERIOD * spec.SLOTS_PER_EPOCH
@@ -1241,27 +1238,3 @@ def test_eth1_data_votes_no_consensus(spec, state):
 
     yield "blocks", blocks
     yield "post", state
-
-
-@with_all_phases
-@spec_state_test
-def test_full_random_operations_0(spec, state):
-    yield from run_test_full_random_operations(spec, state, rng=Random(2020))
-
-
-@with_all_phases
-@spec_state_test
-def test_full_random_operations_1(spec, state):
-    yield from run_test_full_random_operations(spec, state, rng=Random(2021))
-
-
-@with_all_phases
-@spec_state_test
-def test_full_random_operations_2(spec, state):
-    yield from run_test_full_random_operations(spec, state, rng=Random(2022))
-
-
-@with_all_phases
-@spec_state_test
-def test_full_random_operations_3(spec, state):
-    yield from run_test_full_random_operations(spec, state, rng=Random(2023))

@@ -5,7 +5,7 @@ from eth_consensus_specs.test.context import (
     with_phases,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.deposits import (
     prepare_full_genesis_deposits,
     prepare_random_genesis_deposits,
@@ -33,7 +33,7 @@ def eth1_init_data(eth1_block_hash, eth1_timestamp):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_initialize_beacon_state_from_eth1(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)
@@ -69,7 +69,7 @@ def test_initialize_beacon_state_from_eth1(spec):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_initialize_beacon_state_some_small_balances(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)
@@ -123,7 +123,7 @@ def test_initialize_beacon_state_some_small_balances(spec):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_initialize_beacon_state_one_topup_activation(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)
@@ -176,7 +176,7 @@ def test_initialize_beacon_state_one_topup_activation(spec):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_initialize_beacon_state_random_invalid_genesis(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)
@@ -203,7 +203,7 @@ def test_initialize_beacon_state_random_invalid_genesis(spec):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_initialize_beacon_state_random_valid_genesis(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)

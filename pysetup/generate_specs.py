@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Standalone script to generate Ethereum consensus specs from markdown files.
+Standalone script to generate Gnosis consensus specs from markdown files.
 
 This script parses markdown specification files and generates Python modules
 for each fork (phase0, altair, bellatrix, capella, deneb, electra, etc.)
-with different presets (minimal, mainnet).
+with the gnosis preset.
 
 The generated Python modules are written to the output directory and can be
 imported as part of the eth_consensus_specs package.
@@ -104,7 +104,7 @@ def build_spec(
 
     Args:
         fork: The fork name (e.g., 'phase0', 'altair', 'bellatrix')
-        preset_name: The preset name (e.g., 'minimal', 'mainnet')
+        preset_name: The preset name (e.g., 'gnosis')
         source_files: List of markdown spec files to parse
         preset_files: List of preset YAML files to load
         config_file: Path to config YAML file
@@ -140,8 +140,7 @@ def parse_build_targets(targets_str: str) -> list[BuildTarget]:
     Parse build target strings in format: name:preset_dir:config_file
 
     Example:
-        minimal:presets/minimal:configs/minimal.yaml
-        mainnet:presets/mainnet:configs/mainnet.yaml
+        gnosis:presets/gnosis:configs/gnosis.yaml
     """
     build_targets = []
     for target in targets_str.strip().split():
@@ -222,7 +221,7 @@ def generate_fork_specs(
         print(f"  Build targets: {[t.name for t in build_targets]}")
         print(f"  Output directory: {out_dir}")
 
-    # Generate spec for each build target (minimal, mainnet, etc.)
+    # Generate spec for each build target (e.g., gnosis)
     for target in build_targets:
         if verbose:
             print(f"  Building target: {target.name}")
@@ -241,9 +240,9 @@ def generate_fork_specs(
         if verbose:
             print(f"    Wrote: {output_file} ({len(spec_str):,} bytes)")
 
-    # Create __init__.py that imports mainnet as default
+    # Create __init__.py that imports gnosis as default
     init_file = out_dir / "__init__.py"
-    init_file.write_text("from . import mainnet as spec  # noqa:F401\n")
+    init_file.write_text("from . import gnosis as spec  # noqa:F401\n")
 
     if verbose:
         print(f"  Wrote: {init_file}")
@@ -267,7 +266,7 @@ Examples:
 
   # Use custom build targets
   python pysetup/generate_specs.py --fork phase0 \\
-      --build-targets "minimal:presets/minimal:configs/minimal.yaml"
+      --build-targets "gnosis:presets/gnosis:configs/gnosis.yaml"
         """,
     )
 
@@ -294,7 +293,7 @@ Examples:
     parser.add_argument(
         "--build-targets",
         type=str,
-        default="minimal:presets/minimal:configs/minimal.yaml mainnet:presets/mainnet:configs/mainnet.yaml",
+        default="gnosis:presets/gnosis:configs/gnosis.yaml",
         help="Space-separated build targets in format 'name:preset_dir:config_file'",
     )
 

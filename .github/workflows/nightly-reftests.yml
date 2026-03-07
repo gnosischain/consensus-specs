@@ -2,14 +2,14 @@ name: Nightly Reference Tests
 
 defaults:
   run:
-    shell: zsh -e {0}
+    shell: bash
 
 on:
   workflow_dispatch:
     inputs:
       repo:
         description: The repository to use (e.g. user/consensus-specs)
-        default: ethereum/consensus-specs
+        default: gnosischain/consensus-specs
         type: string
         required: true
       ref:
@@ -23,7 +23,7 @@ on:
 jobs:
   generate-tests:
     timeout-minutes: 720 # 12 hours
-    runs-on: [self-hosted-ghr-custom, size-xl-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -51,23 +51,17 @@ jobs:
         run: |
           cd consensus-spec-tests
           tar -czvf general.tar.gz tests/general
-          tar -czvf minimal.tar.gz tests/minimal
-          tar -czvf mainnet.tar.gz tests/mainnet
+          tar -czvf gnosis.tar.gz tests/gnosis
       - name: Upload general.tar.gz
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: General Test Configuration
           path: consensus-spec-tests/general.tar.gz
-      - name: Upload minimal.tar.gz
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - name: Upload gnosis.tar.gz
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: Minimal Test Configuration
-          path: consensus-spec-tests/minimal.tar.gz
-      - name: Upload mainnet.tar.gz
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: Mainnet Test Configuration
-          path: consensus-spec-tests/mainnet.tar.gz
+          name: Gnosis Test Configuration
+          path: consensus-spec-tests/gnosis.tar.gz
       - name: Upload consensustestgen
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:

@@ -10,10 +10,8 @@ validate the `PRESET_BASE` variable in the config matches the running build.
 
 Standard presets:
 
-- [`mainnet/`](./mainnet): Used in mainnet, mainnet-like testnets (e.g. Hoodi),
+- [`gnosis/`](./gnosis): Used in mainnet, mainnet-like testnets (e.g. Chiado),
   and spec-testing
-- [`minimal/`](./minimal): Used in low-resource local dev testnets, and
-  spec-testing
 
 Client implementers may opt to support additional presets, e.g. for extra large
 beacon states for benchmarking. See [`/configs/`](../configs) for run-time

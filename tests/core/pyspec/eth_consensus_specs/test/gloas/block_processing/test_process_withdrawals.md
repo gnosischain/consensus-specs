@@ -72,10 +72,10 @@ ______________________________________________________________________
 
 | Constant                                     | Value                 | Description                           |
 | -------------------------------------------- | --------------------- | ------------------------------------- |
-| `MAX_WITHDRAWALS_PER_PAYLOAD`                | 16                    | Max withdrawals per execution payload |
-| `MAX_VALIDATORS_PER_WITHDRAWALS_SWEEP`       | 16,384                | Max validators checked per sweep      |
+| `MAX_WITHDRAWALS_PER_PAYLOAD`                | 8                     | Max withdrawals per execution payload |
+| `MAX_VALIDATORS_PER_WITHDRAWALS_SWEEP`       | 8,192                 | Max validators checked per sweep      |
 | `MAX_BUILDERS_PER_WITHDRAWALS_SWEEP`         | 16,384                | Max builders checked per sweep        |
-| `MAX_PENDING_PARTIALS_PER_WITHDRAWALS_SWEEP` | 8                     | Max partial withdrawals processed     |
+| `MAX_PENDING_PARTIALS_PER_WITHDRAWALS_SWEEP` | 6                     | Max partial withdrawals processed     |
 | `VALIDATOR_REGISTRY_LIMIT`                   | 2^40                  | Max validators in registry            |
 | `BUILDER_REGISTRY_LIMIT`                     | 2^40                  | Max builders in registry              |
 | `BUILDER_PENDING_WITHDRAWALS_LIMIT`          | 2^20 (1,048,576)      | Max pending builder withdrawals       |

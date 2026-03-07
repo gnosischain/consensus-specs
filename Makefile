@@ -9,13 +9,7 @@ ALL_EXECUTABLE_SPEC_NAMES = \
 	capella   \
 	deneb     \
 	electra   \
-	fulu      \
-	gloas     \
-	heze      \
-	eip6800   \
-	eip7441   \
-	eip7928   \
-	eip8025
+	fulu
 
 # A list of fake targets.
 .PHONY: \
@@ -65,12 +59,12 @@ help-verbose:
 	@echo "$(BOLD)make test$(NORM)"
 	@echo ""
 	@echo "  Runs pyspec tests with various configuration options. Tests run in parallel"
-	@echo "  by default using pytest with the minimal preset and fastest BLS library."
+	@echo "  by default using pytest with the gnosis preset and fastest BLS library."
 	@echo ""
 	@echo "  Parameters:"
 	@echo "    k=<test>          Run specific test by name"
 	@echo "    fork=<fork>       Test specific fork (phase0, altair, bellatrix, capella, etc.)"
-	@echo "    preset=<preset>   Use specific preset (mainnet or minimal; default: minimal)"
+	@echo "    preset=<preset>   Use specific preset (gnosis; default: gnosis)"
 	@echo "    bls=<type>        BLS library type (py_ecc, milagro, arkworks, fastest; default: fastest)"
 	@echo "    kzg=<type>        KZG library type (spec, ckzg; default: ckzg)"
 	@echo "    component=<value> Test component: (all, pyspec, fw; default: all)"
@@ -80,8 +74,8 @@ help-verbose:
 	@echo "    make test"
 	@echo "    make test k=test_verify_kzg_proof"
 	@echo "    make test fork=deneb"
-	@echo "    make test preset=mainnet"
-	@echo "    make test preset=mainnet fork=deneb k=test_verify_kzg_proof"
+	@echo "    make test preset=gnosis"
+	@echo "    make test preset=gnosis fork=deneb k=test_verify_kzg_proof"
 	@echo "    make test bls=arkworks"
 	@echo "    make test component=fw"
 	@echo ""
@@ -137,9 +131,9 @@ help-verbose:
 	@echo "    make reftests runner=bls"
 	@echo "    make reftests runner=operations k=invalid_committee_index"
 	@echo "    make reftests runner=operations fork=fulu"
-	@echo "    make reftests runner=operations preset=mainnet"
+	@echo "    make reftests runner=operations preset=gnosis"
 	@echo "    make reftests runner=operations k=invalid_committee_index,invalid_too_many_committee_bits"
-	@echo "    make reftests runner=operations preset=mainnet fork=fulu k=invalid_committee_index"
+	@echo "    make reftests runner=operations preset=gnosis fork=fulu k=invalid_committee_index"
 	@echo "    make reftests runner=bls threads=1 verbose=true"
 	@echo ""
 	@echo "$(BOLD)make comptests$(NORM)"
@@ -157,7 +151,7 @@ help-verbose:
 	@echo "  Examples:"
 	@echo "    make comptests"
 	@echo "    make comptests fc_gen_config=standard"
-	@echo "    make comptests fc_gen_config=standard fork=deneb preset=mainnet threads=8"
+	@echo "    make comptests fc_gen_config=standard fork=deneb preset=gnosis threads=8"
 	@echo ""
 	@echo "$(BOLD)DOCUMENTATION$(NORM)"
 	@echo "$(BOLD)--------------------------------------------------------------------------------$(NORM)"
@@ -259,7 +253,7 @@ test: _pyspec
 # Coverage
 ###############################################################################
 
-TEST_PRESET_TYPE ?= minimal
+TEST_PRESET_TYPE ?= gnosis
 COV_HTML_OUT=$(PYSPEC_DIR)/.htmlcov
 COV_INDEX_FILE=$(COV_HTML_OUT)/index.html
 COVERAGE_SCOPE := $(foreach S,$(ALL_EXECUTABLE_SPEC_NAMES), --cov=eth_consensus_specs.$S.$(TEST_PRESET_TYPE))
@@ -314,7 +308,7 @@ serve_docs: _pyspec _copy_docs
 
 LINT_DIFF_BEFORE := .lint_diff_before
 LINT_DIFF_AFTER := .lint_diff_after
-MARKDOWN_FILES := $(shell find $(CURDIR) -name '*.md')
+MARKDOWN_FILES := $(shell find $(CURDIR) -name '*.md' -not -path '$(CURDIR)/.*')
 MYPY_PACKAGE_BASE := $(subst /,.,$(PYSPEC_DIR:$(CURDIR)/%=%))
 MYPY_SCOPE := $(foreach S,$(ALL_EXECUTABLE_SPEC_NAMES), -p $(MYPY_PACKAGE_BASE).eth_consensus_specs.$S)
 

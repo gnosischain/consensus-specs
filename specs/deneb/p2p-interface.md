@@ -56,11 +56,11 @@ specifications of previous upgrades, and assumes them as pre-requisite.
 
 *[New in Deneb:EIP4844]*
 
-| Name                                    | Value                    | Description                                                        |
-| --------------------------------------- | ------------------------ | ------------------------------------------------------------------ |
-| `MAX_REQUEST_BLOCKS_DENEB`              | `2**7` (= 128)           | Maximum number of blocks in a single request                       |
-| `MIN_EPOCHS_FOR_BLOB_SIDECARS_REQUESTS` | `2**12` (= 4,096 epochs) | The minimum epoch range over which a node must serve blob sidecars |
-| `BLOB_SIDECAR_SUBNET_COUNT`             | `6`                      | The number of blob sidecar subnets used in the gossipsub protocol  |
+| Name                                    | Value                     | Description                                                        |
+| --------------------------------------- | ------------------------- | ------------------------------------------------------------------ |
+| `MAX_REQUEST_BLOCKS_DENEB`              | `2**7` (= 128)            | Maximum number of blocks in a single request                       |
+| `MIN_EPOCHS_FOR_BLOB_SIDECARS_REQUESTS` | `2**14` (= 16,384 epochs) | The minimum epoch range over which a node must serve blob sidecars |
+| `BLOB_SIDECAR_SUBNET_COUNT`             | `6`                       | The number of blob sidecar subnets used in the gossipsub protocol  |
 
 ### Containers
 
@@ -495,7 +495,7 @@ The response MUST consist of zero or more `response_chunk`. Each _successful_
 `response_chunk` MUST contain a single `BlobSidecar` payload.
 
 Clients MUST support requesting sidecars since `minimum_request_epoch`, where
-`minimum_request_epoch = max(finalized_epoch, current_epoch - MIN_EPOCHS_FOR_BLOB_SIDECARS_REQUESTS, DENEB_FORK_EPOCH)`.
+`minimum_request_epoch = max(current_epoch - MIN_EPOCHS_FOR_BLOB_SIDECARS_REQUESTS, DENEB_FORK_EPOCH)`.
 If any root in the request content references a block earlier than
 `minimum_request_epoch`, peers MAY respond with error code
 `3: ResourceUnavailable` or not include the blob sidecar in the response.

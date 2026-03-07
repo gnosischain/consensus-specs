@@ -11,7 +11,7 @@ from eth_consensus_specs.test.context import (
 from eth_consensus_specs.test.helpers.constants import (
     ELECTRA,
     FULU,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fulu.fork import (
     FULU_FORK_TEST_META_TAGS,
@@ -80,8 +80,8 @@ def test_fork_random_misc_balances(spec, phases, state):
 
 @with_phases(phases=[ELECTRA], other_phases=[FULU])
 @with_presets(
-    [MINIMAL],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    [GNOSIS],
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @with_custom_state(
     balances_fn=large_validator_set, threshold_fn=lambda spec: spec.config.EJECTION_BALANCE

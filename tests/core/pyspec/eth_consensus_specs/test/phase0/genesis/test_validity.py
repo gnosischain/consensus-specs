@@ -5,7 +5,7 @@ from eth_consensus_specs.test.context import (
     with_phases,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.deposits import (
     prepare_full_genesis_deposits,
 )
@@ -47,7 +47,7 @@ def run_is_valid_genesis_state(spec, state, valid=True):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_full_genesis_deposits(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)
@@ -60,7 +60,7 @@ def test_full_genesis_deposits(spec):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_invalid_invalid_timestamp(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)
@@ -74,7 +74,7 @@ def test_invalid_invalid_timestamp(spec):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_extra_balance(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)
@@ -88,7 +88,7 @@ def test_extra_balance(spec):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_one_more_validator(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)
@@ -111,7 +111,7 @@ def test_one_more_validator(spec):
 @with_phases([PHASE0])
 @spec_test
 @single_phase
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_invalid_not_enough_validator_count(spec):
     if is_post_altair(spec):
         yield "description", "meta", get_post_altair_description(spec)

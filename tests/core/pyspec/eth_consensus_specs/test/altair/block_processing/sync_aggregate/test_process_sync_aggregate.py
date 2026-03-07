@@ -15,8 +15,7 @@ from eth_consensus_specs.test.helpers.block import (
     build_empty_block_for_next_slot,
 )
 from eth_consensus_specs.test.helpers.constants import (
-    MAINNET,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.state import (
     next_epoch_via_block,
@@ -151,7 +150,7 @@ def is_duplicate_sync_committee(committee_indices):
 
 
 @with_altair_and_later
-@with_presets([MINIMAL], reason="to create nonduplicate committee")
+@with_presets([GNOSIS], reason="to create nonduplicate committee")
 @spec_test
 @with_custom_state(balances_fn=default_balances_electra, threshold_fn=default_activation_threshold)
 @single_phase
@@ -168,7 +167,7 @@ def test_sync_committee_rewards_nonduplicate_committee(spec, state):
 
 
 @with_altair_and_later
-@with_presets([MAINNET], reason="to create duplicate committee")
+@with_presets([GNOSIS], reason="to create duplicate committee")
 @spec_state_test
 def test_sync_committee_rewards_duplicate_committee_no_participation(spec, state):
     committee_indices = compute_committee_indices(state)
@@ -183,7 +182,7 @@ def test_sync_committee_rewards_duplicate_committee_no_participation(spec, state
 
 
 @with_altair_and_later
-@with_presets([MAINNET], reason="to create duplicate committee")
+@with_presets([GNOSIS], reason="to create duplicate committee")
 @spec_state_test
 def test_sync_committee_rewards_duplicate_committee_half_participation(spec, state):
     committee_indices = compute_committee_indices(state)
@@ -199,7 +198,7 @@ def test_sync_committee_rewards_duplicate_committee_half_participation(spec, sta
 
 
 @with_altair_and_later
-@with_presets([MAINNET], reason="to create duplicate committee")
+@with_presets([GNOSIS], reason="to create duplicate committee")
 @spec_state_test
 def test_sync_committee_rewards_duplicate_committee_full_participation(spec, state):
     committee_indices = compute_committee_indices(state)
@@ -256,7 +255,7 @@ def _run_sync_committee_selected_twice(
 
 
 @with_altair_and_later
-@with_presets([MAINNET], reason="to create duplicate committee")
+@with_presets([GNOSIS], reason="to create duplicate committee")
 @spec_state_test
 def test_sync_committee_rewards_duplicate_committee_zero_balance_only_participate_first_one(
     spec, state
@@ -274,7 +273,7 @@ def test_sync_committee_rewards_duplicate_committee_zero_balance_only_participat
 
 
 @with_altair_and_later
-@with_presets([MAINNET], reason="to create duplicate committee")
+@with_presets([GNOSIS], reason="to create duplicate committee")
 @spec_state_test
 def test_sync_committee_rewards_duplicate_committee_zero_balance_only_participate_second_one(
     spec, state
@@ -295,7 +294,7 @@ def test_sync_committee_rewards_duplicate_committee_zero_balance_only_participat
 
 
 @with_altair_and_later
-@with_presets([MAINNET], reason="to create duplicate committee")
+@with_presets([GNOSIS], reason="to create duplicate committee")
 @spec_state_test
 def test_sync_committee_rewards_duplicate_committee_max_effective_balance_only_participate_first_one(
     spec, state
@@ -312,7 +311,7 @@ def test_sync_committee_rewards_duplicate_committee_max_effective_balance_only_p
 
 
 @with_altair_and_later
-@with_presets([MAINNET], reason="to create duplicate committee")
+@with_presets([GNOSIS], reason="to create duplicate committee")
 @spec_state_test
 def test_sync_committee_rewards_duplicate_committee_max_effective_balance_only_participate_second_one(
     spec, state
@@ -388,7 +387,7 @@ def test_invalid_signature_past_block(spec, state):
 
 
 @with_altair_and_later
-@with_presets([MINIMAL], reason="to produce different committee sets")
+@with_presets([GNOSIS], reason="to produce different committee sets")
 @spec_state_test
 @always_bls
 def test_invalid_signature_previous_committee(spec, state):
@@ -431,7 +430,7 @@ def test_invalid_signature_previous_committee(spec, state):
 @with_altair_and_later
 @spec_state_test
 @always_bls
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_valid_signature_future_committee(spec, state):
     # NOTE: the `state` provided is at genesis and the process to select
     # sync committees currently returns the same committee for the first and second
@@ -477,11 +476,11 @@ def test_valid_signature_future_committee(spec, state):
 @with_altair_and_later
 @spec_state_test
 @always_bls
-@with_presets([MINIMAL], reason="prefer short search to find matching proposer")
+@with_presets([GNOSIS], reason="prefer short search to find matching proposer")
 def test_proposer_in_committee_without_participation(spec, state):
     committee_indices = compute_committee_indices(state, state.current_sync_committee)
 
-    # NOTE: seem to reliably be getting a matching proposer in the first epoch w/ ``MINIMAL`` preset.
+    # NOTE: seem to reliably be getting a matching proposer in the first epoch w/ ``GNOSIS`` preset.
     for _ in range(spec.SLOTS_PER_EPOCH):
         block = build_empty_block_for_next_slot(spec, state)
         proposer_index = block.proposer_index
@@ -523,12 +522,12 @@ def test_proposer_in_committee_without_participation(spec, state):
 @with_altair_and_later
 @spec_state_test
 @always_bls
-@with_presets([MINIMAL], reason="prefer short search to find matching proposer")
+@with_presets([GNOSIS], reason="prefer short search to find matching proposer")
 def test_proposer_in_committee_with_participation(spec, state):
     committee_indices = compute_committee_indices(state, state.current_sync_committee)
     participation = [True for _ in committee_indices]
 
-    # NOTE: seem to reliably be getting a matching proposer in the first epoch w/ ``MINIMAL`` preset.
+    # NOTE: seem to reliably be getting a matching proposer in the first epoch w/ ``GNOSIS`` preset.
     for _ in range(spec.SLOTS_PER_EPOCH):
         block = build_empty_block_for_next_slot(spec, state)
         proposer_index = block.proposer_index

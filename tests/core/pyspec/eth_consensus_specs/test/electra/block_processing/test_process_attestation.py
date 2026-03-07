@@ -12,7 +12,7 @@ from eth_consensus_specs.test.helpers.attestations import (
     run_attestation_processing,
     sign_attestation,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.state import (
     next_slots,
 )
@@ -88,7 +88,7 @@ def test_invalid_nonset_committee_bits(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL], "need multiple committees per slot")
+@with_presets([GNOSIS], "need multiple committees per slot")
 def test_invalid_nonset_multiple_committee_bits(spec, state):
     """
     EIP-7549 test
@@ -112,7 +112,7 @@ def test_invalid_nonset_multiple_committee_bits(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL], "need multiple committees per slot")
+@with_presets([GNOSIS], "need multiple committees per slot")
 @always_bls
 def test_multiple_committees(spec, state):
     """
@@ -136,7 +136,7 @@ def test_multiple_committees(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL], "need multiple committees per slot")
+@with_presets([GNOSIS], "need multiple committees per slot")
 @always_bls
 def test_one_committee_with_gap(spec, state):
     """
@@ -150,7 +150,7 @@ def test_one_committee_with_gap(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL], "need multiple committees per slot")
+@with_presets([GNOSIS], "need multiple committees per slot")
 def test_invalid_nonset_bits_for_one_committee(spec, state):
     """
     EIP-7549 test

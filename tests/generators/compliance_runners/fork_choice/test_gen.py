@@ -3,7 +3,7 @@ from os import path
 from eth_consensus_specs.gen_helpers.gen_base import gen_runner
 from eth_consensus_specs.gen_helpers.gen_base.args import create_arg_parser
 from eth_consensus_specs.test import context
-from eth_consensus_specs.test.helpers.constants import ELECTRA, MINIMAL
+from eth_consensus_specs.test.helpers.constants import ELECTRA, GNOSIS
 
 context.is_pytest = False
 context.is_generator = True
@@ -11,7 +11,7 @@ context.is_generator = True
 from .instantiators.test_case import enumerate_test_cases, prepare_bls  # noqa: E402
 
 default_forks = [ELECTRA]
-default_presets = [MINIMAL]
+default_presets = [GNOSIS]
 
 
 def main():

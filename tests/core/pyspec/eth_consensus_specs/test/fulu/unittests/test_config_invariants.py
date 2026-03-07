@@ -5,7 +5,7 @@ from eth_consensus_specs.test.context import (
     with_presets,
 )
 from eth_consensus_specs.test.helpers.constants import (
-    MAINNET,
+    GNOSIS,
 )
 
 
@@ -19,6 +19,9 @@ def test_invariants(spec):
     assert spec.config.CUSTODY_REQUIREMENT <= spec.config.DATA_COLUMN_SIDECAR_SUBNET_COUNT
     assert spec.config.DATA_COLUMN_SIDECAR_SUBNET_COUNT <= spec.NUMBER_OF_COLUMNS
     assert spec.NUMBER_OF_COLUMNS % spec.config.DATA_COLUMN_SIDECAR_SUBNET_COUNT == 0
+    assert spec.config.MAX_REQUEST_DATA_COLUMN_SIDECARS == (
+        spec.config.MAX_REQUEST_BLOCKS_DENEB * spec.NUMBER_OF_COLUMNS
+    )
 
 
 @with_fulu_and_later
@@ -31,7 +34,7 @@ def test_polynomial_commitments_sampling(spec):
 @with_fulu_and_later
 @spec_test
 @single_phase
-@with_presets([MAINNET], reason="to have fork epoch number")
+@with_presets([GNOSIS], reason="to have fork epoch number")
 def test_blob_schedule(spec):
     for entry in spec.config.BLOB_SCHEDULE:
         # Check that all epochs are post-fulu

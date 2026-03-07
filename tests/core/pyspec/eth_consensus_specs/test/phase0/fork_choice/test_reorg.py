@@ -13,7 +13,7 @@ from eth_consensus_specs.test.helpers.block import (
     build_empty_block_for_next_slot,
 )
 from eth_consensus_specs.test.helpers.constants import (
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fork_choice import (
     add_attestations,
@@ -33,7 +33,7 @@ from eth_consensus_specs.test.helpers.state import (
     transition_to,
 )
 
-TESTING_PRESETS = [MINIMAL]
+TESTING_PRESETS = [GNOSIS]
 
 
 @with_altair_and_later

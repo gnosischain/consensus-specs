@@ -1,8 +1,8 @@
-name: Nightly Mainnet Tests
+name: Nightly Gnosis tests
 
 defaults:
   run:
-    shell: zsh -e {0}
+    shell: bash
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ on:
 jobs:
   tests:
     timeout-minutes: 720 # 12 hours
-    runs-on: [self-hosted-ghr-custom, size-s-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -31,10 +31,6 @@ jobs:
           - deneb
           - electra
           - fulu
-          - gloas
-          - heze
-          - eip7928
-          - eip8025
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -48,13 +44,13 @@ jobs:
           enable-cache: true
           version: ${{ vars.UV_VERSION }}
       - name: test-${{ matrix.fork }}
-        run: make test component=pyspec preset=mainnet fork=${{ matrix.fork }} kzg=spec
+        run: make test component=pyspec preset=gnosis fork=${{ matrix.fork }} kzg=spec
       - name: Prepare test results for upload
         if: always()
-        run: cp -r ./tests/core/pyspec/test-reports ./tests/core/pyspec/test-results-mainnet-${{ matrix.fork }}-${{ github.run_number }}
+        run: cp -r ./tests/core/pyspec/test-reports ./tests/core/pyspec/test-results-gnosis-${{ matrix.fork }}-${{ github.run_number }}
       - name: Upload ${{ matrix.fork }} test results
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         if: always()
         with:
-          name: test-results-mainnet-${{ matrix.fork }}-${{ github.run_number }}
-          path: ./tests/core/pyspec/test-results-mainnet-${{ matrix.fork }}-${{ github.run_number }}
+          name: test-results-gnosis-${{ matrix.fork }}-${{ github.run_number }}
+          path: ./tests/core/pyspec/test-results-gnosis-${{ matrix.fork }}-${{ github.run_number }}

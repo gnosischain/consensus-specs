@@ -25,7 +25,7 @@ def dummy_file(tmp_path):
 
 
 def test_constructor_initializes_fields(dummy_file, dummy_preset, dummy_config):
-    preset_name = "mainnet"
+    preset_name = "gnosis"
     m2s = MarkdownToSpec(
         file_name=Path(dummy_file),
         preset=dummy_preset,
@@ -41,7 +41,7 @@ def test_constructor_initializes_fields(dummy_file, dummy_preset, dummy_config):
 
 
 def test_run_returns_spec_object(dummy_file, dummy_preset, dummy_config):
-    preset_name = "mainnet"
+    preset_name = "gnosis"
     m2s = MarkdownToSpec(
         file_name=Path(dummy_file),
         preset=dummy_preset,
@@ -70,7 +70,7 @@ def test_run_includes_table_in_specobject(tmp_path, dummy_preset, dummy_config):
         file_name=Path(file),
         preset=dummy_preset,
         config=dummy_config,
-        preset_name="mainnet",
+        preset_name="gnosis",
     )
     spec_obj = m2s.run()
     # The constant should be present in the SpecObject's constant_vars
@@ -93,7 +93,7 @@ def test_run_includes_list_of_records_table(tmp_path, dummy_preset, dummy_config
 """
     file = tmp_path / "list_of_records.md"
     file.write_text(md_content)
-    # The config must have a 'BLOB_SCHEDULE' key with the expected structure for mainnet
+    # The config must have a 'BLOB_SCHEDULE' key with the expected structure for gnosis
     config = dummy_config.copy()
     config["BLOB_SCHEDULE"] = [
         {"EPOCH": "269568", "MAX_BLOBS_PER_BLOCK": "6"},
@@ -103,7 +103,7 @@ def test_run_includes_list_of_records_table(tmp_path, dummy_preset, dummy_config
         file_name=Path(file),
         preset=dummy_preset,
         config=config,
-        preset_name="mainnet",
+        preset_name="gnosis",
     )
     spec_obj = m2s.run()
     # The result should have 'BLOB_SCHEDULE' in config_vars
@@ -119,47 +119,6 @@ def test_run_includes_list_of_records_table(tmp_path, dummy_preset, dummy_config
     frozendict({
         "EPOCH": Epoch(364032),
         "MAX_BLOBS_PER_BLOCK": uint64(9),
-    }),
-)"""
-    )
-
-
-def test_run_includes_list_of_records_table_minimal(tmp_path, dummy_preset, dummy_config):
-    md_content = """
-<!-- list-of-records:blob_schedule -->
-
-| Epoch                       | Max Blobs Per Block | Description                      |
-| --------------------------- | ------------------- | -------------------------------- |
-| `Epoch(269568)` **Deneb**   | `uint64(6)`         | The limit is set to `6` blobs    |
-| `Epoch(364032)` **Electra** | `uint64(9)`         | The limit is raised to `9` blobs |
-"""
-    file = tmp_path / "list_of_records_minimal.md"
-    file.write_text(md_content)
-    config = dummy_config.copy()
-    # Use different values than the table for minimal preset
-    config["BLOB_SCHEDULE"] = [
-        {"EPOCH": "2", "MAX_BLOBS_PER_BLOCK": "3"},
-        {"EPOCH": "4", "MAX_BLOBS_PER_BLOCK": "5"},
-    ]
-    m2s = MarkdownToSpec(
-        file_name=Path(file),
-        preset=dummy_preset,
-        config=config,
-        preset_name="minimal",
-    )
-    spec_obj = m2s.run()
-    assert "BLOB_SCHEDULE" in spec_obj.config_vars
-    # The result should follow the config, not the table
-    assert (
-        spec_obj.config_vars["BLOB_SCHEDULE"].value
-        == """(
-    frozendict({
-        "EPOCH": Epoch(2),
-        "MAX_BLOBS_PER_BLOCK": uint64(3),
-    }),
-    frozendict({
-        "EPOCH": Epoch(4),
-        "MAX_BLOBS_PER_BLOCK": uint64(5),
     }),
 )"""
     )
@@ -183,7 +142,7 @@ def compute_epoch_at_slot(slot: Slot) -> Epoch:
         file_name=Path(file),
         preset=dummy_preset,
         config=dummy_config,
-        preset_name="mainnet",
+        preset_name="gnosis",
     )
     spec_obj = m2s.run()
     # The function should be present in the SpecObject's functions
@@ -209,7 +168,7 @@ class Checkpoint(Container):
         file_name=Path(file),
         preset=dummy_preset,
         config=dummy_config,
-        preset_name="mainnet",
+        preset_name="gnosis",
     )
     spec_obj = m2s.run()
     # The class should be present in the SpecObject's ssz_objects
@@ -242,7 +201,7 @@ class PayloadAttributes(object):
         file_name=Path(file),
         preset=dummy_preset,
         config=dummy_config,
-        preset_name="mainnet",
+        preset_name="gnosis",
     )
     spec_obj = m2s.run()
     # The dataclass should be present in the SpecObject's dataclasses
@@ -271,7 +230,7 @@ def test_run_skips_predefined_type_rows(tmp_path, dummy_preset, dummy_config):
         file_name=Path(file),
         preset=dummy_preset,
         config=dummy_config,
-        preset_name="mainnet",
+        preset_name="gnosis",
     )
     spec_obj = m2s.run()
     # These should not be in custom_types or constant_vars due to <!-- predefined-type -->
@@ -306,7 +265,7 @@ class PayloadAttributes(object):
         file_name=Path(file),
         preset=dummy_preset,
         config=dummy_config,
-        preset_name="mainnet",
+        preset_name="gnosis",
     )
     spec_obj = m2s.run()
     # The dataclass should NOT be present in the SpecObject's dataclasses
@@ -336,7 +295,7 @@ def test_finalized_spec_object_updates_custom_types(
         file_name=Path(file),
         preset=dummy_preset,
         config=dummy_config,
-        preset_name="mainnet",
+        preset_name="gnosis",
     )
 
     spec_obj = finalized_spec_object(m2s.run())

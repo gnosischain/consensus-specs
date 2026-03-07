@@ -20,15 +20,14 @@ from .helpers.constants import (
     BELLATRIX,
     CAPELLA,
     DENEB,
-    EIP7441,
     EIP7928,
     EIP8025,
     ELECTRA,
     FULU,
     GLOAS,
+    GNOSIS,
     HEZE,
     LIGHT_CLIENT_TESTING_FORKS,
-    MINIMAL,
     PHASE0,
     POST_FORK_OF,
 )
@@ -46,7 +45,7 @@ from .utils import (
 )
 
 # Without pytest CLI arg or pyspec-test-generator 'preset' argument, this will be the config to apply.
-DEFAULT_TEST_PRESET = MINIMAL
+DEFAULT_TEST_PRESET = GNOSIS
 
 # Without pytest CLI arg or pyspec-test-generator 'run-phase' argument, this will be the config to apply.
 DEFAULT_PYTEST_FORKS = ALL_PHASES
@@ -680,7 +679,6 @@ with_electra_and_later = with_all_phases_from(ELECTRA)
 with_fulu_and_later = with_all_phases_from(FULU, all_phases=ALLOWED_TEST_RUNNER_FORKS)
 with_gloas_and_later = with_all_phases_from(GLOAS, all_phases=ALLOWED_TEST_RUNNER_FORKS)
 with_heze_and_later = with_all_phases_from(HEZE, all_phases=ALLOWED_TEST_RUNNER_FORKS)
-with_eip7441_and_later = with_all_phases_from(EIP7441, all_phases=ALLOWED_TEST_RUNNER_FORKS)
 with_eip7928_and_later = with_all_phases_from(EIP7928, all_phases=ALLOWED_TEST_RUNNER_FORKS)
 with_eip8025_and_later = with_all_phases_from(EIP8025, all_phases=ALLOWED_TEST_RUNNER_FORKS)
 

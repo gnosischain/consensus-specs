@@ -7,7 +7,7 @@ from eth_consensus_specs.test.helpers.attestations import (
     next_slots_with_attestations,
     state_transition_with_full_block,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.light_client import (
     create_update,
 )
@@ -34,7 +34,7 @@ def create_test_update(
 
 @with_light_client
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_update_ranking(spec, state):
     # Set up blocks and states:
     # - `sig_finalized` / `sig_attested` --> Only signature in next sync committee period

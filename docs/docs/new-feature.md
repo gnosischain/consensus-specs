@@ -10,7 +10,7 @@
   - [5. Make it executable](#5-make-it-executable)
 - [B: Make it executable for pytest and test generator](#b-make-it-executable-for-pytest-and-test-generator)
   - [1. [Optional] Add `light-client/*` docs if you updated the content of `BeaconBlock`](#1-optional-add-light-client-docs-if-you-updated-the-content-of-beaconblock)
-  - [2. Add the mainnet and minimal presets and update the configs](#2-add-the-mainnet-and-minimal-presets-and-update-the-configs)
+  - [2. Add the gnosis preset and update the config](#2-add-the-gnosis-preset-and-update-the-config)
   - [3. Update `context.py`](#3-update-contextpy)
   - [4. Update `constants.py`](#4-update-constantspy)
   - [5. Update `genesis.py`:](#5-update-genesispy)
@@ -85,11 +85,10 @@ You can refer to the previous fork's `fork.md` file.
   [`pysetup/md_doc_paths.py`](https://github.com/ethereum/consensus-specs/blob/master/pysetup/md_doc_paths.py)'s
   `get_md_doc_paths` function.
 
-### 2. Add the mainnet and minimal presets and update the configs
+### 2. Add the gnosis preset and update the config
 
-- Add presets: `presets/mainnet/<new-feature-name>.yaml` and
-  `presets/minimal/<new-feature-name>.yaml`
-- Update configs: `configs/mainnet.yaml` and `configs/minimal.yaml`
+- Add preset: `presets/gnosis/<new-feature-name>.yaml`
+- Update config: `configs/gnosis.yaml`
 
 ### 3. Update [`context.py`](https://github.com/ethereum/consensus-specs/blob/master/tests/core/pyspec/eth_consensus_specs/test/context.py)
 

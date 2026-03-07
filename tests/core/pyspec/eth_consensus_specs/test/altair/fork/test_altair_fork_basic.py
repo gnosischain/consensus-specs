@@ -14,7 +14,7 @@ from eth_consensus_specs.test.helpers.altair.fork import (
 )
 from eth_consensus_specs.test.helpers.constants import (
     ALTAIR,
-    MINIMAL,
+    GNOSIS,
     PHASE0,
 )
 from eth_consensus_specs.test.helpers.state import (
@@ -80,8 +80,8 @@ def test_fork_random_misc_balances(spec, phases, state):
 
 @with_phases(phases=[PHASE0], other_phases=[ALTAIR])
 @with_presets(
-    [MINIMAL],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    [GNOSIS],
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @with_custom_state(
     balances_fn=large_validator_set, threshold_fn=lambda spec: spec.config.EJECTION_BALANCE

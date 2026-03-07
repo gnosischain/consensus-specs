@@ -9,7 +9,7 @@ from eth_consensus_specs.test.context import (
     with_electra_and_later,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.deposits import prepare_pending_deposit
 from eth_consensus_specs.test.helpers.epoch_processing import run_epoch_processing_with
 from eth_consensus_specs.test.helpers.state import (
@@ -523,7 +523,7 @@ def test_process_pending_deposits_withdrawable_validator_not_churned(spec, state
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,

@@ -5,7 +5,7 @@ from eth_consensus_specs.test.context import (
     with_presets,
 )
 from eth_consensus_specs.test.helpers.constants import (
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.light_client import (
     sample_blob_schedule,
@@ -32,7 +32,7 @@ from eth_consensus_specs.test.helpers.light_client_data_collection import (
     },
 )
 @spec_state_test_with_matching_config
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_light_client_data_collection(spec, state):
     # Start test
     test = yield from setup_lc_data_collection_test(spec, state)

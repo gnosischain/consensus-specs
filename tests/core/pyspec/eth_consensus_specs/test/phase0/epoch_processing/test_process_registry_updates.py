@@ -7,7 +7,7 @@ from eth_consensus_specs.test.context import (
     with_custom_state,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.deposits import mock_deposit
 from eth_consensus_specs.test.helpers.epoch_processing import run_epoch_processing_with
 from eth_consensus_specs.test.helpers.forks import is_post_electra
@@ -88,6 +88,7 @@ def test_activation_queue_no_activation_no_finality(spec, state):
 
 
 @with_all_phases
+@with_presets([GNOSIS])  # gnosis churn limits differ
 @spec_state_test
 def test_activation_queue_sorting(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
@@ -166,6 +167,7 @@ def run_test_activation_queue_efficiency(spec, state):
 
 
 @with_all_phases
+@with_presets([GNOSIS])  # gnosis churn limits differ
 @spec_state_test
 def test_activation_queue_efficiency_min(spec, state):
     assert spec.get_validator_churn_limit(state) == spec.config.MIN_PER_EPOCH_CHURN_LIMIT
@@ -174,8 +176,8 @@ def test_activation_queue_efficiency_min(spec, state):
 
 @with_all_phases
 @with_presets(
-    [MINIMAL],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    [GNOSIS],
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -257,8 +259,8 @@ def test_ejection_past_churn_limit_min(spec, state):
 
 @with_all_phases
 @with_presets(
-    [MINIMAL],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    [GNOSIS],
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -350,6 +352,7 @@ def test_activation_queue_activation_and_ejection__1(spec, state):
 
 
 @with_all_phases
+@with_presets([GNOSIS])  # gnosis churn limits differ
 @spec_state_test
 def test_activation_queue_activation_and_ejection__churn_limit(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
@@ -358,6 +361,7 @@ def test_activation_queue_activation_and_ejection__churn_limit(spec, state):
 
 
 @with_all_phases
+@with_presets([GNOSIS])  # gnosis churn limits differ
 @spec_state_test
 def test_activation_queue_activation_and_ejection__exceed_churn_limit(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
@@ -367,8 +371,8 @@ def test_activation_queue_activation_and_ejection__exceed_churn_limit(spec, stat
 
 @with_all_phases
 @with_presets(
-    [MINIMAL],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    [GNOSIS],
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -384,8 +388,8 @@ def test_activation_queue_activation_and_ejection__scaled_churn_limit(spec, stat
 
 @with_all_phases
 @with_presets(
-    [MINIMAL],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    [GNOSIS],
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(

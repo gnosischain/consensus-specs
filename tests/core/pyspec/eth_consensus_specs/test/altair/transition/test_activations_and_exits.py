@@ -8,7 +8,7 @@ from eth_consensus_specs.test.context import (
 )
 from eth_consensus_specs.test.helpers.constants import (
     ALL_PRE_POST_FORKS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fork_transition import (
     do_fork,
@@ -33,7 +33,7 @@ from eth_consensus_specs.test.helpers.random import (
     ]
 )
 @with_presets(
-    [MINIMAL],
+    [GNOSIS],
     reason="only test with enough validators such that at least one exited index is not in sync committee",
 )
 def test_transition_with_one_fourth_exiting_validators_exit_post_fork(

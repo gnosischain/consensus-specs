@@ -7,7 +7,7 @@ from eth_consensus_specs.test.context import (
     with_presets,
 )
 from eth_consensus_specs.test.helpers.bls_to_execution_changes import get_signed_address_change
-from eth_consensus_specs.test.helpers.constants import CAPELLA, MAINNET
+from eth_consensus_specs.test.helpers.constants import CAPELLA, GNOSIS
 from eth_consensus_specs.test.helpers.keys import pubkeys
 
 
@@ -255,7 +255,7 @@ def test_invalid_genesis_validators_root(spec, state):
 
 
 @with_phases([CAPELLA])
-@with_presets([MAINNET], reason="use mainnet fork version")
+@with_presets([GNOSIS], reason="use gnosis fork version")
 @spec_state_test
 @always_bls
 def test_valid_signature_from_staking_deposit_cli(spec, state):
@@ -268,7 +268,7 @@ def test_valid_signature_from_staking_deposit_cli(spec, state):
         "8cf4219884b326a04f6664b680cd9a99ad70b5280745af1147477aa9f8b4a2b2b38b8688c6a74a06f275ad4e14c5c0c70e2ed37a15ece5bf7c0724a376ad4c03c79e14dd9f633a3d54abc1ce4e73bec3524a789ab9a69d4d06686a8a67c9e4dc"
     )  # noqa: E501
 
-    # Use mainnet `genesis_validators_root`
+    # Use gnosis `genesis_validators_root`
     state.genesis_validators_root = bytes.fromhex(
         "4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95"
     )

@@ -6,7 +6,7 @@ on:
 jobs:
   release:
     timeout-minutes: 1440 # 24 hours
-    runs-on: [self-hosted-ghr-custom, size-xl-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: read
@@ -36,7 +36,7 @@ jobs:
       # Create draft release. We use release-drafter to
       # organize PRs into the appropriate section based on PR labels
       - name: Create draft release
-        uses: release-drafter/release-drafter@6db134d15f3909ccc9eefd369f02bd1e9cffdf97 # v6.2.0
+        uses: release-drafter/release-drafter@00ce30b0ce8a4d67bccfca59421cdf6c55dd0784 # v6.3.0
         with:
           name: ${{ steps.tag.outputs.name }}
           tag: ${{ steps.tag.outputs.name }}
@@ -65,17 +65,11 @@ jobs:
           cd consensus-specs
           make test component=fw
 
-      # Ensure minimal tests pass
-      - name: Run tests for minimal
+      # Ensure gnosis tests pass
+      - name: Run tests for gnosis
         run: |
           cd consensus-specs
-          make test component=pyspec preset=minimal
-
-      # Ensure mainnet tests pass
-      - name: Run tests for mainnet
-        run: |
-          cd consensus-specs
-          make test component=pyspec preset=mainnet
+          make test component=pyspec preset=gnosis
 
       # Write reference tests to the spec tests repo
       - name: Generate reference tests
@@ -88,8 +82,7 @@ jobs:
         run: |
           cd consensus-spec-tests
           tar -czvf general.tar.gz tests/general
-          tar -czvf minimal.tar.gz tests/minimal
-          tar -czvf mainnet.tar.gz tests/mainnet
+          tar -czvf gnosis.tar.gz tests/gnosis
 
       # Upload tarballs and publish the release
       - name: Upload reference test tarballs and publish
@@ -97,8 +90,7 @@ jobs:
           tag="${{ steps.tag.outputs.name }}"
           gh release upload "$tag" \
             consensus-spec-tests/general.tar.gz \
-            consensus-spec-tests/minimal.tar.gz \
-            consensus-spec-tests/mainnet.tar.gz
+            consensus-spec-tests/gnosis.tar.gz
           gh release edit "$tag" --draft=false
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
