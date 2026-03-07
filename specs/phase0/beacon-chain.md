@@ -261,7 +261,7 @@ directory.
 | Name                               | Value                     |  Unit  |
 | ---------------------------------- | ------------------------- | :----: |
 | `MIN_ATTESTATION_INCLUSION_DELAY`  | `uint64(2**0)` (= 1)      | slots  |
-| `SLOTS_PER_EPOCH`                  | `uint64(2**5)` (= 32)     | slots  |
+| `SLOTS_PER_EPOCH`                  | `uint64(2**4)` (= 16)     | slots  |
 | `MIN_SEED_LOOKAHEAD`               | `uint64(2**0)` (= 1)      | epochs |
 | `MAX_SEED_LOOKAHEAD`               | `uint64(2**2)` (= 4)      | epochs |
 | `MIN_EPOCHS_TO_INACTIVITY_PENALTY` | `uint64(2**2)` (= 4)      | epochs |
@@ -281,7 +281,7 @@ directory.
 
 | Name                               | Value                          |
 | ---------------------------------- | ------------------------------ |
-| `BASE_REWARD_FACTOR`               | `uint64(2**6)` (= 64)          |
+| `BASE_REWARD_FACTOR`               | `uint64(25)`                   |
 | `WHISTLEBLOWER_REWARD_QUOTIENT`    | `uint64(2**9)` (= 512)         |
 | `PROPOSER_REWARD_QUOTIENT`         | `uint64(2**3)` (= 8)           |
 | `INACTIVITY_PENALTY_QUOTIENT`      | `uint64(2**26)` (= 67,108,864) |
@@ -345,7 +345,7 @@ and other types of chain instances may use a different configuration.
 | --------------------------- | --------------------------------------- |
 | `EJECTION_BALANCE`          | `Gwei(2**4 * 10**9)` (= 16,000,000,000) |
 | `MIN_PER_EPOCH_CHURN_LIMIT` | `uint64(2**2)` (= 4)                    |
-| `CHURN_LIMIT_QUOTIENT`      | `uint64(2**16)` (= 65,536)              |
+| `CHURN_LIMIT_QUOTIENT`      | `uint64(2**12)` (= 4,096)               |
 
 ## Containers
 
