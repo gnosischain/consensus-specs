@@ -8,7 +8,6 @@ from .typing import (
     SpecForkName,
 )
 
-# NOTE: Gnosis only
 ALL_EXECUTABLE_SPEC_NAMES = ALL_PHASES
 
 # import the spec for each fork and preset
