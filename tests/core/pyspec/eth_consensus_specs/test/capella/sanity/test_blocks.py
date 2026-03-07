@@ -17,7 +17,7 @@ from eth_consensus_specs.test.helpers.bls_to_execution_changes import get_signed
 from eth_consensus_specs.test.helpers.constants import (
     CAPELLA,
     GLOAS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.deposits import (
     prepare_state_and_deposit,
@@ -599,7 +599,7 @@ def _run_activate_and_partial_withdrawal(spec, state, initial_balance):
 
 
 @with_capella_and_later
-@with_presets([MINIMAL], reason="too many validators with mainnet config")
+@with_presets([GNOSIS], reason="too many validators with mainnet config")
 @spec_state_test
 def test_activate_and_partial_withdrawal_max_effective_balance(spec, state):
     yield from _run_activate_and_partial_withdrawal(
@@ -608,7 +608,7 @@ def test_activate_and_partial_withdrawal_max_effective_balance(spec, state):
 
 
 @with_capella_and_later
-@with_presets([MINIMAL], reason="too many validators with mainnet config")
+@with_presets([GNOSIS], reason="too many validators with mainnet config")
 @spec_state_test
 def test_activate_and_partial_withdrawal_overdeposit(spec, state):
     yield from _run_activate_and_partial_withdrawal(

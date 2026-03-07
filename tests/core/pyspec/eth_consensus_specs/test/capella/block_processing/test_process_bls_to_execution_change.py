@@ -7,7 +7,7 @@ from eth_consensus_specs.test.context import (
     with_presets,
 )
 from eth_consensus_specs.test.helpers.bls_to_execution_changes import get_signed_address_change
-from eth_consensus_specs.test.helpers.constants import CAPELLA, MAINNET
+from eth_consensus_specs.test.helpers.constants import CAPELLA, GNOSIS
 from eth_consensus_specs.test.helpers.keys import pubkeys
 
 
@@ -255,7 +255,7 @@ def test_invalid_genesis_validators_root(spec, state):
 
 
 @with_phases([CAPELLA])
-@with_presets([MAINNET], reason="use mainnet fork version")
+@with_presets([GNOSIS], reason="use mainnet fork version")
 @spec_state_test
 @always_bls
 def test_valid_signature_from_staking_deposit_cli(spec, state):

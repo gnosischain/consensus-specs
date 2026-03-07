@@ -9,7 +9,7 @@ from eth_consensus_specs.test.helpers.block import (
 from eth_consensus_specs.test.helpers.constants import (
     ELECTRA,
     GLOAS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.deposits import (
     prepare_deposit_request,
@@ -31,7 +31,7 @@ from eth_consensus_specs.test.helpers.state import (
 # TODO(jtraglia): In gloas, how do we set execution requests in the payload envelope?
 @with_all_phases_from_to(ELECTRA, GLOAS)
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_new_validator_deposit_with_multiple_epoch_transitions(spec, state):
     # signify the eth1 bridge deprecation
     state.deposit_requests_start_index = state.eth1_deposit_index

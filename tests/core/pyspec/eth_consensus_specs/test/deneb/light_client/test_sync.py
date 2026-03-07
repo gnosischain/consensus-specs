@@ -9,7 +9,7 @@ from eth_consensus_specs.test.context import (
 from eth_consensus_specs.test.helpers.constants import (
     DENEB,
     ELECTRA,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.light_client_sync import (
     run_lc_sync_test_single_fork,
@@ -25,6 +25,6 @@ from eth_consensus_specs.test.helpers.light_client_sync import (
 )
 @with_state
 @with_matching_spec_config(emitted_fork=ELECTRA)
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_electra_fork(spec, phases, state):
     yield from run_lc_sync_test_single_fork(spec, phases, state, ELECTRA)

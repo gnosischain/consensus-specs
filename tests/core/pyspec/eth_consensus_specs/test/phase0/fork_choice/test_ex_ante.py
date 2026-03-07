@@ -14,7 +14,7 @@ from eth_consensus_specs.test.helpers.block import (
 from eth_consensus_specs.test.helpers.constants import (
     ALTAIR,
     GLOAS,
-    MAINNET,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fork_choice import (
     add_attestation,
@@ -138,7 +138,7 @@ def _get_greater_than_proposer_boost_score(spec, store, state, proposer_boost_ro
 
 # TODO(jtraglia): Investigate why this doesn't work with Gloas
 @with_all_phases_from_to(ALTAIR, GLOAS)
-@with_presets([MAINNET], reason="to create non-duplicate committee")
+@with_presets([GNOSIS], reason="to create non-duplicate committee")
 @spec_state_test
 def test_ex_ante_attestations_is_greater_than_proposer_boost_with_boost(spec, state):
     """
@@ -366,7 +366,7 @@ def test_ex_ante_sandwich_with_honest_attestation(spec, state):
 
 # TODO(jtraglia): Investigate why this doesn't work with Gloas
 @with_all_phases_from_to(ALTAIR, GLOAS)
-@with_presets([MAINNET], reason="to create non-duplicate committee")
+@with_presets([GNOSIS], reason="to create non-duplicate committee")
 @spec_state_test
 def test_ex_ante_sandwich_with_boost_not_sufficient(spec, state):
     """

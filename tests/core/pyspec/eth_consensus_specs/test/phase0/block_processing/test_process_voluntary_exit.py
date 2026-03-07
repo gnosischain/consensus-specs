@@ -8,7 +8,7 @@ from eth_consensus_specs.test.context import (
     with_custom_state,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.keys import pubkey_to_privkey
 from eth_consensus_specs.test.helpers.voluntary_exits import (
     run_voluntary_exit_processing,
@@ -116,7 +116,7 @@ def test_success_exit_queue__min_churn(spec, state):
 
 @with_all_phases
 @with_presets(
-    [MINIMAL],
+    [GNOSIS],
     reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test

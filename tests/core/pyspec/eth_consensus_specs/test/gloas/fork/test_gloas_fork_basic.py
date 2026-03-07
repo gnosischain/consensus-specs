@@ -11,7 +11,7 @@ from eth_consensus_specs.test.context import (
 from eth_consensus_specs.test.helpers.constants import (
     FULU,
     GLOAS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.gloas.fork import (
     GLOAS_FORK_TEST_META_TAGS,
@@ -80,7 +80,7 @@ def test_fork_random_misc_balances(spec, phases, state):
 
 @with_phases(phases=[FULU], other_phases=[GLOAS])
 @with_presets(
-    [MINIMAL],
+    [GNOSIS],
     reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @with_custom_state(

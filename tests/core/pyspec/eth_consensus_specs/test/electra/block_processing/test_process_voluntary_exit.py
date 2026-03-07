@@ -3,7 +3,7 @@ from eth_consensus_specs.test.context import (
     with_electra_and_later,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MAINNET
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.keys import pubkey_to_privkey
 from eth_consensus_specs.test.helpers.voluntary_exits import (
     run_voluntary_exit_processing,
@@ -137,7 +137,7 @@ def test_min_balance_exits_above_churn(spec, state):
 @with_electra_and_later
 @spec_state_test
 @with_presets(
-    [MAINNET],
+    [GNOSIS],
     "With CHURN_LIMIT_QUOTIENT=32, can't change validator balance without changing churn_limit",
 )
 def test_max_balance_exit(spec, state):
@@ -177,7 +177,7 @@ def test_max_balance_exit(spec, state):
 @with_electra_and_later
 @spec_state_test
 @with_presets(
-    [MAINNET],
+    [GNOSIS],
     "With CHURN_LIMIT_QUOTIENT=32, can't change validator balance without changing churn_limit",
 )
 def test_exit_with_balance_equal_to_churn_limit(spec, state):
@@ -213,7 +213,7 @@ def test_exit_with_balance_equal_to_churn_limit(spec, state):
 @with_electra_and_later
 @spec_state_test
 @with_presets(
-    [MAINNET],
+    [GNOSIS],
     "With CHURN_LIMIT_QUOTIENT=32, can't change validator balance without changing churn_limit",
 )
 def test_exit_with_balance_multiple_of_churn_limit(spec, state):
@@ -252,7 +252,7 @@ def test_exit_with_balance_multiple_of_churn_limit(spec, state):
 @with_electra_and_later
 @spec_state_test
 @with_presets(
-    [MAINNET],
+    [GNOSIS],
     "With CHURN_LIMIT_QUOTIENT=32, can't change validator balance without changing churn_limit",
 )
 def test_exit_existing_churn_and_churn_limit_balance(spec, state):
@@ -296,7 +296,7 @@ def test_exit_existing_churn_and_churn_limit_balance(spec, state):
 @with_electra_and_later
 @spec_state_test
 @with_presets(
-    [MAINNET],
+    [GNOSIS],
     "With CHURN_LIMIT_QUOTIENT=32, can't change validator balance without changing churn_limit",
 )
 def test_exit_existing_churn_and_balance_multiple_of_churn_limit(spec, state):

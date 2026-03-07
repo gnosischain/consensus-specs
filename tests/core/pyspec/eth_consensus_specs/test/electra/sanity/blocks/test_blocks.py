@@ -18,7 +18,7 @@ from eth_consensus_specs.test.helpers.bls_to_execution_changes import (
 from eth_consensus_specs.test.helpers.constants import (
     ELECTRA,
     GLOAS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.deposits import (
     prepare_deposit_request,
@@ -471,7 +471,7 @@ def test_deposit_request_max_per_payload(spec, state):
 
 
 @with_all_phases_from_to(ELECTRA, GLOAS)
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -572,7 +572,7 @@ def test_withdrawal_and_consolidation_effective_balance_updates(spec, state):
 
 
 @with_all_phases_from_to(ELECTRA, GLOAS)
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -633,7 +633,7 @@ def test_consolidation_requests_when_pending_consolidation_queue_is_full(spec, s
 
 
 @with_all_phases_from_to(ELECTRA, GLOAS)
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -778,7 +778,7 @@ def test_switch_to_compounding_requests_when_too_little_consolidation_churn_limi
 
 
 @with_all_phases_from_to(ELECTRA, GLOAS)
-@with_presets([MINIMAL], "Keep the size of the test reasonable")
+@with_presets([GNOSIS], "Keep the size of the test reasonable")
 @spec_state_test
 def test_withdrawal_requests_when_pending_withdrawal_queue_is_full(spec, state):
     # Move state forward SHARD_COMMITTEE_PERIOD epochs to allow for withdrawal
@@ -837,7 +837,7 @@ def test_withdrawal_requests_when_pending_withdrawal_queue_is_full(spec, state):
 
 
 @with_all_phases_from_to(ELECTRA, GLOAS)
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,

@@ -17,7 +17,7 @@ from eth_consensus_specs.test.helpers.block import (
 from eth_consensus_specs.test.helpers.constants import (
     ALTAIR,
     GLOAS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fork_choice import (
     add_attestation,
@@ -184,7 +184,7 @@ def test_shorter_chain_but_heavier_weight(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_filtered_block_tree(spec, state):
     test_steps = []
     # Initialization
@@ -396,7 +396,7 @@ def test_discard_equivocations_on_attester_slashing(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_discard_equivocations_slashed_validator_censoring(spec, state):
     # Check that the store does not count LMD votes from validators that are slashed in the justified state
     test_steps = []
@@ -499,7 +499,7 @@ def test_discard_equivocations_slashed_validator_censoring(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_voting_source_within_two_epoch(spec, state):
     """
     Check that the store allows for a head block that has:
@@ -583,7 +583,7 @@ def test_voting_source_within_two_epoch(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_voting_source_beyond_two_epoch(spec, state):
     """
     Check that the store doesn't allow for a head block that has:

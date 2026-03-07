@@ -8,7 +8,7 @@ from eth_consensus_specs.test.context import (
     with_custom_state,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.epoch_processing import run_epoch_processing_with
 from eth_consensus_specs.test.helpers.state import next_epoch_via_block
 
@@ -144,7 +144,7 @@ def custom_validator_count(factor: float):
 
 @with_altair_and_later
 @with_presets(
-    [MINIMAL], reason="mainnet config requires too many pre-generated public/private keys"
+    [GNOSIS], reason="mainnet config requires too many pre-generated public/private keys"
 )
 @spec_test
 @with_custom_state(
@@ -159,7 +159,7 @@ def test_slightly_larger_random(spec, state):
 
 @with_altair_and_later
 @with_presets(
-    [MINIMAL], reason="mainnet config requires too many pre-generated public/private keys"
+    [GNOSIS], reason="mainnet config requires too many pre-generated public/private keys"
 )
 @spec_test
 @with_custom_state(

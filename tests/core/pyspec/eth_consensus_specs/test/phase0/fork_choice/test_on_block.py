@@ -3,7 +3,7 @@ import random
 from eth_utils import encode_hex
 
 from eth_consensus_specs.test.context import (
-    MINIMAL,
+    GNOSIS,
     spec_state_test,
     with_altair_and_later,
     with_presets,
@@ -88,7 +88,7 @@ def test_basic(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_on_block_checkpoints(spec, state):
     test_steps = []
     # Initialization
@@ -191,7 +191,7 @@ def test_on_block_bad_parent_root(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_on_block_before_finalized(spec, state):
     test_steps = []
     # Initialization
@@ -224,7 +224,7 @@ def test_on_block_before_finalized(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_on_block_finalized_skip_slots(spec, state):
     """
     Test case was originally from https://github.com/ethereum/consensus-specs/pull/1579
@@ -277,7 +277,7 @@ def test_on_block_finalized_skip_slots(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_on_block_finalized_skip_slots_not_in_skip_chain(spec, state):
     """
     Test case was originally from https://github.com/ethereum/consensus-specs/pull/1579
@@ -332,7 +332,7 @@ def test_on_block_finalized_skip_slots_not_in_skip_chain(spec, state):
 """
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_new_finalized_slot_is_not_justified_checkpoint_ancestor(spec, state):
     # J: Justified
     # F: Finalized
@@ -417,7 +417,7 @@ def test_new_finalized_slot_is_not_justified_checkpoint_ancestor(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_new_finalized_slot_is_justified_checkpoint_ancestor(spec, state):
     """
     J: Justified
@@ -718,7 +718,7 @@ def test_proposer_boost_is_first_block(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_justification_withholding(spec, state):
     test_steps = []
     # Initialization
@@ -802,7 +802,7 @@ def test_justification_withholding(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_justification_withholding_reverse_order(spec, state):
     test_steps = []
     # Initialization
@@ -881,7 +881,7 @@ def test_justification_withholding_reverse_order(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_justification_update_beginning_of_epoch(spec, state):
     """
     Check that the store's justified checkpoint is updated when a block containing better justification is
@@ -936,7 +936,7 @@ def test_justification_update_beginning_of_epoch(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_justification_update_end_of_epoch(spec, state):
     """
     Check that the store's justified checkpoint is updated when a block containing better justification is
@@ -991,7 +991,7 @@ def test_justification_update_end_of_epoch(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_incompatible_justification_update_start_of_epoch(spec, state):
     """
     Check that the store's justified checkpoint is updated when a block containing better justification is
@@ -1086,7 +1086,7 @@ def test_incompatible_justification_update_start_of_epoch(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_incompatible_justification_update_end_of_epoch(spec, state):
     """
     Check that the store's justified checkpoint is updated when a block containing better justification is
@@ -1182,7 +1182,7 @@ def test_incompatible_justification_update_end_of_epoch(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_justified_update_not_realized_finality(spec, state):
     """
     Check that the store updates its justified checkpoint if a higher justified checkpoint is found that is
@@ -1272,7 +1272,7 @@ def test_justified_update_not_realized_finality(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_justified_update_monotonic(spec, state):
     """
     Check that the store does not update it's justified checkpoint with lower justified checkpoints.
@@ -1367,7 +1367,7 @@ def test_justified_update_monotonic(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_justified_update_always_if_better(spec, state):
     """
     Check that the store updates it's justified checkpoint with any higher justified checkpoint.
@@ -1453,7 +1453,7 @@ def test_justified_update_always_if_better(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_pull_up_past_epoch_block(spec, state):
     """
     Check that the store pulls-up a block from the past epoch to realize it's justification & finalization information
@@ -1510,7 +1510,7 @@ def test_pull_up_past_epoch_block(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_not_pull_up_current_epoch_block(spec, state):
     """
     Check that the store does not pull-up a block from the current epoch if the previous epoch is not justified
@@ -1565,7 +1565,7 @@ def test_not_pull_up_current_epoch_block(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_pull_up_on_tick(spec, state):
     """
     Check that the store pulls-up current epoch tips on the on_tick transition to the next epoch

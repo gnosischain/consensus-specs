@@ -9,8 +9,7 @@ from eth_consensus_specs.test.context import (
 )
 from eth_consensus_specs.test.helpers.block import build_empty_block
 from eth_consensus_specs.test.helpers.constants import (
-    MAINNET,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.keys import privkeys, pubkey_to_privkey, pubkeys
 from eth_consensus_specs.test.helpers.state import transition_to
@@ -85,7 +84,7 @@ def _get_sync_committee_signature(
 
 
 @with_altair_and_later
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 @spec_state_test
 @always_bls
 def test_process_sync_committee_contributions(spec, state):
@@ -167,7 +166,7 @@ def _get_expected_subnets_by_pubkey(sync_committee_members):
 
 
 @with_altair_and_later
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 @spec_state_test
 def test_compute_subnets_for_sync_committee(state, spec):
     # Transition to the head of the next period
@@ -195,7 +194,7 @@ def test_compute_subnets_for_sync_committee(state, spec):
 
 
 @with_altair_and_later
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 @spec_state_test
 def test_compute_subnets_for_sync_committee_slot_period_boundary(state, spec):
     # Transition to the end of the period
@@ -250,7 +249,7 @@ def test_get_sync_committee_selection_proof(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([MAINNET], reason="to test against the mainnet SYNC_COMMITTEE_SIZE")
+@with_presets([GNOSIS], reason="to test against the mainnet SYNC_COMMITTEE_SIZE")
 def test_is_sync_committee_aggregator(spec, state):
     sample_count = int(spec.SYNC_COMMITTEE_SIZE // spec.SYNC_COMMITTEE_SUBNET_COUNT) * 100
     is_aggregator_count = 0

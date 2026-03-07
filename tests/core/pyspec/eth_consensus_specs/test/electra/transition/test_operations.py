@@ -8,7 +8,7 @@ from eth_consensus_specs.test.helpers.constants import (
     AFTER_ELECTRA_PRE_POST_FORKS,
     GLOAS,
     HEZE,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fork_transition import (
     OperationType,
@@ -60,7 +60,7 @@ def test_transition_with_deposit_request_right_after_fork(
         if post not in (GLOAS, HEZE)
     ]
 )
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 @always_bls
 def test_transition_with_full_withdrawal_request_right_after_fork(
     state, fork_epoch, spec, post_spec, pre_tag, post_tag

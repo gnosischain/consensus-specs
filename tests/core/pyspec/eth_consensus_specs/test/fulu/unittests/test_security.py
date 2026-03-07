@@ -5,14 +5,14 @@ from eth_consensus_specs.test.context import (
     with_presets,
 )
 from eth_consensus_specs.test.helpers.constants import (
-    MAINNET,
+    GNOSIS,
 )
 
 
 @with_fulu_and_later
 @spec_test
 @single_phase
-@with_presets([MAINNET])
+@with_presets([GNOSIS])
 def test_sampling_config(spec):
     probability_of_unavailable = 2 ** (-int(spec.config.SAMPLES_PER_SLOT))
     # TODO: What is the security requirement?

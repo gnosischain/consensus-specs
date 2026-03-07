@@ -10,7 +10,7 @@ from eth_consensus_specs.test.context import (
     with_gloas_and_later,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.keys import privkeys
 from eth_consensus_specs.test.helpers.state import next_epoch
 from eth_consensus_specs.utils.ssz.ssz_typing import Bitvector
@@ -305,7 +305,7 @@ def test_process_payload_attestation_cross_epoch_wrong_domain(spec, state):
 
 
 @with_gloas_and_later
-@with_presets([MINIMAL], reason="mainnet preset requires a much larger validator set")
+@with_presets([GNOSIS], reason="mainnet preset requires a much larger validator set")
 @with_custom_state(balances_fn=large_validator_set, threshold_fn=default_activation_threshold)
 @spec_test
 @always_bls
@@ -355,7 +355,7 @@ def test_process_payload_attestation_uses_multiple_committees(spec, state):
 
 
 @with_gloas_and_later
-@with_presets([MINIMAL], reason="mainnet preset requires a much larger validator set")
+@with_presets([GNOSIS], reason="mainnet preset requires a much larger validator set")
 @with_custom_state(balances_fn=large_validator_set, threshold_fn=default_activation_threshold)
 @spec_test
 @always_bls

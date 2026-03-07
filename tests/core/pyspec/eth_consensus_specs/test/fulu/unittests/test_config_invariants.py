@@ -5,7 +5,7 @@ from eth_consensus_specs.test.context import (
     with_presets,
 )
 from eth_consensus_specs.test.helpers.constants import (
-    MAINNET,
+    GNOSIS,
 )
 
 
@@ -34,7 +34,7 @@ def test_polynomial_commitments_sampling(spec):
 @with_fulu_and_later
 @spec_test
 @single_phase
-@with_presets([MAINNET], reason="to have fork epoch number")
+@with_presets([GNOSIS], reason="to have fork epoch number")
 def test_blob_schedule(spec):
     for entry in spec.config.BLOB_SCHEDULE:
         # Check that all epochs are post-fulu

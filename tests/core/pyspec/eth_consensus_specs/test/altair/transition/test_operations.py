@@ -6,7 +6,7 @@ from eth_consensus_specs.test.context import (
 )
 from eth_consensus_specs.test.helpers.constants import (
     ALL_PRE_POST_FORKS,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.fork_transition import (
     OperationType,
@@ -187,7 +187,7 @@ def test_transition_with_deposit_right_before_fork(
         for pre, post in ALL_PRE_POST_FORKS
     ]
 )
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_transition_with_voluntary_exit_right_after_fork(
     state, fork_epoch, spec, post_spec, pre_tag, post_tag
 ):
@@ -216,7 +216,7 @@ def test_transition_with_voluntary_exit_right_after_fork(
         for pre, post in ALL_PRE_POST_FORKS
     ]
 )
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_transition_with_voluntary_exit_right_before_fork(
     state, fork_epoch, spec, post_spec, pre_tag, post_tag
 ):

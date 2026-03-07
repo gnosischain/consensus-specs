@@ -6,7 +6,7 @@ from eth_consensus_specs.test.context import (
     with_electra_and_later,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.state import (
     get_validator_index_by_pubkey,
 )
@@ -154,7 +154,7 @@ def test_basic_withdrawal_request_with_compounding_credentials(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL], "need full partial withdrawal queue")
+@with_presets([GNOSIS], "need full partial withdrawal queue")
 def test_basic_withdrawal_request_with_full_partial_withdrawal_queue(spec, state):
     rng = random.Random(1339)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -306,7 +306,7 @@ def test_unknown_pubkey(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL])
+@with_presets([GNOSIS])
 def test_basic_partial_withdrawal_request(spec, state):
     rng = random.Random(1344)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -337,7 +337,7 @@ def test_basic_partial_withdrawal_request(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL])
+@with_presets([GNOSIS])
 def test_basic_partial_withdrawal_request_higher_excess_balance(spec, state):
     rng = random.Random(1345)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -368,7 +368,7 @@ def test_basic_partial_withdrawal_request_higher_excess_balance(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL])
+@with_presets([GNOSIS])
 def test_basic_partial_withdrawal_request_lower_than_excess_balance(spec, state):
     rng = random.Random(1346)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -400,7 +400,7 @@ def test_basic_partial_withdrawal_request_lower_than_excess_balance(spec, state)
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL])
+@with_presets([GNOSIS])
 def test_partial_withdrawal_request_with_pending_withdrawals(spec, state):
     rng = random.Random(1347)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -438,7 +438,7 @@ def test_partial_withdrawal_request_with_pending_withdrawals(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL])
+@with_presets([GNOSIS])
 def test_partial_withdrawal_request_with_pending_withdrawals_and_high_amount(spec, state):
     rng = random.Random(1348)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -477,7 +477,7 @@ def test_partial_withdrawal_request_with_pending_withdrawals_and_high_amount(spe
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL])
+@with_presets([GNOSIS])
 def test_partial_withdrawal_request_with_high_balance(spec, state):
     rng = random.Random(1349)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -511,7 +511,7 @@ def test_partial_withdrawal_request_with_high_balance(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL])
+@with_presets([GNOSIS])
 def test_partial_withdrawal_request_with_high_amount(spec, state):
     rng = random.Random(1350)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -543,7 +543,7 @@ def test_partial_withdrawal_request_with_high_amount(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL])
+@with_presets([GNOSIS])
 def test_partial_withdrawal_request_with_low_amount(spec, state):
     rng = random.Random(1351)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -577,7 +577,7 @@ def test_partial_withdrawal_request_with_low_amount(spec, state):
 
 @with_electra_and_later
 @spec_state_test
-@with_presets([MINIMAL], "need full partial withdrawal queue")
+@with_presets([GNOSIS], "need full partial withdrawal queue")
 def test_partial_withdrawal_queue_full(spec, state):
     rng = random.Random(1352)
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH

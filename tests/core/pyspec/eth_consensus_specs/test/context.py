@@ -27,7 +27,7 @@ from .helpers.constants import (
     GLOAS,
     HEZE,
     LIGHT_CLIENT_TESTING_FORKS,
-    MINIMAL,
+    GNOSIS,
     PHASE0,
     POST_FORK_OF,
 )
@@ -45,7 +45,7 @@ from .utils import (
 )
 
 # Without pytest CLI arg or pyspec-test-generator 'preset' argument, this will be the config to apply.
-DEFAULT_TEST_PRESET = MINIMAL
+DEFAULT_TEST_PRESET = GNOSIS
 
 # Without pytest CLI arg or pyspec-test-generator 'run-phase' argument, this will be the config to apply.
 DEFAULT_PYTEST_FORKS = ALL_PHASES

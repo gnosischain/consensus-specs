@@ -8,7 +8,7 @@ from eth_consensus_specs.test.context import (
     with_custom_state,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.epoch_processing import (
     run_epoch_processing_with,
 )
@@ -57,7 +57,7 @@ def run_sync_committees_progress_test(spec, state):
 @with_altair_and_later
 @spec_state_test
 @always_bls
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_sync_committees_progress_genesis(spec, state):
     # Genesis epoch period has an exceptional case
     assert spec.get_current_epoch(state) == spec.GENESIS_EPOCH
@@ -68,7 +68,7 @@ def test_sync_committees_progress_genesis(spec, state):
 @with_altair_and_later
 @spec_state_test
 @always_bls
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_sync_committees_progress_not_genesis(spec, state):
     # Transition out of the genesis epoch period to test non-exceptional case
     assert spec.get_current_epoch(state) == spec.GENESIS_EPOCH
@@ -85,7 +85,7 @@ def test_sync_committees_progress_not_genesis(spec, state):
 @spec_test
 @single_phase
 @always_bls
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_sync_committees_progress_misc_balances_genesis(spec, state):
     # Genesis epoch period has an exceptional case
     assert spec.get_current_epoch(state) == spec.GENESIS_EPOCH
@@ -100,7 +100,7 @@ def test_sync_committees_progress_misc_balances_genesis(spec, state):
 @spec_test
 @single_phase
 @always_bls
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_sync_committees_progress_misc_balances_not_genesis(spec, state):
     # Transition out of the genesis epoch period to test non-exceptional case
     assert spec.get_current_epoch(state) == spec.GENESIS_EPOCH
@@ -113,7 +113,7 @@ def test_sync_committees_progress_misc_balances_not_genesis(spec, state):
 @with_altair_and_later
 @spec_state_test
 @always_bls
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_sync_committees_no_progress_not_at_period_boundary(spec, state):
     assert spec.get_current_epoch(state) == spec.GENESIS_EPOCH
     slot_not_at_period_boundary = state.slot + spec.SLOTS_PER_EPOCH

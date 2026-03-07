@@ -8,7 +8,7 @@ from eth_consensus_specs.test.context import (
     with_electra_and_later,
     with_presets,
 )
-from eth_consensus_specs.test.helpers.constants import MINIMAL
+from eth_consensus_specs.test.helpers.constants import GNOSIS
 from eth_consensus_specs.test.helpers.withdrawals import (
     set_compounding_withdrawal_credential,
     set_compounding_withdrawal_credential_with_balance,
@@ -21,7 +21,7 @@ from eth_consensus_specs.test.helpers.withdrawals import (
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -31,7 +31,7 @@ from eth_consensus_specs.test.helpers.withdrawals import (
 def test_basic_consolidation_in_current_consolidation_epoch(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -68,7 +68,7 @@ def test_basic_consolidation_in_current_consolidation_epoch(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -78,7 +78,7 @@ def test_basic_consolidation_in_current_consolidation_epoch(spec, state):
 def test_basic_consolidation_with_excess_target_balance(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -118,7 +118,7 @@ def test_basic_consolidation_with_excess_target_balance(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -128,7 +128,7 @@ def test_basic_consolidation_with_excess_target_balance(spec, state):
 def test_basic_consolidation_in_new_consolidation_epoch(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     # Set consolidation balance to consume to some arbitrary nonzero value below the churn limit
     state.consolidation_balance_to_consume = spec.EFFECTIVE_BALANCE_INCREMENT
     current_epoch = spec.get_current_epoch(state)
@@ -163,7 +163,7 @@ def test_basic_consolidation_in_new_consolidation_epoch(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -173,7 +173,7 @@ def test_basic_consolidation_in_new_consolidation_epoch(spec, state):
 def test_basic_consolidation_with_preexisting_churn(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -207,7 +207,7 @@ def test_basic_consolidation_with_preexisting_churn(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -217,7 +217,7 @@ def test_basic_consolidation_with_preexisting_churn(spec, state):
 def test_basic_consolidation_with_insufficient_preexisting_churn(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -254,7 +254,7 @@ def test_basic_consolidation_with_insufficient_preexisting_churn(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -264,7 +264,7 @@ def test_basic_consolidation_with_insufficient_preexisting_churn(spec, state):
 def test_basic_consolidation_with_compounding_credentials(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -299,7 +299,7 @@ def test_basic_consolidation_with_compounding_credentials(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -309,7 +309,7 @@ def test_basic_consolidation_with_compounding_credentials(spec, state):
 def test_consolidation_churn_limit_balance(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -347,7 +347,7 @@ def test_consolidation_churn_limit_balance(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -358,7 +358,7 @@ def test_basic_consolidation_source_has_less_than_max_effective_balance(spec, st
     # Move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
 
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -400,7 +400,7 @@ def test_basic_consolidation_source_has_less_than_max_effective_balance(spec, st
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -411,7 +411,7 @@ def test_basic_consolidation_target_has_less_than_min_activation_effective_balan
     # Move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
 
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -449,7 +449,7 @@ def test_basic_consolidation_target_has_less_than_min_activation_effective_balan
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -459,7 +459,7 @@ def test_basic_consolidation_target_has_less_than_min_activation_effective_balan
 def test_consolidation_balance_larger_than_churn_limit(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -496,7 +496,7 @@ def test_consolidation_balance_larger_than_churn_limit(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -506,7 +506,7 @@ def test_consolidation_balance_larger_than_churn_limit(spec, state):
 def test_consolidation_balance_through_two_churn_epochs(spec, state):
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for consolidation
     state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
-    # This state has 256 validators each with 32 ETH in MINIMAL preset, 128 ETH consolidation churn
+    # This state has 256 validators each with 32 ETH in GNOSIS preset, 128 ETH consolidation churn
     current_epoch = spec.get_current_epoch(state)
     source_index = spec.get_active_validator_indices(state, current_epoch)[0]
     target_index = spec.get_active_validator_indices(state, current_epoch)[1]
@@ -612,7 +612,7 @@ def test_switch_to_compounding_with_pending_consolidations_at_limit(spec, state)
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -645,7 +645,7 @@ def test_incorrect_same_source_target(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -709,7 +709,7 @@ def test_incorrect_not_enough_consolidation_churn_available(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -742,7 +742,7 @@ def test_incorrect_exited_source(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -774,7 +774,7 @@ def test_incorrect_exited_target(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -807,7 +807,7 @@ def test_incorrect_inactive_source(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -840,7 +840,7 @@ def test_incorrect_inactive_target(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -870,7 +870,7 @@ def test_incorrect_no_source_execution_withdrawal_credential(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -900,7 +900,7 @@ def test_incorrect_target_with_bls_credential(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -934,7 +934,7 @@ def test_incorrect_source_with_bls_credential(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -963,7 +963,7 @@ def test_incorrect_target_with_eth1_credential(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -997,7 +997,7 @@ def test_incorrect_source_address(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -1025,7 +1025,7 @@ def test_incorrect_source_pubkey_is_target_pubkey(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -1056,7 +1056,7 @@ def test_incorrect_unknown_source_pubkey(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -1087,7 +1087,7 @@ def test_incorrect_unknown_target_pubkey(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,
@@ -1131,7 +1131,7 @@ def test_incorrect_source_has_pending_withdrawal(spec, state):
 
 
 @with_electra_and_later
-@with_presets([MINIMAL], "need sufficient consolidation churn limit")
+@with_presets([GNOSIS], "need sufficient consolidation churn limit")
 @with_custom_state(
     balances_fn=scaled_churn_balances_exceed_activation_exit_churn_limit,
     threshold_fn=default_activation_threshold,

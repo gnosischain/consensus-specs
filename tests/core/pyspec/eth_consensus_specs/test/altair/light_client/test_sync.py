@@ -17,7 +17,7 @@ from eth_consensus_specs.test.helpers.constants import (
     CAPELLA,
     DENEB,
     ELECTRA,
-    MINIMAL,
+    GNOSIS,
 )
 from eth_consensus_specs.test.helpers.light_client import (
     compute_start_slot_at_next_sync_committee_period,
@@ -43,7 +43,7 @@ from eth_consensus_specs.test.helpers.state import (
     },
 )
 @spec_state_test_with_matching_config
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_light_client_sync(spec, state):
     # Start test
     test = yield from setup_lc_sync_test(spec, state)
@@ -294,7 +294,7 @@ def test_light_client_sync(spec, state):
     },
 )
 @spec_state_test_with_matching_config
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_supply_sync_committee_from_past_update(spec, state):
     # Advance the chain, so that a `LightClientUpdate` from the past is available
     next_slots(spec, state, spec.SLOTS_PER_EPOCH * 2 - 1)
@@ -333,7 +333,7 @@ def test_supply_sync_committee_from_past_update(spec, state):
     },
 )
 @spec_state_test_with_matching_config
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_advance_finality_without_sync_committee(spec, state):
     # Start test
     test = yield from setup_lc_sync_test(spec, state)
@@ -426,7 +426,7 @@ def test_advance_finality_without_sync_committee(spec, state):
     },
 )
 @spec_state_test_with_matching_config
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_light_client_sync_no_force_update(spec, state):
     """Test that force update does not occur before timeout threshold is reached.
 
@@ -529,7 +529,7 @@ def run_lc_sync_test_upgraded_store_with_legacy_data(spec, phases, state, fork):
 @spec_test
 @with_state
 @with_matching_spec_config(emitted_fork=CAPELLA)
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_capella_store_with_legacy_data(spec, phases, state):
     yield from run_lc_sync_test_upgraded_store_with_legacy_data(spec, phases, state, CAPELLA)
 
@@ -538,7 +538,7 @@ def test_capella_store_with_legacy_data(spec, phases, state):
 @spec_test
 @with_state
 @with_matching_spec_config(emitted_fork=DENEB)
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_deneb_store_with_legacy_data(spec, phases, state):
     yield from run_lc_sync_test_upgraded_store_with_legacy_data(spec, phases, state, DENEB)
 
@@ -547,6 +547,6 @@ def test_deneb_store_with_legacy_data(spec, phases, state):
 @spec_test
 @with_state
 @with_matching_spec_config(emitted_fork=ELECTRA)
-@with_presets([MINIMAL], reason="too slow")
+@with_presets([GNOSIS], reason="too slow")
 def test_electra_store_with_legacy_data(spec, phases, state):
     yield from run_lc_sync_test_upgraded_store_with_legacy_data(spec, phases, state, ELECTRA)
