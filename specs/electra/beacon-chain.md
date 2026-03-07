@@ -195,7 +195,7 @@ specification.
 
 | Name                                         | Value                | Description                                                          |
 | -------------------------------------------- | -------------------- | -------------------------------------------------------------------- |
-| `MAX_PENDING_PARTIALS_PER_WITHDRAWALS_SWEEP` | `uint64(2**3)` (= 8) | Maximum number of pending partial withdrawals to process per payload |
+| `MAX_PENDING_PARTIALS_PER_WITHDRAWALS_SWEEP` | `uint64(6)`          | Maximum number of pending partial withdrawals to process per payload |
 
 ### Pending deposits processing
 
