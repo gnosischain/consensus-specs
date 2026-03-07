@@ -249,7 +249,7 @@ def test_get_sync_committee_selection_proof(spec, state):
 
 @with_altair_and_later
 @spec_state_test
-@with_presets([GNOSIS], reason="to test against the mainnet SYNC_COMMITTEE_SIZE")
+@with_presets([GNOSIS], reason="to test against the gnosis SYNC_COMMITTEE_SIZE")
 def test_is_sync_committee_aggregator(spec, state):
     sample_count = int(spec.SYNC_COMMITTEE_SIZE // spec.SYNC_COMMITTEE_SUBNET_COUNT) * 100
     is_aggregator_count = 0

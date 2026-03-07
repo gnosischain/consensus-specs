@@ -82,7 +82,7 @@ def test_electra_fork_random_misc_balances(spec, phases, state):
 @with_phases(phases=[DENEB], other_phases=[ELECTRA])
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(

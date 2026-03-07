@@ -177,7 +177,7 @@ def test_activation_queue_efficiency_min(spec, state):
 @with_all_phases
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -260,7 +260,7 @@ def test_ejection_past_churn_limit_min(spec, state):
 @with_all_phases
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -372,7 +372,7 @@ def test_activation_queue_activation_and_ejection__exceed_churn_limit(spec, stat
 @with_all_phases
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -389,7 +389,7 @@ def test_activation_queue_activation_and_ejection__scaled_churn_limit(spec, stat
 @with_all_phases
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(

@@ -64,7 +64,7 @@ def run_test_activation_churn_limit(spec, state):
 @with_deneb_and_later
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -84,7 +84,7 @@ def test_activation_churn_limit__greater_than_activation_limit(spec, state):
 @with_deneb_and_later
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_test
 @with_custom_state(
@@ -104,7 +104,7 @@ def test_activation_churn_limit__equal_to_activation_limit(spec, state):
 @with_deneb_and_later
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @spec_state_test
 def test_activation_churn_limit__less_than_activation_limit(spec, state):

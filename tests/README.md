@@ -84,7 +84,7 @@ This type of test receives two parameters:
 pre_slot = state.slot
 ```
 
-A slot is a unit of time (every 12 seconds in mainnet), for which a specific
+A slot is a unit of time (every 5 seconds on Gnosis mainnet), for which a specific
 validator (selected randomly but in a deterministic manner) is a proposer. The
 proposer can propose a block during that slot.
 

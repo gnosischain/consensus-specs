@@ -523,7 +523,7 @@ def test_top_up_to_fully_withdrawn_validator(spec, state):
     block = build_empty_block_for_next_slot(spec, state)
     signed_block_2 = state_transition_and_sign_block(spec, state, block)
 
-    # With mainnet preset, it holds
+    # With gnosis preset, it holds
     if len(state.validators) <= spec.MAX_VALIDATORS_PER_WITHDRAWALS_SWEEP:
         assert not spec.is_fully_withdrawable_validator(
             state.validators[validator_index],
@@ -599,7 +599,7 @@ def _run_activate_and_partial_withdrawal(spec, state, initial_balance):
 
 
 @with_capella_and_later
-@with_presets([GNOSIS], reason="too many validators with mainnet config")
+@with_presets([GNOSIS], reason="too many validators with gnosis config")
 @spec_state_test
 def test_activate_and_partial_withdrawal_max_effective_balance(spec, state):
     yield from _run_activate_and_partial_withdrawal(
@@ -608,7 +608,7 @@ def test_activate_and_partial_withdrawal_max_effective_balance(spec, state):
 
 
 @with_capella_and_later
-@with_presets([GNOSIS], reason="too many validators with mainnet config")
+@with_presets([GNOSIS], reason="too many validators with gnosis config")
 @spec_state_test
 def test_activate_and_partial_withdrawal_overdeposit(spec, state):
     yield from _run_activate_and_partial_withdrawal(

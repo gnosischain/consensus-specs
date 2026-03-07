@@ -81,7 +81,7 @@ def test_fork_random_misc_balances(spec, phases, state):
 @with_phases(phases=[CAPELLA], other_phases=[DENEB])
 @with_presets(
     [GNOSIS],
-    reason="mainnet config leads to larger validator set than limit of public/private keys pre-generated",
+    reason="gnosis config leads to larger validator set than limit of public/private keys pre-generated",
 )
 @with_custom_state(
     balances_fn=large_validator_set, threshold_fn=lambda spec: spec.config.EJECTION_BALANCE

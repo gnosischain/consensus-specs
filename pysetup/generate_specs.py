@@ -221,7 +221,7 @@ def generate_fork_specs(
         print(f"  Build targets: {[t.name for t in build_targets]}")
         print(f"  Output directory: {out_dir}")
 
-    # Generate spec for each build target (minimal, mainnet, etc.)
+    # Generate spec for each build target (e.g., gnosis)
     for target in build_targets:
         if verbose:
             print(f"  Building target: {target.name}")

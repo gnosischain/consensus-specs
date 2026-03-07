@@ -93,7 +93,7 @@ def test_run_includes_list_of_records_table(tmp_path, dummy_preset, dummy_config
 """
     file = tmp_path / "list_of_records.md"
     file.write_text(md_content)
-    # The config must have a 'BLOB_SCHEDULE' key with the expected structure for mainnet
+    # The config must have a 'BLOB_SCHEDULE' key with the expected structure for gnosis
     config = dummy_config.copy()
     config["BLOB_SCHEDULE"] = [
         {"EPOCH": "269568", "MAX_BLOBS_PER_BLOCK": "6"},

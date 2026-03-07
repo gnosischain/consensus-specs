@@ -234,7 +234,7 @@ class MarkdownToSpec:
             value_def = _parse_value(name, value)
             # It is a preset
             if name in self.preset:
-                if self.preset_name == "mainnet":
+                if self.preset_name == "gnosis":
                     check_yaml_matches_spec(name, self.preset, value_def)
 
                 self.spec["preset_vars"][name] = VariableDefinition(
@@ -243,7 +243,7 @@ class MarkdownToSpec:
 
             # It is a config variable
             elif name in self.config:
-                if self.preset_name == "mainnet":
+                if self.preset_name == "gnosis":
                     check_yaml_matches_spec(name, self.config, value_def)
 
                 config_value = self.config[name]
