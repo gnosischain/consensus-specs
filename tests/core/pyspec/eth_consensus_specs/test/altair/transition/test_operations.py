@@ -183,7 +183,7 @@ def test_transition_with_deposit_right_before_fork(
 
 @with_fork_metas(
     [
-        ForkMeta(pre_fork_name=pre, post_fork_name=post, fork_epoch=66)
+        ForkMeta(pre_fork_name=pre, post_fork_name=post, fork_epoch=258)
         for pre, post in ALL_PRE_POST_FORKS
     ]
 )
@@ -193,7 +193,7 @@ def test_transition_with_voluntary_exit_right_after_fork(
 ):
     """
     Create a voluntary exit right *after* the transition.
-    fork_epoch=66 because minimal preset `SHARD_COMMITTEE_PERIOD` is 64 epochs.
+    fork_epoch=258 because gnosis preset ``SHARD_COMMITTEE_PERIOD`` is 256 epochs.
     """
     # Fast forward to the future epoch so that validator can do voluntary exit
     state.slot = spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
@@ -212,7 +212,7 @@ def test_transition_with_voluntary_exit_right_after_fork(
 
 @with_fork_metas(
     [
-        ForkMeta(pre_fork_name=pre, post_fork_name=post, fork_epoch=66)
+        ForkMeta(pre_fork_name=pre, post_fork_name=post, fork_epoch=258)
         for pre, post in ALL_PRE_POST_FORKS
     ]
 )
@@ -222,7 +222,7 @@ def test_transition_with_voluntary_exit_right_before_fork(
 ):
     """
     Create a voluntary exit right *before* the transition.
-    fork_epoch=66 because minimal preset `SHARD_COMMITTEE_PERIOD` is 64 epochs.
+    fork_epoch=258 because gnosis preset ``SHARD_COMMITTEE_PERIOD`` is 256 epochs.
     """
     # Fast forward to the future epoch so that validator can do voluntary exit
     state.slot = spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
