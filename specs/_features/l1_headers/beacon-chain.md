@@ -23,6 +23,7 @@
     - [New `process_upstream_chain`](#new-process_upstream_chain)
   - [Epoch processing](#epoch-processing)
     - [Modified `weigh_justification_and_finalization`](#modified-weigh_justification_and_finalization)
+    - [New `promote_pending_finality`](#new-promote_pending_finality)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!-- /TOC -->
@@ -37,6 +38,8 @@ This is the beacon chain specification to make fork-choice conditional on an ups
 
 | Name | Value | Description |
 | - | - | - |
+| `PENDING_FINALITY_LIMIT` | `uint64(2**10)` (=1024) | Max pending checkpoints (~13.6 hours of Gnosis epochs) |
+| `MAX_UPSTREAM_INTERMEDIATE_HEADERS` | `uint64(2**6)` (=64) | Max upstream headers between consecutive Gnosis blocks |
 | `UPSTREAM_FINALIZED_CHECKPOINT_GINDEX` | `GeneralizedIndex(84)` | `get_generalized_index(UpstreamBeaconState, 'finalized_checkpoint')` |
 
 *Note*: The generalized index is based on the upstream (Ethereum mainnet) `BeaconState` layout at the Electra fork. It must be updated if the upstream state structure changes.
@@ -79,9 +82,11 @@ class BeaconBlockBody(Container):
     bls_to_execution_changes: List[SignedBLSToExecutionChange, MAX_BLS_TO_EXECUTION_CHANGES]
     blob_kzg_commitments: List[KZGCommitment, MAX_BLOB_COMMITMENTS_PER_BLOCK]
     execution_requests: ExecutionRequests
-    upstream_head: BeaconBlockHeader  # [New in L1HEADERS]
-    upstream_finalized_checkpoint: Checkpoint  # [New in L1HEADERS]
-    upstream_finalized_checkpoint_branch: UpstreamFinalityBranch  # [New in L1HEADERS]
+    # [New in L1HEADERS]
+    upstream_head: BeaconBlockHeader
+    upstream_intermediate_headers: List[BeaconBlockHeader, MAX_UPSTREAM_INTERMEDIATE_HEADERS]
+    upstream_finalized_checkpoint: Checkpoint
+    upstream_finalized_checkpoint_branch: UpstreamFinalityBranch
 ```
 
 *Note*: `upstream_head_root` is available to the EVM through EIP-4788 (Beacon block root in the EVM) with a merkle proof from the beacon block root.
@@ -122,9 +127,9 @@ class BeaconState(Container):
     # [New in L1HEADERS] Pending finality — computed by standard Casper FFG but not yet
     # promoted, waiting for upstream finality. We gate on upstream finality (not justification)
     # because upstream justification is reversible and a rollback would force slashable votes.
-    pending_previous_justified_checkpoint: Checkpoint
-    pending_current_justified_checkpoint: Checkpoint
-    pending_finalized_checkpoint: Checkpoint
+    # Accumulated as lists since upstream finality may arrive at any point.
+    pending_justified_checkpoints: List[Checkpoint, PENDING_FINALITY_LIMIT]
+    pending_finalized_checkpoints: List[Checkpoint, PENDING_FINALITY_LIMIT]
     # Inactivity
     inactivity_scores: List[uint64, VALIDATOR_REGISTRY_LIMIT]
     # Sync
@@ -191,17 +196,27 @@ def process_block(state: BeaconState, block: BeaconBlock) -> None:
 
 ```python
 def process_upstream_chain(state: BeaconState, block: BeaconBlock) -> None:
+    upstream_head = block.body.upstream_head
+
     # Point to an upstream block that's in the past
-    assert compute_upstream_timestamp_at_slot(block.body.upstream_head.slot) <= compute_timestamp_at_slot(block.slot)
+    assert compute_upstream_timestamp_at_slot(upstream_head.slot) <= compute_timestamp_at_slot(block.slot)
 
     # Ascending upstream slots
-    assert block.body.upstream_head.slot >= state.latest_upstream_head.slot
-    # Reject distinct blocks with equal slots, except for the first post-fork state
-    if (
-        block.body.upstream_head.slot == state.latest_upstream_head.slot
-        and state.latest_upstream_head.slot != BeaconBlockHeader()
-    ):
-        assert block.body.upstream_head == state.latest_upstream_head
+    assert upstream_head.slot >= state.latest_upstream_head.slot
+
+    is_first_post_fork = state.latest_upstream_head == BeaconBlockHeader()
+    upstream_unchanged = upstream_head == state.latest_upstream_head
+
+    if upstream_unchanged:
+        # Same upstream head — no intermediate headers needed
+        assert len(block.body.upstream_intermediate_headers) == 0
+    elif not is_first_post_fork:
+        # Verify chain continuity: intermediate headers + upstream_head must form
+        # a contiguous chain from state.latest_upstream_head to upstream_head.
+        chain = list(block.body.upstream_intermediate_headers) + [upstream_head]
+        assert chain[0].parent_root == hash_tree_root(state.latest_upstream_head)
+        for i in range(1, len(chain)):
+            assert chain[i].parent_root == hash_tree_root(chain[i - 1])
 
     # Verify that upstream_finalized_checkpoint is committed in the upstream state
     assert is_valid_merkle_branch(
@@ -209,17 +224,19 @@ def process_upstream_chain(state: BeaconState, block: BeaconBlock) -> None:
         branch=block.body.upstream_finalized_checkpoint_branch,
         depth=floorlog2(UPSTREAM_FINALIZED_CHECKPOINT_GINDEX),
         index=get_subtree_index(UPSTREAM_FINALIZED_CHECKPOINT_GINDEX),
-        root=block.body.upstream_head.state_root,
+        root=upstream_head.state_root,
     )
 
+    state.latest_upstream_head = upstream_head
     state.latest_upstream_finalized_checkpoint = block.body.upstream_finalized_checkpoint
+    promote_pending_finality(state)
 ```
 
 ### Epoch processing
 
 #### Modified `weigh_justification_and_finalization`
 
-*Note*: The function `weigh_justification_and_finalization` is modified to write justification and finalization results to pending fields. These are only promoted to the real checkpoints once the upstream chain has finalized past them. We gate on upstream **finality** (not justification) because upstream justification is reversible — if it rolled back, attesters would be forced into slashable votes.
+*Note*: The function `weigh_justification_and_finalization` is modified to accumulate justification and finalization results in pending lists instead of applying them directly. The only diff from the standard function is the `[New in L1HEADERS]` block at the end.
 
 ```python
 def weigh_justification_and_finalization(state: BeaconState,
@@ -228,60 +245,77 @@ def weigh_justification_and_finalization(state: BeaconState,
                                          current_epoch_target_balance: Gwei) -> None:
     previous_epoch = get_previous_epoch(state)
     current_epoch = get_current_epoch(state)
-    old_previous_justified_checkpoint = state.pending_previous_justified_checkpoint
-    old_current_justified_checkpoint = state.pending_current_justified_checkpoint
-
-    # --- Standard Casper FFG: compute justification and finalization as normal ---
-    # Results are written to pending fields instead of the real checkpoints.
+    old_previous_justified_checkpoint = state.previous_justified_checkpoint
+    old_current_justified_checkpoint = state.current_justified_checkpoint
+    old_finalized_checkpoint = state.finalized_checkpoint  # [New in L1HEADERS]
 
     # Process justifications
-    state.pending_previous_justified_checkpoint = state.pending_current_justified_checkpoint
+    state.previous_justified_checkpoint = state.current_justified_checkpoint
     state.justification_bits[1:] = state.justification_bits[:JUSTIFICATION_BITS_LENGTH - 1]
     state.justification_bits[0] = 0b0
     if previous_epoch_target_balance * 3 >= total_active_balance * 2:
-        state.pending_current_justified_checkpoint = Checkpoint(epoch=previous_epoch,
-                                                                root=get_block_root(state, previous_epoch))
+        state.current_justified_checkpoint = Checkpoint(epoch=previous_epoch,
+                                                        root=get_block_root(state, previous_epoch))
         state.justification_bits[1] = 0b1
     if current_epoch_target_balance * 3 >= total_active_balance * 2:
-        state.pending_current_justified_checkpoint = Checkpoint(epoch=current_epoch,
-                                                                root=get_block_root(state, current_epoch))
+        state.current_justified_checkpoint = Checkpoint(epoch=current_epoch,
+                                                        root=get_block_root(state, current_epoch))
         state.justification_bits[0] = 0b1
 
     # Process finalizations
     bits = state.justification_bits
     # The 2nd/3rd/4th most recent epochs are justified, the 2nd using the 4th as source
     if all(bits[1:4]) and old_previous_justified_checkpoint.epoch + 3 == current_epoch:
-        state.pending_finalized_checkpoint = old_previous_justified_checkpoint
+        state.finalized_checkpoint = old_previous_justified_checkpoint
     # The 2nd/3rd most recent epochs are justified, the 2nd using the 3rd as source
     if all(bits[1:3]) and old_previous_justified_checkpoint.epoch + 2 == current_epoch:
-        state.pending_finalized_checkpoint = old_previous_justified_checkpoint
+        state.finalized_checkpoint = old_previous_justified_checkpoint
     # The 1st/2nd/3rd most recent epochs are justified, the 1st using the 3rd as source
     if all(bits[0:3]) and old_current_justified_checkpoint.epoch + 2 == current_epoch:
-        state.pending_finalized_checkpoint = old_current_justified_checkpoint
+        state.finalized_checkpoint = old_current_justified_checkpoint
     # The 1st/2nd most recent epochs are justified, the 1st using the 2nd as source
     if all(bits[0:2]) and old_current_justified_checkpoint.epoch + 1 == current_epoch:
-        state.pending_finalized_checkpoint = old_current_justified_checkpoint
+        state.finalized_checkpoint = old_current_justified_checkpoint
 
-    # --- Upstream finality gate ---
-    # Promote pending checkpoints only when they fall within the upstream finalized window.
+    # [New in L1HEADERS] Accumulate results into pending lists, then revert.
+    # Real checkpoints advance only through promote_pending_finality().
+    if state.current_justified_checkpoint.epoch > old_current_justified_checkpoint.epoch:
+        state.pending_justified_checkpoints.append(state.current_justified_checkpoint)
+    if state.finalized_checkpoint.epoch > old_finalized_checkpoint.epoch:
+        state.pending_finalized_checkpoints.append(state.finalized_checkpoint)
+    state.previous_justified_checkpoint = old_previous_justified_checkpoint
+    state.current_justified_checkpoint = old_current_justified_checkpoint
+    state.finalized_checkpoint = old_finalized_checkpoint
+```
+
+#### New `promote_pending_finality`
+
+*Note*: `promote_pending_finality` is called from `process_upstream_chain` whenever new upstream finality data arrives. It promotes the highest pending checkpoint whose timestamp is covered by upstream finality. We gate on upstream **finality** (not justification) because upstream justification is reversible — if it rolled back, attesters would be forced into slashable votes.
+
+```python
+def promote_pending_finality(state: BeaconState) -> None:
     upstream_finalized_timestamp = compute_upstream_timestamp_at_slot(
         compute_upstream_start_slot_at_epoch(state.latest_upstream_finalized_checkpoint.epoch)
     )
 
-    if state.pending_current_justified_checkpoint.epoch > state.current_justified_checkpoint.epoch:
-        pending_justified_timestamp = compute_timestamp_at_slot(
-            compute_start_slot_at_epoch(state.pending_current_justified_checkpoint.epoch)
-        )
-        if pending_justified_timestamp <= upstream_finalized_timestamp:
+    for cp in reversed(state.pending_justified_checkpoints):
+        cp_timestamp = compute_timestamp_at_slot(compute_start_slot_at_epoch(cp.epoch))
+        if cp_timestamp <= upstream_finalized_timestamp:
             state.previous_justified_checkpoint = state.current_justified_checkpoint
-            state.current_justified_checkpoint = state.pending_current_justified_checkpoint
+            state.current_justified_checkpoint = cp
+            state.pending_justified_checkpoints = [
+                x for x in state.pending_justified_checkpoints if x.epoch > cp.epoch
+            ]
+            break
 
-    if state.pending_finalized_checkpoint.epoch > state.finalized_checkpoint.epoch:
-        pending_finalized_timestamp = compute_timestamp_at_slot(
-            compute_start_slot_at_epoch(state.pending_finalized_checkpoint.epoch)
-        )
-        if pending_finalized_timestamp <= upstream_finalized_timestamp:
-            state.finalized_checkpoint = state.pending_finalized_checkpoint
+    for cp in reversed(state.pending_finalized_checkpoints):
+        cp_timestamp = compute_timestamp_at_slot(compute_start_slot_at_epoch(cp.epoch))
+        if cp_timestamp <= upstream_finalized_timestamp:
+            state.finalized_checkpoint = cp
+            state.pending_finalized_checkpoints = [
+                x for x in state.pending_finalized_checkpoints if x.epoch > cp.epoch
+            ]
+            break
 ```
 
 

@@ -29,13 +29,14 @@ All terminology, constants, functions, and protocol mechanics defined in the upd
 
 #### Constructing the `BeaconBlockBody`
 
-To propose, the validator include in the block the upstream chain head.
+To propose, the validator includes in the block the upstream chain head and proof of chain continuity.
 
-1. Run fork-choice handler `on_upstream_head`. Lock the handler to prevent additional runs during block proposal
-2. Compute the parent root with `get_proposer_head` as spec-ed 
+1. Run fork-choice handler `on_upstream_head`. Lock the handler to prevent additional runs during block proposal.
+2. Compute the parent root with `get_proposer_head` as spec-ed.
 3. Set `block.body.upstream_head = upstream_block`, where
     * `upstream_block` is the return value of `get_target_upstream_canonical_block(slot)` and `slot` is the proposal slot.
-4. Set `block.body.upstream_finalized_checkpoint` and `block.body.upstream_finalized_checkpoint_branch` from `retrieve_upstream_finalized_checkpoint_with_proof(upstream_block.state_root)`.
+4. Set `block.body.upstream_intermediate_headers` to the chain of upstream `BeaconBlockHeader`s between the parent block's `upstream_head` and the new `upstream_block` (exclusive of the former, exclusive of the latter). Empty if the upstream head has not changed.
+5. Set `block.body.upstream_finalized_checkpoint` and `block.body.upstream_finalized_checkpoint_branch` from `retrieve_upstream_finalized_checkpoint_with_proof(upstream_block.state_root)`.
 
 ```python
 def retrieve_upstream_finalized_checkpoint_with_proof(
