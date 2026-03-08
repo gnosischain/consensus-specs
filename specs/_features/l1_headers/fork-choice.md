@@ -47,7 +47,7 @@ class Store(object):
     latest_messages: Dict[ValidatorIndex, LatestMessage] = field(default_factory=dict)
     unrealized_justifications: Dict[Root, Checkpoint] = field(default_factory=dict)
     # [New in L1HEADERS]
-    upstream_canonical_blocks: List[BeaconBlockHeader] = field(default_factory=Set)
+    upstream_canonical_blocks: List[BeaconBlockHeader] = field(default_factory=list)
 ```
 
 #### Modified `filter_block_tree`
@@ -94,7 +94,7 @@ def filter_block_tree(store: Store, block_root: Root, blocks: Dict[Root, BeaconB
     )
 
     # [New in L1HEADERS]
-    upstream_is_canonical = store.upstream_canonical_blocks.has(block.body.upstream_head)
+    upstream_is_canonical = block.body.upstream_head in store.upstream_canonical_blocks
 
     # If expected finalized/justified, add to viable block-tree and signal viability to parent.
     if correct_justified and correct_finalized and upstream_is_canonical:
@@ -108,7 +108,7 @@ def filter_block_tree(store: Store, block_root: Root, blocks: Dict[Root, BeaconB
 #### New `get_upstream_canonical_block`
 
 ```python
-def get_target_upstream_canonical_block(store: Store, slot: Root):
+def get_target_upstream_canonical_block(store: Store, slot: Slot):
     for block in reversed(store.upstream_canonical_blocks):
         if compute_upstream_timestamp_at_slot(block.body.upstream_head.slot) <= compute_timestamp_at_slot(slot):
             return block

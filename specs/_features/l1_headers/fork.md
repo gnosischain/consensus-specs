@@ -127,9 +127,8 @@ def upgrade_to_l1headers(pre: electra.BeaconState) -> BeaconState:
         pending_partial_withdrawals=pre.pending_partial_withdrawals,
         pending_consolidations=pre.pending_consolidations,
         # [New in L1HEADERS]
-        latest_upstream_head: BeaconBlockHeader(),
-        latest_upstream_justified_checkpoint: Checkpoint(),
-        latest_upstream_finalized_checkpoint: Checkpoint(),
+        latest_upstream_head=BeaconBlockHeader(),
+        latest_upstream_finalized_checkpoint=Checkpoint(),
     )
 
     return post

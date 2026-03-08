@@ -35,20 +35,12 @@ To propose, the validator include in the block the upstream chain head.
 2. Compute the parent root with `get_proposer_head` as spec-ed 
 3. Set `block.body.upstream_head = upstream_block`, where
     * `upstream_block` is the return value of `get_target_upstream_canonical_block(slot)` and `slot` is the proposal slot.
-4. Set `block.body.upstream_justified_checkpoint = retrieve_upstream_justified_checkpoint(upstream_block.state_root)`
-5. Set `block.body.upstream_finalized_checkpoint = retrieve_upstream_finalized_checkpoint(upstream_block.state_root)`
-
-```python
-def retrieve_upstream_justified_checkpoint(state_root) -> Checkpoint:
-    # `retrieve_upstream_justified_checkpoint` is implementation dependant. It returns the upstream chain
-    # justified checkpoint of the `state_root` beacon state. It MAY use the existing beacon API to return
-    # the checkpoint `/eth/v1/beacon/states/{state_id}/finality_checkpoints`
-```
+4. Set `block.body.upstream_finalized_checkpoint = retrieve_upstream_finalized_checkpoint(upstream_block.state_root)`
 
 ```python
 def retrieve_upstream_finalized_checkpoint(state_root) -> Checkpoint:
-    # `retrieve_upstream_finalized_checkpoint` is implementation dependant. It returns the upstream chain
-    # justified checkpoint of the `state_root` beacon state. It MAY use the existing beacon API to return
+    # `retrieve_upstream_finalized_checkpoint` is implementation dependent. It returns the upstream chain
+    # finalized checkpoint of the `state_root` beacon state. It MAY use the existing beacon API to return
     # the checkpoint `/eth/v1/beacon/states/{state_id}/finality_checkpoints`
 ```
 
