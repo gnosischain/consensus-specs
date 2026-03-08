@@ -19,8 +19,6 @@ HEZE = SpecForkName("heze")
 EIP7441 = SpecForkName("eip7441")
 EIP7928 = SpecForkName("eip7928")
 EIP8025 = SpecForkName("eip8025")
-EIP7732 = SpecForkName("eip7732")
-EIP7805 = SpecForkName("eip7805")
 L1HEADERS = SpecForkName("l1_headers")
 
 #
@@ -66,8 +64,6 @@ PREVIOUS_FORK_OF = {
     EIP7441: CAPELLA,
     EIP7928: FULU,
     EIP8025: FULU,
-    EIP7732: ELECTRA,
-    EIP7805: ELECTRA,
     L1HEADERS: ELECTRA,
 }
 
