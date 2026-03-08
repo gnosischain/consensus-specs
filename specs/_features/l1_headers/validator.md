@@ -35,12 +35,18 @@ To propose, the validator include in the block the upstream chain head.
 2. Compute the parent root with `get_proposer_head` as spec-ed 
 3. Set `block.body.upstream_head = upstream_block`, where
     * `upstream_block` is the return value of `get_target_upstream_canonical_block(slot)` and `slot` is the proposal slot.
-4. Set `block.body.upstream_finalized_checkpoint = retrieve_upstream_finalized_checkpoint(upstream_block.state_root)`
+4. Set `block.body.upstream_finalized_checkpoint` and `block.body.upstream_finalized_checkpoint_branch` from `retrieve_upstream_finalized_checkpoint_with_proof(upstream_block.state_root)`.
 
 ```python
-def retrieve_upstream_finalized_checkpoint(state_root) -> Checkpoint:
-    # `retrieve_upstream_finalized_checkpoint` is implementation dependent. It returns the upstream chain
-    # finalized checkpoint of the `state_root` beacon state. It MAY use the existing beacon API to return
-    # the checkpoint `/eth/v1/beacon/states/{state_id}/finality_checkpoints`
+def retrieve_upstream_finalized_checkpoint_with_proof(
+    state_root: Root
+) -> Tuple[Checkpoint, UpstreamFinalityBranch]:
+    # `retrieve_upstream_finalized_checkpoint_with_proof` is implementation dependent.
+    # It returns the upstream chain finalized checkpoint and its Merkle proof against
+    # the given upstream beacon state root.
+    #
+    # Implementations MAY retrieve the checkpoint via the beacon API
+    # `/eth/v1/beacon/states/{state_id}/finality_checkpoints` and compute the proof
+    # using `compute_merkle_proof(upstream_state, UPSTREAM_FINALIZED_CHECKPOINT_GINDEX)`.
 ```
 

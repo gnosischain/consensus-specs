@@ -9,14 +9,15 @@
 - [Introduction](#introduction)
 - [Preset](#preset)
 - [Configuration](#configuration)
+- [Custom types](#custom-types)
 - [Containers](#containers)
   - [Modified containers](#modified-containers)
     - [`BeaconBlockBody`](#beaconblockbody)
     - [`BeaconState`](#beaconstate)
 - [Helper functions](#helper-functions)
   - [Misc](#misc)
-    - [New `compute_upstream_timestamp_at_slot`](#new-compute_upstream_timestamp_at_slot)
-    - [New `compute_upstream_start_slot_at_epoch`](#new-compute_upstream_start_slot_at_epoch)
+    - [`compute_upstream_timestamp_at_slot`](#compute_upstream_timestamp_at_slot)
+    - [`compute_upstream_start_slot_at_epoch`](#compute_upstream_start_slot_at_epoch)
 - [Beacon chain state transition function](#beacon-chain-state-transition-function)
   - [Block processing](#block-processing)
     - [New `process_upstream_chain`](#new-process_upstream_chain)
@@ -32,6 +33,14 @@ This is the beacon chain specification to make fork-choice conditional on an ups
 
 *Note*: This specification is built upon [Electra](../../electra/beacon_chain.md) and is under active development.
 
+## Preset
+
+| Name | Value | Description |
+| - | - | - |
+| `UPSTREAM_FINALIZED_CHECKPOINT_GINDEX` | `GeneralizedIndex(84)` | `get_generalized_index(UpstreamBeaconState, 'finalized_checkpoint')` |
+
+*Note*: The generalized index is based on the upstream (Ethereum mainnet) `BeaconState` layout at the Electra fork. It must be updated if the upstream state structure changes.
+
 ## Configuration
 
 | Name | Value | Unit |
@@ -40,6 +49,12 @@ This is the beacon chain specification to make fork-choice conditional on an ups
 | `UPSTREAM_GENESIS_TIME`     | `1606824023` | seconds
 | `UPSTREAM_SECONDS_PER_SLOT` | `uint64(12)` | seconds
 | `UPSTREAM_SLOTS_PER_EPOCH`  | `uint64(32)` | slots
+
+## Custom types
+
+| Name | SSZ equivalent | Description |
+| - | - | - |
+| `UpstreamFinalityBranch` | `Vector[Bytes32, floorlog2(UPSTREAM_FINALIZED_CHECKPOINT_GINDEX)]` | Merkle branch of `finalized_checkpoint` within the upstream `BeaconState` |
 
 ## Containers
 
@@ -66,6 +81,7 @@ class BeaconBlockBody(Container):
     execution_requests: ExecutionRequests
     upstream_head: BeaconBlockHeader  # [New in L1HEADERS]
     upstream_finalized_checkpoint: Checkpoint  # [New in L1HEADERS]
+    upstream_finalized_checkpoint_branch: UpstreamFinalityBranch  # [New in L1HEADERS]
 ```
 
 *Note*: `upstream_head_root` is available to the EVM through EIP-4788 (Beacon block root in the EVM) with a merkle proof from the beacon block root.
@@ -99,10 +115,16 @@ class BeaconState(Container):
     previous_epoch_participation: List[ParticipationFlags, VALIDATOR_REGISTRY_LIMIT]
     current_epoch_participation: List[ParticipationFlags, VALIDATOR_REGISTRY_LIMIT]
     # Finality
-    justified_checkpoints: List[Checkpoint, JUSTIFIED_EPOCHS_LIMIT]  # [Modified in L1HEADERS]
+    justification_bits: Bitvector[JUSTIFICATION_BITS_LENGTH]
     previous_justified_checkpoint: Checkpoint
     current_justified_checkpoint: Checkpoint
     finalized_checkpoint: Checkpoint
+    # [New in L1HEADERS] Pending finality — computed by standard Casper FFG but not yet
+    # promoted, waiting for upstream finality. We gate on upstream finality (not justification)
+    # because upstream justification is reversible and a rollback would force slashable votes.
+    pending_previous_justified_checkpoint: Checkpoint
+    pending_current_justified_checkpoint: Checkpoint
+    pending_finalized_checkpoint: Checkpoint
     # Inactivity
     inactivity_scores: List[uint64, VALIDATOR_REGISTRY_LIMIT]
     # Sync
@@ -181,7 +203,15 @@ def process_upstream_chain(state: BeaconState, block: BeaconBlock) -> None:
     ):
         assert block.body.upstream_head == state.latest_upstream_head
 
-    # TODO: Verify inclusion proofs of the upstream checkpoints
+    # Verify that upstream_finalized_checkpoint is committed in the upstream state
+    assert is_valid_merkle_branch(
+        leaf=hash_tree_root(block.body.upstream_finalized_checkpoint),
+        branch=block.body.upstream_finalized_checkpoint_branch,
+        depth=floorlog2(UPSTREAM_FINALIZED_CHECKPOINT_GINDEX),
+        index=get_subtree_index(UPSTREAM_FINALIZED_CHECKPOINT_GINDEX),
+        root=block.body.upstream_head.state_root,
+    )
+
     state.latest_upstream_finalized_checkpoint = block.body.upstream_finalized_checkpoint
 ```
 
@@ -189,7 +219,7 @@ def process_upstream_chain(state: BeaconState, block: BeaconBlock) -> None:
 
 #### Modified `weigh_justification_and_finalization`
 
-*Note*: The function `weigh_justification_and_finalization` is modified to make justification and finalization checkpoint updates conditional on the upstream chain.
+*Note*: The function `weigh_justification_and_finalization` is modified to write justification and finalization results to pending fields. These are only promoted to the real checkpoints once the upstream chain has finalized past them. We gate on upstream **finality** (not justification) because upstream justification is reversible — if it rolled back, attesters would be forced into slashable votes.
 
 ```python
 def weigh_justification_and_finalization(state: BeaconState,
@@ -198,58 +228,60 @@ def weigh_justification_and_finalization(state: BeaconState,
                                          current_epoch_target_balance: Gwei) -> None:
     previous_epoch = get_previous_epoch(state)
     current_epoch = get_current_epoch(state)
+    old_previous_justified_checkpoint = state.pending_previous_justified_checkpoint
+    old_current_justified_checkpoint = state.pending_current_justified_checkpoint
+
+    # --- Standard Casper FFG: compute justification and finalization as normal ---
+    # Results are written to pending fields instead of the real checkpoints.
 
     # Process justifications
-    # Register that this epoch received enough votes to justify. But don't update the justified
-    # checkpoint until the upstream chain has finalized past it. Upstream justification is not
-    # sufficient because justification is reversible in Ethereum — if we advanced based on
-    # upstream justification and it rolled back, attesters would be forced into slashable votes.
+    state.pending_previous_justified_checkpoint = state.pending_current_justified_checkpoint
+    state.justification_bits[1:] = state.justification_bits[:JUSTIFICATION_BITS_LENGTH - 1]
+    state.justification_bits[0] = 0b0
     if previous_epoch_target_balance * 3 >= total_active_balance * 2:
-        state.justified_checkpoints.append(Checkpoint(epoch=previous_epoch,
-                                                      root=get_block_root(state, previous_epoch)))
+        state.pending_current_justified_checkpoint = Checkpoint(epoch=previous_epoch,
+                                                                root=get_block_root(state, previous_epoch))
+        state.justification_bits[1] = 0b1
     if current_epoch_target_balance * 3 >= total_active_balance * 2:
-        state.justified_checkpoints.append(Checkpoint(epoch=current_epoch,
-                                                      root=get_block_root(state, current_epoch)))
-
-    # We can only justify a checkpoint if its block points to an upstream block that is upstream finalized.
-    # We know that all ancestor blocks of this chain point to upstream canonical blocks.
-    # We can justify only epochs in `justified_checkpoints` whose block points to an upstream block with
-    # a slot <= than the slot of the upstream finalized epoch.
-    upstream_finalized_block_timestamp = compute_upstream_timestamp_at_slot(
-        compute_upstream_start_slot_at_epoch(state.latest_upstream_finalized_checkpoint.epoch)
-    )
-    for checkpoint in reversed(state.justified_checkpoints):
-        checkpoint_block_timestamp = compute_timestamp_at_slot(compute_start_slot_at_epoch(checkpoint.epoch))
-        if checkpoint_block_timestamp <= upstream_finalized_block_timestamp:
-            state.current_justified_checkpoint = checkpoint
-            break
+        state.pending_current_justified_checkpoint = Checkpoint(epoch=current_epoch,
+                                                                root=get_block_root(state, current_epoch))
+        state.justification_bits[0] = 0b1
 
     # Process finalizations
-    # *Note*: Both justification and finalization are gated on upstream finality (not justification)
-    # because upstream justification is reversible and a rollback would force slashable votes.
-    # Gasper paper: https://arxiv.org/pdf/2003.03052
-    # Apply Definition 4.9 with K <= 3 to epochs prior to the upstream finalized checkpoint timestamp
-    #
-    # `satisfy_finality` must check if the epochs prior to Ethereum finality
-    # satisfy the k-finalized condition. Because of the upper bound with
-    # Ethereum's finality there's this set of epochs may not be recent
-    #
-    # First k-finalized conditions, used in Beacon chain today:
+    bits = state.justification_bits
     # The 2nd/3rd/4th most recent epochs are justified, the 2nd using the 4th as source
+    if all(bits[1:4]) and old_previous_justified_checkpoint.epoch + 3 == current_epoch:
+        state.pending_finalized_checkpoint = old_previous_justified_checkpoint
     # The 2nd/3rd most recent epochs are justified, the 2nd using the 3rd as source
+    if all(bits[1:3]) and old_previous_justified_checkpoint.epoch + 2 == current_epoch:
+        state.pending_finalized_checkpoint = old_previous_justified_checkpoint
     # The 1st/2nd/3rd most recent epochs are justified, the 1st using the 3rd as source
+    if all(bits[0:3]) and old_current_justified_checkpoint.epoch + 2 == current_epoch:
+        state.pending_finalized_checkpoint = old_current_justified_checkpoint
     # The 1st/2nd most recent epochs are justified, the 1st using the 2nd as source
-    finalized_checkpoint = satisfy_finality(
-        state.latest_upstream_finalized_checkpoint,
-        state.justified_checkpoints
+    if all(bits[0:2]) and old_current_justified_checkpoint.epoch + 1 == current_epoch:
+        state.pending_finalized_checkpoint = old_current_justified_checkpoint
+
+    # --- Upstream finality gate ---
+    # Promote pending checkpoints only when they fall within the upstream finalized window.
+    upstream_finalized_timestamp = compute_upstream_timestamp_at_slot(
+        compute_upstream_start_slot_at_epoch(state.latest_upstream_finalized_checkpoint.epoch)
     )
-    if finalized_checkpoint is not None:
-        state.finalized_checkpoint = finalized_checkpoint
-        # Prune `justified_checkpoints` that are too old
-        state.justified_checkpoints = [
-            cp for cp in state.justified_checkpoints
-            if cp.epoch > finalized_checkpoint.epoch
-        ]
+
+    if state.pending_current_justified_checkpoint.epoch > state.current_justified_checkpoint.epoch:
+        pending_justified_timestamp = compute_timestamp_at_slot(
+            compute_start_slot_at_epoch(state.pending_current_justified_checkpoint.epoch)
+        )
+        if pending_justified_timestamp <= upstream_finalized_timestamp:
+            state.previous_justified_checkpoint = state.current_justified_checkpoint
+            state.current_justified_checkpoint = state.pending_current_justified_checkpoint
+
+    if state.pending_finalized_checkpoint.epoch > state.finalized_checkpoint.epoch:
+        pending_finalized_timestamp = compute_timestamp_at_slot(
+            compute_start_slot_at_epoch(state.pending_finalized_checkpoint.epoch)
+        )
+        if pending_finalized_timestamp <= upstream_finalized_timestamp:
+            state.finalized_checkpoint = state.pending_finalized_checkpoint
 ```
 
 

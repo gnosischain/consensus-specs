@@ -99,7 +99,7 @@ def upgrade_to_l1headers(pre: electra.BeaconState) -> BeaconState:
         previous_epoch_participation=pre.previous_epoch_participation,
         current_epoch_participation=pre.current_epoch_participation,
         # Finality
-        justified_checkpoints=[],  # [Modified in L1HEADERS]
+        justification_bits=pre.justification_bits,
         previous_justified_checkpoint=pre.previous_justified_checkpoint,
         current_justified_checkpoint=pre.current_justified_checkpoint,
         finalized_checkpoint=pre.finalized_checkpoint,
@@ -127,6 +127,9 @@ def upgrade_to_l1headers(pre: electra.BeaconState) -> BeaconState:
         pending_partial_withdrawals=pre.pending_partial_withdrawals,
         pending_consolidations=pre.pending_consolidations,
         # [New in L1HEADERS]
+        pending_previous_justified_checkpoint=pre.previous_justified_checkpoint,
+        pending_current_justified_checkpoint=pre.current_justified_checkpoint,
+        pending_finalized_checkpoint=pre.finalized_checkpoint,
         latest_upstream_head=BeaconBlockHeader(),
         latest_upstream_finalized_checkpoint=Checkpoint(),
     )
