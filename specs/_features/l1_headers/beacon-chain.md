@@ -32,12 +32,6 @@ This is the beacon chain specification to make fork-choice conditional on an ups
 
 *Note*: This specification is built upon [Electra](../../electra/beacon_chain.md) and is under active development.
 
-## Preset
-
-| Name | Value |
-| - | - |
-| `JUSTIFIED_EPOCHS_LIMIT` | `uint64(2**7)` (=128) |
-
 ## Configuration
 
 | Name | Value | Unit |
@@ -142,7 +136,7 @@ class BeaconState(Container):
 #### New `compute_upstream_timestamp_at_slot`
 
 ```python
-def compute_upstream_timestamp_at_slot(state: BeaconState, slot: Slot) -> uint64:
+def compute_upstream_timestamp_at_slot(slot: Slot) -> uint64:
     slots_since_genesis = slot - UPSTREAM_GENESIS_SLOT
     return uint64(UPSTREAM_GENESIS_TIME + slots_since_genesis * UPSTREAM_SECONDS_PER_SLOT)
 ```

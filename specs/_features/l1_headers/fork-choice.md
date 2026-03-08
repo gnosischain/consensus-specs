@@ -110,7 +110,7 @@ def filter_block_tree(store: Store, block_root: Root, blocks: Dict[Root, BeaconB
 ```python
 def get_target_upstream_canonical_block(store: Store, slot: Slot):
     for block in reversed(store.upstream_canonical_blocks):
-        if compute_upstream_timestamp_at_slot(block.body.upstream_head.slot) <= compute_timestamp_at_slot(slot):
+        if compute_upstream_timestamp_at_slot(block.slot) <= compute_timestamp_at_slot(slot):
             return block
     # Should always return a value
 ```
