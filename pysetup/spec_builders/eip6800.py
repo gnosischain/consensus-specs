@@ -1,7 +1,5 @@
-from typing import Dict
-
-from .base import BaseSpecBuilder
 from ..constants import EIP6800
+from .base import BaseSpecBuilder
 
 
 class EIP6800SpecBuilder(BaseSpecBuilder):
@@ -9,7 +7,7 @@ class EIP6800SpecBuilder(BaseSpecBuilder):
 
     @classmethod
     def imports(cls, preset_name: str):
-        return f'''
-from eth2spec.deneb import {preset_name} as deneb
-from eth2spec.utils.ssz.ssz_typing import Bytes31
-'''
+        return f"""
+from eth_consensus_specs.deneb import {preset_name} as deneb
+from eth_consensus_specs.utils.ssz.ssz_typing import Bytes31
+"""

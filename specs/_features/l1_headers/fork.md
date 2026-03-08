@@ -128,7 +128,7 @@ def upgrade_to_l1headers(pre: electra.BeaconState) -> BeaconState:
         pending_consolidations=pre.pending_consolidations,
         # [New in L1HEADERS]
         pending_current_justified_checkpoint=pre.current_justified_checkpoint,
-        pending_justified_checkpoints=[],  # PendingJustifiedCheckpoint
+        pending_justified_checkpoints=[],
         latest_upstream_head=BeaconBlockHeader(),
         latest_upstream_finalized_checkpoint=Checkpoint(),
     )

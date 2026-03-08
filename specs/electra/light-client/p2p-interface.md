@@ -19,7 +19,9 @@
 
 ## Networking
 
-The [Deneb light client networking specification](../../deneb/light-client/p2p-interface.md) is extended to exchange [Electra light client data](./sync-protocol.md).
+The
+[Deneb light client networking specification](../../deneb/light-client/p2p-interface.md)
+is extended to exchange [Electra light client data](./sync-protocol.md).
 
 ### The gossip domain: gossipsub
 
@@ -29,7 +31,7 @@ The [Deneb light client networking specification](../../deneb/light-client/p2p-i
 
 ###### `light_client_finality_update`
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Message SSZ type                    |
 | ------------------------------------------------------ | ----------------------------------- |
@@ -41,7 +43,7 @@ The [Deneb light client networking specification](../../deneb/light-client/p2p-i
 
 ###### `light_client_optimistic_update`
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Message SSZ type                      |
 | ------------------------------------------------------ | ------------------------------------- |
@@ -57,7 +59,7 @@ The [Deneb light client networking specification](../../deneb/light-client/p2p-i
 
 ##### GetLightClientBootstrap
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type              |
 | ------------------------------------------------------ | ------------------------------ |
@@ -69,7 +71,7 @@ The [Deneb light client networking specification](../../deneb/light-client/p2p-i
 
 ##### LightClientUpdatesByRange
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response chunk SSZ type     |
 | ------------------------------------------------------ | --------------------------- |
@@ -81,7 +83,7 @@ The [Deneb light client networking specification](../../deneb/light-client/p2p-i
 
 ##### GetLightClientFinalityUpdate
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type                   |
 | ------------------------------------------------------ | ----------------------------------- |
@@ -93,7 +95,7 @@ The [Deneb light client networking specification](../../deneb/light-client/p2p-i
 
 ##### GetLightClientOptimisticUpdate
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type                     |
 | ------------------------------------------------------ | ------------------------------------- |

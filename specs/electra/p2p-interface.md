@@ -5,6 +5,9 @@
 - [Introduction](#introduction)
 - [Modifications in Electra](#modifications-in-electra)
   - [Configuration](#configuration)
+  - [Helpers](#helpers)
+    - [Modified `compute_fork_version`](#modified-compute_fork_version)
+    - [Modified `compute_max_request_blob_sidecars`](#modified-compute_max_request_blob_sidecars)
   - [The gossip domain: gossipsub](#the-gossip-domain-gossipsub)
     - [Topics and messages](#topics-and-messages)
       - [Global topics](#global-topics)
@@ -24,9 +27,11 @@
 
 ## Introduction
 
-This document contains the consensus-layer networking specification for Electra.
+This document contains the consensus-layer networking specifications for
+Electra.
 
-The specification of these changes continues in the same format as the network specifications of previous upgrades, and assumes them as pre-requisite.
+The specification of these changes continues in the same format as the network
+specifications of previous upgrades, and assumes them as pre-requisite.
 
 ## Modifications in Electra
 
@@ -34,14 +39,46 @@ The specification of these changes continues in the same format as the network s
 
 *[New in Electra:EIP7691]*
 
-| Name                                | Value                                                    | Description                                                       |
-| ----------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
-| `MAX_REQUEST_BLOB_SIDECARS_ELECTRA` | `MAX_REQUEST_BLOCKS_DENEB * MAX_BLOBS_PER_BLOCK_ELECTRA` | Maximum number of blob sidecars in a single request               |
-| `BLOB_SIDECAR_SUBNET_COUNT_ELECTRA` | `9`                                                      | The number of blob sidecar subnets used in the gossipsub protocol |
+| Name                                | Value | Description                                                       |
+| ----------------------------------- | ----- | ----------------------------------------------------------------- |
+| `BLOB_SIDECAR_SUBNET_COUNT_ELECTRA` | `9`   | The number of blob sidecar subnets used in the gossipsub protocol |
+
+### Helpers
+
+#### Modified `compute_fork_version`
+
+```python
+def compute_fork_version(epoch: Epoch) -> Version:
+    """
+    Return the fork version at the given ``epoch``.
+    """
+    if epoch >= ELECTRA_FORK_EPOCH:
+        return ELECTRA_FORK_VERSION
+    if epoch >= DENEB_FORK_EPOCH:
+        return DENEB_FORK_VERSION
+    if epoch >= CAPELLA_FORK_EPOCH:
+        return CAPELLA_FORK_VERSION
+    if epoch >= BELLATRIX_FORK_EPOCH:
+        return BELLATRIX_FORK_VERSION
+    if epoch >= ALTAIR_FORK_EPOCH:
+        return ALTAIR_FORK_VERSION
+    return GENESIS_FORK_VERSION
+```
+
+#### Modified `compute_max_request_blob_sidecars`
+
+```python
+def compute_max_request_blob_sidecars() -> uint64:
+    """
+    Return the maximum number of blob sidecars in a single request.
+    """
+    # [Modified in Electra:EIP7691]
+    return uint64(MAX_REQUEST_BLOCKS_DENEB * MAX_BLOBS_PER_BLOCK_ELECTRA)
+```
 
 ### The gossip domain: gossipsub
 
-Some gossip meshes are upgraded in the fork of Electra to support upgraded types.
+Some gossip meshes are upgraded in Electra to support upgraded types.
 
 #### Topics and messages
 
@@ -49,11 +86,14 @@ Topics follow the same specification as in prior upgrades.
 
 The `beacon_block` topic is modified to also support Electra blocks.
 
-The `beacon_aggregate_and_proof` and `beacon_attestation_{subnet_id}` topics are modified to support the gossip of the new attestation type.
+The `beacon_aggregate_and_proof` and `beacon_attestation_{subnet_id}` topics are
+modified to support the gossip of the new attestation type.
 
-The `attester_slashing` topic is modified to support the gossip of the new `AttesterSlashing` type.
+The `attester_slashing` topic is modified to support the gossip of the new
+`AttesterSlashing` type.
 
-The specification around the creation, validation, and dissemination of messages has not changed from the Capella document unless explicitly noted here.
+The specification around the creation, validation, and dissemination of messages
+has not changed from the Capella document unless explicitly noted here.
 
 The derivation of the `message-id` remains stable.
 
@@ -63,27 +103,33 @@ The derivation of the `message-id` remains stable.
 
 *Updated validation*
 
-- _[REJECT]_ The length of KZG commitments is less than or equal to the limitation defined in Consensus Layer --
-  i.e. validate that `len(signed_beacon_block.message.body.blob_kzg_commitments) <= MAX_BLOBS_PER_BLOCK_ELECTRA`
+- _[REJECT]_ The length of KZG commitments is less than or equal to the
+  limitation defined in the consensus layer -- i.e. validate that
+  `len(signed_beacon_block.message.body.blob_kzg_commitments) <= MAX_BLOBS_PER_BLOCK_ELECTRA`
 
 ###### `beacon_aggregate_and_proof`
 
-The following convenience variables are re-defined
+Assuming the alias `aggregate = signed_aggregate_and_proof.message.aggregate`:
+
+The following convenience variables are re-defined:
 
 - `index = get_committee_indices(aggregate.committee_bits)[0]`
 
 The following validations are added:
 
-- [REJECT] `len(committee_indices) == 1`, where `committee_indices = get_committee_indices(aggregate)`.
+- [REJECT] `len(committee_indices) == 1`, where
+  `committee_indices = get_committee_indices(aggregate.committee_bits)`.
 - [REJECT] `aggregate.data.index == 0`
 
 ###### `blob_sidecar_{subnet_id}`
 
 *[Modified in Electra:EIP7691]*
 
-The existing validations all apply as given from previous forks, with the following exceptions:
+The existing validations all apply as given from previous forks, with the
+following exceptions:
 
-- Uses of `MAX_BLOBS_PER_BLOCK` in existing validations are replaced with `MAX_BLOBS_PER_BLOCK_ELECTRA`.
+- Uses of `MAX_BLOBS_PER_BLOCK` in existing validations are replaced with
+  `MAX_BLOBS_PER_BLOCK_ELECTRA`.
 
 ##### Attestation subnets
 
@@ -103,8 +149,9 @@ The following validations are added:
 
 The following validations are removed:
 
-- _[REJECT]_ The attestation is unaggregated --
-  that is, it has exactly one participating validator (`len([bit for bit in aggregation_bits if bit]) == 1`, i.e. exactly 1 bit is set).
+- _[REJECT]_ The attestation is unaggregated -- that is, it has exactly one
+  participating validator (`len([bit for bit in aggregation_bits if bit]) == 1`,
+  i.e. exactly 1 bit is set).
 - _[REJECT]_ The number of aggregation bits matches the committee size -- i.e.
   `len(aggregation_bits) == len(get_beacon_committee(state, attestation.data.slot, index))`.
 
@@ -116,11 +163,10 @@ The following validations are removed:
 
 **Protocol ID:** `/eth2/beacon_chain/req/beacon_blocks_by_range/2/`
 
-The Electra fork-digest is introduced to the `context` enum to specify Electra beacon block type.
+The Electra fork-digest is introduced to the `context` enum to specify Electra
+beacon block type.
 
-Per `context = compute_fork_digest(fork_version, genesis_validators_root)`:
-
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`           | Chunk SSZ type                |
 | ------------------------ | ----------------------------- |
@@ -135,9 +181,7 @@ Per `context = compute_fork_digest(fork_version, genesis_validators_root)`:
 
 **Protocol ID:** `/eth2/beacon_chain/req/beacon_blocks_by_root/2/`
 
-Per `context = compute_fork_digest(fork_version, genesis_validators_root)`:
-
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`           | Chunk SSZ type                |
 | ------------------------ | ----------------------------- |
@@ -154,26 +198,8 @@ Per `context = compute_fork_digest(fork_version, genesis_validators_root)`:
 
 *[Modified in Electra:EIP7691]*
 
-Request Content:
-
-```
-(
-  start_slot: Slot
-  count: uint64
-)
-```
-
-Response Content:
-
-```
-(
-  List[BlobSidecar, MAX_REQUEST_BLOB_SIDECARS_ELECTRA]
-)
-```
-
-*Updated validation*
-
-Clients MUST respond with at least the blob sidecars of the first blob-carrying block that exists in the range, if they have it, and no more than `MAX_REQUEST_BLOB_SIDECARS_ELECTRA` sidecars.
+*Note*: The `compute_max_request_blob_sidecars` function has been modified which
+affects the request, response, and validation logic.
 
 ##### BlobSidecarsByRoot v1
 
@@ -181,22 +207,5 @@ Clients MUST respond with at least the blob sidecars of the first blob-carrying 
 
 *[Modified in Electra:EIP7691]*
 
-Request Content:
-
-```
-(
-  List[BlobIdentifier, MAX_REQUEST_BLOB_SIDECARS_ELECTRA]
-)
-```
-
-Response Content:
-
-```
-(
-  List[BlobSidecar, MAX_REQUEST_BLOB_SIDECARS_ELECTRA]
-)
-```
-
-*Updated validation*
-
-No more than `MAX_REQUEST_BLOB_SIDECARS_ELECTRA` may be requested at a time.
+*Note*: The `compute_max_request_blob_sidecars` function has been modified which
+affects the request, response, and validation logic.

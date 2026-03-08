@@ -19,7 +19,9 @@
 
 ## Networking
 
-The [Altair light client networking specification](../../altair/light-client/p2p-interface.md) is extended to exchange [Capella light client data](./sync-protocol.md).
+The
+[Altair light client networking specification](../../altair/light-client/p2p-interface.md)
+is extended to exchange [Capella light client data](./sync-protocol.md).
 
 ### The gossip domain: gossipsub
 
@@ -29,7 +31,7 @@ The [Altair light client networking specification](../../altair/light-client/p2p
 
 ###### `light_client_finality_update`
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Message SSZ type                    |
 | ------------------------------------------------------ | ----------------------------------- |
@@ -39,7 +41,7 @@ The [Altair light client networking specification](../../altair/light-client/p2p
 
 ###### `light_client_optimistic_update`
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Message SSZ type                      |
 | ------------------------------------------------------ | ------------------------------------- |
@@ -53,7 +55,7 @@ The [Altair light client networking specification](../../altair/light-client/p2p
 
 ##### GetLightClientBootstrap
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type              |
 | ------------------------------------------------------ | ------------------------------ |
@@ -63,7 +65,7 @@ The [Altair light client networking specification](../../altair/light-client/p2p
 
 ##### LightClientUpdatesByRange
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response chunk SSZ type     |
 | ------------------------------------------------------ | --------------------------- |
@@ -73,7 +75,7 @@ The [Altair light client networking specification](../../altair/light-client/p2p
 
 ##### GetLightClientFinalityUpdate
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type                   |
 | ------------------------------------------------------ | ----------------------------------- |
@@ -83,7 +85,7 @@ The [Altair light client networking specification](../../altair/light-client/p2p
 
 ##### GetLightClientOptimisticUpdate
 
-<!-- eth2spec: skip -->
+<!-- eth_consensus_specs: skip -->
 
 | `fork_version`                                         | Response SSZ type                     |
 | ------------------------------------------------------ | ------------------------------------- |

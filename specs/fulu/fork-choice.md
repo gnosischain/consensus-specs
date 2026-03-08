@@ -1,13 +1,11 @@
 # Fulu -- Fork Choice
 
-*Note*: This document is a work-in-progress for researchers and implementers.
-
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
 - [Introduction](#introduction)
 - [Helpers](#helpers)
   - [Modified `is_data_available`](#modified-is_data_available)
-- [Updated fork-choice handlers](#updated-fork-choice-handlers)
+- [Handlers](#handlers)
   - [Modified `on_block`](#modified-on_block)
 
 <!-- mdformat-toc end -->
@@ -35,11 +33,12 @@ def is_data_available(beacon_block_root: Root) -> bool:
     )
 ```
 
-## Updated fork-choice handlers
+## Handlers
 
 ### Modified `on_block`
 
-*Note*: The only modification is that `is_data_available` does not take `blob_kzg_commitments` as input.
+*Note*: The only modification is that `is_data_available` does not take
+`blob_kzg_commitments` as input.
 
 ```python
 def on_block(store: Store, signed_block: SignedBeaconBlock) -> None:
@@ -66,6 +65,8 @@ def on_block(store: Store, signed_block: SignedBeaconBlock) -> None:
     assert store.finalized_checkpoint.root == finalized_checkpoint_block
 
     # [Modified in Fulu:EIP7594]
+    # Check if blob data is available
+    # If not, this payload MAY be queued and subsequently considered when blob data becomes available
     assert is_data_available(hash_tree_root(block))
 
     # Check the block is valid and compute the post-state
@@ -77,16 +78,8 @@ def on_block(store: Store, signed_block: SignedBeaconBlock) -> None:
     # Add new state for this block to the store
     store.block_states[block_root] = state
 
-    # Add block timeliness to the store
-    time_into_slot = (store.time - store.genesis_time) % SECONDS_PER_SLOT
-    is_before_attesting_interval = time_into_slot < SECONDS_PER_SLOT // INTERVALS_PER_SLOT
-    is_timely = get_current_slot(store) == block.slot and is_before_attesting_interval
-    store.block_timeliness[hash_tree_root(block)] = is_timely
-
-    # Add proposer score boost if the block is timely and not conflicting with an existing block
-    is_first_block = store.proposer_boost_root == Root()
-    if is_timely and is_first_block:
-        store.proposer_boost_root = hash_tree_root(block)
+    record_block_timeliness(store, block_root)
+    update_proposer_boost_root(store, block_root)
 
     # Update checkpoints in store if necessary
     update_checkpoints(store, state.current_justified_checkpoint, state.finalized_checkpoint)
