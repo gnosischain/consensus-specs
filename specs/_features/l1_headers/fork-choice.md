@@ -94,7 +94,11 @@ def filter_block_tree(store: Store, block_root: Root, blocks: Dict[Root, BeaconB
     )
 
     # [New in L1HEADERS]
-    upstream_is_canonical = block.body.upstream_head in store.upstream_canonical_blocks
+    upstream_root = hash_tree_root(block.body.upstream_head)
+    upstream_is_canonical = any(
+        hash_tree_root(c) == upstream_root
+        for c in store.upstream_canonical_blocks
+    )
 
     # If expected finalized/justified, add to viable block-tree and signal viability to parent.
     if correct_justified and correct_finalized and upstream_is_canonical:
@@ -108,25 +112,35 @@ def filter_block_tree(store: Store, block_root: Root, blocks: Dict[Root, BeaconB
 #### New `get_upstream_canonical_block`
 
 ```python
-def get_target_upstream_canonical_block(store: Store, slot: Slot):
+def get_target_upstream_canonical_block(
+    store: Store, slot: Slot,
+) -> BeaconBlockHeader:
     for block in reversed(store.upstream_canonical_blocks):
-        if compute_upstream_timestamp_at_slot(block.slot) <= compute_timestamp_at_slot(slot):
+        ts = compute_upstream_timestamp_at_slot(block.slot)
+        if ts <= compute_timestamp_at_slot(slot):
             return block
-    # Should always return a value
+    assert False, "No upstream block at or before slot"
 ```
 
 ### Handlers
 
 #### New `on_upstream_head`
 
-`on_upstream_head` is called every time the upstream chain head changes, either due to a new block or a re-org.
+`on_upstream_head` is called every time the upstream chain head
+changes, either due to a new block or a re-org.
 
 ```python
 def on_upstream_head(store: Store) -> None:
-    # `retrieve_upstream_canonical_blocks` is implementation dependent. It returns all the upstream block
-    # between genesis and the head in ascending slot order.
-    #
-    # *Note*: that only upstream blocks with a slot >= than 
-    # `blocks[store.finalized_checkpoint.root].body.upstream_head.slot` are relevant.
-    store.upstream_canonical_blocks = retrieve_upstream_canonical_blocks()
+    # `retrieve_upstream_canonical_blocks` is implementation
+    # dependent. It returns upstream blocks between the
+    # finalized upstream slot and the head, in ascending order.
+    finalized_block = store.blocks[
+        store.finalized_checkpoint.root
+    ]
+    min_slot = finalized_block.body.upstream_head.slot
+    store.upstream_canonical_blocks = [
+        block
+        for block in retrieve_upstream_canonical_blocks()
+        if block.slot >= min_slot
+    ]
 ```

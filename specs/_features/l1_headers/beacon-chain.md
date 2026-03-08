@@ -41,7 +41,7 @@ This is the beacon chain specification to make fork-choice conditional on an ups
 | Name | Value | Description |
 | - | - | - |
 | `PENDING_FINALITY_LIMIT` | `uint64(2**10)` (=1024) | Max pending checkpoints before oldest are dropped |
-| `MAX_UPSTREAM_INTERMEDIATE_HEADERS` | `uint64(2**6)` (=64) | Max upstream headers between consecutive Gnosis blocks |
+| `MAX_UPSTREAM_INTERMEDIATE_HEADERS` | `uint64(2**22)` (=4,194,304) | Max upstream intermediate headers |
 | `UPSTREAM_FINALIZED_CHECKPOINT_GINDEX` | `GeneralizedIndex(84)` | `get_generalized_index(UpstreamBeaconState, 'finalized_checkpoint')` |
 
 *Note*: The generalized index is based on the upstream (Ethereum mainnet) `BeaconState` layout at the Electra fork. It must be updated if the upstream state structure changes.
@@ -235,6 +235,12 @@ def process_upstream_chain(state: BeaconState, block: BeaconBlock) -> None:
         assert chain[0].parent_root == hash_tree_root(state.latest_upstream_head)
         for i in range(1, len(chain)):
             assert chain[i].parent_root == hash_tree_root(chain[i - 1])
+
+    # Upstream finalized checkpoint must not regress
+    assert (
+        block.body.upstream_finalized_checkpoint.epoch
+        >= state.latest_upstream_finalized_checkpoint.epoch
+    )
 
     # Verify that upstream_finalized_checkpoint is committed in the upstream state
     assert is_valid_merkle_branch(
