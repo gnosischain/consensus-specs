@@ -11,6 +11,8 @@
 - [Configuration](#configuration)
 - [Custom types](#custom-types)
 - [Containers](#containers)
+  - [New containers](#new-containers)
+    - [`PendingJustifiedCheckpoint`](#pendingjustifiedcheckpoint)
   - [Modified containers](#modified-containers)
     - [`BeaconBlockBody`](#beaconblockbody)
     - [`BeaconState`](#beaconstate)
@@ -60,6 +62,16 @@ This is the beacon chain specification to make fork-choice conditional on an ups
 | `UpstreamFinalityBranch` | `Vector[Bytes32, floorlog2(UPSTREAM_FINALIZED_CHECKPOINT_GINDEX)]` | Merkle branch of `finalized_checkpoint` within the upstream `BeaconState` |
 
 ## Containers
+
+### New containers
+
+#### `PendingJustifiedCheckpoint`
+
+```python
+class PendingJustifiedCheckpoint(Container):
+    source_epoch: Epoch
+    checkpoint: Checkpoint
+```
 
 ### Modified containers
 
@@ -120,22 +132,11 @@ class BeaconState(Container):
     previous_epoch_participation: List[ParticipationFlags, VALIDATOR_REGISTRY_LIMIT]
     current_epoch_participation: List[ParticipationFlags, VALIDATOR_REGISTRY_LIMIT]
     # Finality
+    # [Deprecated in L1HEADERS] No longer used; kept for SSZ compatibility
     justification_bits: Bitvector[JUSTIFICATION_BITS_LENGTH]
     previous_justified_checkpoint: Checkpoint
     current_justified_checkpoint: Checkpoint
     finalized_checkpoint: Checkpoint
-    # [New in L1HEADERS] Casper FFG running state — standard Casper FFG runs against these
-    # fields every epoch, advancing them exactly as the base spec would advance the real
-    # checkpoints. Results are appended to the pending lists below.
-    pending_previous_justified_checkpoint: Checkpoint
-    pending_current_justified_checkpoint: Checkpoint
-    pending_finalized_checkpoint: Checkpoint
-    # [New in L1HEADERS] Pending finality — accumulated FFG results waiting for upstream
-    # finality. The real checkpoints above only advance when upstream finality catches up
-    # (via promote_pending_finality). We gate on upstream finality (not justification)
-    # because upstream justification is reversible — a rollback would force slashable votes.
-    pending_justified_checkpoints: List[Checkpoint, PENDING_FINALITY_LIMIT]
-    pending_finalized_checkpoints: List[Checkpoint, PENDING_FINALITY_LIMIT]
     # Inactivity
     inactivity_scores: List[uint64, VALIDATOR_REGISTRY_LIMIT]
     # Sync
@@ -158,6 +159,17 @@ class BeaconState(Container):
     pending_partial_withdrawals: List[PendingPartialWithdrawal, PENDING_PARTIAL_WITHDRAWALS_LIMIT]
     pending_consolidations: List[PendingConsolidation, PENDING_CONSOLIDATIONS_LIMIT]
     # [New in L1HEADERS]
+    # Running justification tracker — tracks the highest justified
+    # epoch independently of the promoted checkpoints.
+    pending_current_justified_checkpoint: Checkpoint
+    # Justified epochs waiting for upstream finality before promotion.
+    # Each entry records the source (promoted justified epoch at the
+    # time attesters voted) so promote_pending_finality can verify
+    # supermajority links. We gate on upstream finality (not
+    # justification) because upstream justification is reversible.
+    pending_justified_checkpoints: List[
+        PendingJustifiedCheckpoint, PENDING_FINALITY_LIMIT
+    ]
     latest_upstream_head: BeaconBlockHeader
     latest_upstream_finalized_checkpoint: Checkpoint
 ```
@@ -242,82 +254,151 @@ def process_upstream_chain(state: BeaconState, block: BeaconBlock) -> None:
 
 #### Modified `weigh_justification_and_finalization`
 
-*Note*: The function `weigh_justification_and_finalization` is modified to run standard Casper FFG against the `pending_*` fields instead of the real checkpoints. The only change from the base spec is `s/previous_justified_checkpoint/pending_previous_justified_checkpoint/`, `s/current_justified_checkpoint/pending_current_justified_checkpoint/`, `s/finalized_checkpoint/pending_finalized_checkpoint/`, plus the `[New in L1HEADERS]` block at the end that appends results to the pending lists. The real checkpoints only advance through `promote_pending_finality`.
+*Note*: The function `weigh_justification_and_finalization` is modified
+to only track justification (which epochs got 2/3 weight) and append
+results to `pending_justified_checkpoints`. Each entry records the
+`source_epoch` — the promoted `current_justified_checkpoint.epoch` that
+attesters used as their source. The standard Casper FFG 4-case
+finalization rule is removed; finalization is computed over the pending
+list in `promote_pending_finality` using generalized k-finality.
 
 ```python
-def weigh_justification_and_finalization(state: BeaconState,
-                                         total_active_balance: Gwei,
-                                         previous_epoch_target_balance: Gwei,
-                                         current_epoch_target_balance: Gwei) -> None:
+def weigh_justification_and_finalization(
+    state: BeaconState,
+    total_active_balance: Gwei,
+    previous_epoch_target_balance: Gwei,
+    current_epoch_target_balance: Gwei,
+) -> None:
     previous_epoch = get_previous_epoch(state)
     current_epoch = get_current_epoch(state)
-    old_previous_justified_checkpoint = state.pending_previous_justified_checkpoint  # [Modified in L1HEADERS]
-    old_current_justified_checkpoint = state.pending_current_justified_checkpoint  # [Modified in L1HEADERS]
-    old_finalized_checkpoint = state.pending_finalized_checkpoint  # [New in L1HEADERS]
+    old_current = state.pending_current_justified_checkpoint
+    # [New in L1HEADERS] Source is what attesters used
+    source_epoch = state.current_justified_checkpoint.epoch
 
     # Process justifications
-    state.pending_previous_justified_checkpoint = state.pending_current_justified_checkpoint  # [Modified in L1HEADERS]
-    state.justification_bits[1:] = state.justification_bits[:JUSTIFICATION_BITS_LENGTH - 1]
-    state.justification_bits[0] = 0b0
     if previous_epoch_target_balance * 3 >= total_active_balance * 2:
-        state.pending_current_justified_checkpoint = Checkpoint(epoch=previous_epoch,  # [Modified in L1HEADERS]
-                                                                root=get_block_root(state, previous_epoch))
-        state.justification_bits[1] = 0b1
+        cp = Checkpoint(
+            epoch=previous_epoch,
+            root=get_block_root(state, previous_epoch),
+        )
+        state.pending_current_justified_checkpoint = cp
+        # [New in L1HEADERS]
+        if previous_epoch > old_current.epoch:
+            state.pending_justified_checkpoints.append(
+                PendingJustifiedCheckpoint(
+                    source_epoch=source_epoch,
+                    checkpoint=cp,
+                )
+            )
     if current_epoch_target_balance * 3 >= total_active_balance * 2:
-        state.pending_current_justified_checkpoint = Checkpoint(epoch=current_epoch,  # [Modified in L1HEADERS]
-                                                                root=get_block_root(state, current_epoch))
-        state.justification_bits[0] = 0b1
+        cp = Checkpoint(
+            epoch=current_epoch,
+            root=get_block_root(state, current_epoch),
+        )
+        state.pending_current_justified_checkpoint = cp
+        # [New in L1HEADERS]
+        state.pending_justified_checkpoints.append(
+            PendingJustifiedCheckpoint(
+                source_epoch=source_epoch,
+                checkpoint=cp,
+            )
+        )
 
-    # Process finalizations
-    bits = state.justification_bits
-    # The 2nd/3rd/4th most recent epochs are justified, the 2nd using the 4th as source
-    if all(bits[1:4]) and old_previous_justified_checkpoint.epoch + 3 == current_epoch:
-        state.pending_finalized_checkpoint = old_previous_justified_checkpoint  # [Modified in L1HEADERS]
-    # The 2nd/3rd most recent epochs are justified, the 2nd using the 3rd as source
-    if all(bits[1:3]) and old_previous_justified_checkpoint.epoch + 2 == current_epoch:
-        state.pending_finalized_checkpoint = old_previous_justified_checkpoint  # [Modified in L1HEADERS]
-    # The 1st/2nd/3rd most recent epochs are justified, the 1st using the 3rd as source
-    if all(bits[0:3]) and old_current_justified_checkpoint.epoch + 2 == current_epoch:
-        state.pending_finalized_checkpoint = old_current_justified_checkpoint  # [Modified in L1HEADERS]
-    # The 1st/2nd most recent epochs are justified, the 1st using the 2nd as source
-    if all(bits[0:2]) and old_current_justified_checkpoint.epoch + 1 == current_epoch:
-        state.pending_finalized_checkpoint = old_current_justified_checkpoint  # [Modified in L1HEADERS]
-
-    # [New in L1HEADERS] Append new results to pending lists
-    if state.pending_current_justified_checkpoint.epoch > old_current_justified_checkpoint.epoch:
-        state.pending_justified_checkpoints.append(state.pending_current_justified_checkpoint)
-    if state.pending_finalized_checkpoint.epoch > old_finalized_checkpoint.epoch:
-        state.pending_finalized_checkpoints.append(state.pending_finalized_checkpoint)
+    # [Modified in L1HEADERS] Finalization deferred to
+    # promote_pending_finality
 ```
 
 #### New `promote_pending_finality`
 
-*Note*: `promote_pending_finality` is called from `process_upstream_chain` whenever new upstream finality data arrives. It promotes the highest pending checkpoint whose timestamp is covered by upstream finality. We gate on upstream **finality** (not justification) because upstream justification is reversible — if it rolled back, attesters would be forced into slashable votes.
+*Note*: `promote_pending_finality` is called from
+`process_upstream_chain` whenever new upstream finality data arrives.
+It uses generalized k-finality: checkpoint J is finalized if J is the
+promoted justified checkpoint, there exists a supermajority link J→T
+(an entry with `source_epoch == J`), and all intermediate epochs
+J+1..T-1 are justified (any source). This generalizes the standard
+4-case rule to arbitrary k, which is needed because the gap between
+the promoted checkpoint and the first epoch attested with that source
+can span many epochs.
+
+With perfect participation on both chains, finalization takes
+approximately 2 × upstream finality delay ≈ **26 minutes**: one
+upstream finality period to promote the justified checkpoint, then
+one more for the first epoch attested with the new source to be
+covered.
 
 ```python
 def promote_pending_finality(state: BeaconState) -> None:
-    upstream_finalized_timestamp = compute_upstream_timestamp_at_slot(
-        compute_upstream_start_slot_at_epoch(state.latest_upstream_finalized_checkpoint.epoch)
+    upstream_finalized_timestamp = (
+        compute_upstream_timestamp_at_slot(
+            compute_upstream_start_slot_at_epoch(
+                state.latest_upstream_finalized_checkpoint.epoch
+            )
+        )
     )
 
-    for cp in reversed(state.pending_justified_checkpoints):
-        cp_timestamp = compute_timestamp_at_slot(compute_start_slot_at_epoch(cp.epoch))
-        if cp_timestamp <= upstream_finalized_timestamp:
-            state.previous_justified_checkpoint = state.current_justified_checkpoint
-            state.current_justified_checkpoint = cp
-            state.pending_justified_checkpoints = [
-                x for x in state.pending_justified_checkpoints if x.epoch > cp.epoch
-            ]
+    def is_covered(epoch: Epoch) -> bool:
+        ts = compute_timestamp_at_slot(
+            compute_start_slot_at_epoch(epoch)
+        )
+        return ts <= upstream_finalized_timestamp
+
+    # Collect justified epochs and source links
+    justified_epochs = set()
+    # source_epoch -> smallest covered target epoch
+    links = {}  # source_epoch -> target_epoch, checkpoint
+    for entry in state.pending_justified_checkpoints:
+        justified_epochs.add(entry.checkpoint.epoch)
+        if is_covered(entry.checkpoint.epoch):
+            src = entry.source_epoch
+            if src not in links or (
+                entry.checkpoint.epoch < links[src][0]
+            ):
+                links[src] = (
+                    entry.checkpoint.epoch,
+                    entry.checkpoint,
+                )
+
+    # k-finality: find a link from current_justified to some
+    # covered target T, with all intermediate epochs justified
+    j = state.current_justified_checkpoint.epoch
+    if j in links:
+        target_epoch, target_cp = links[j]
+        # Check all intermediate epochs are justified
+        if all(
+            e in justified_epochs
+            for e in range(j + 1, target_epoch)
+        ):
+            state.finalized_checkpoint = (
+                state.current_justified_checkpoint
+            )
+            state.previous_justified_checkpoint = (
+                state.current_justified_checkpoint
+            )
+            state.current_justified_checkpoint = target_cp
+
+    # Promote highest covered checkpoint (may skip epochs)
+    for entry in reversed(
+        state.pending_justified_checkpoints
+    ):
+        ep = entry.checkpoint.epoch
+        if ep > state.current_justified_checkpoint.epoch and (
+            is_covered(ep)
+        ):
+            state.previous_justified_checkpoint = (
+                state.current_justified_checkpoint
+            )
+            state.current_justified_checkpoint = (
+                entry.checkpoint
+            )
             break
 
-    for cp in reversed(state.pending_finalized_checkpoints):
-        cp_timestamp = compute_timestamp_at_slot(compute_start_slot_at_epoch(cp.epoch))
-        if cp_timestamp <= upstream_finalized_timestamp:
-            state.finalized_checkpoint = cp
-            state.pending_finalized_checkpoints = [
-                x for x in state.pending_finalized_checkpoints if x.epoch > cp.epoch
-            ]
-            break
+    # Prune promoted checkpoints
+    state.pending_justified_checkpoints = [
+        entry
+        for entry in state.pending_justified_checkpoints
+        if entry.checkpoint.epoch
+        > state.current_justified_checkpoint.epoch
+    ]
 ```
 
 
