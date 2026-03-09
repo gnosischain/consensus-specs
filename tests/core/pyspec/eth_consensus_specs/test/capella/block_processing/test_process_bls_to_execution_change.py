@@ -260,29 +260,19 @@ def test_invalid_genesis_validators_root(spec, state):
 @always_bls
 def test_valid_signature_from_staking_deposit_cli(spec, state):
     validator_index = 1
-    from_bls_pubkey = bytes.fromhex(
-        "86248e64705987236ec3c41f6a81d96f98e7b85e842a1d71405b216fa75a9917512f3c94c85779a9729c927ea2aa9ed1"
-    )  # noqa: E501
     to_execution_address = bytes.fromhex("3434343434343434343434343434343434343434")
-    signature = bytes.fromhex(
-        "8cf4219884b326a04f6664b680cd9a99ad70b5280745af1147477aa9f8b4a2b2b38b8688c6a74a06f275ad4e14c5c0c70e2ed37a15ece5bf7c0724a376ad4c03c79e14dd9f633a3d54abc1ce4e73bec3524a789ab9a69d4d06686a8a67c9e4dc"
-    )  # noqa: E501
 
-    # Use mainnet `genesis_validators_root`
+    # Use gnosis mainnet `genesis_validators_root`
     state.genesis_validators_root = bytes.fromhex(
-        "4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95"
+        "f5dcb5564e829aab27264b9becd5dfaa017085611224cb3036f573368dbb9d47"
     )
-    validator = state.validators[validator_index]
-    validator.withdrawal_credentials = spec.BLS_WITHDRAWAL_PREFIX + spec.hash(from_bls_pubkey)[1:]
 
-    address_change = spec.BLSToExecutionChange(
+    signed_address_change = get_signed_address_change(
+        spec,
+        state,
         validator_index=validator_index,
-        from_bls_pubkey=from_bls_pubkey,
         to_execution_address=to_execution_address,
-    )
-    signed_address_change = spec.SignedBLSToExecutionChange(
-        message=address_change,
-        signature=signature,
+        genesis_validators_root=state.genesis_validators_root,
     )
 
     yield from run_bls_to_execution_change_processing(spec, state, signed_address_change)

@@ -229,13 +229,15 @@ def _run_sync_committee_selected_twice(
     committee_size = len(committee_indices)
     committee_bits = [False] * committee_size
 
-    # Find duplicate indices that get selected twice
-    dup = {v for v in committee_indices if committee_indices.count(v) == 2}
+    # Find duplicate indices that get selected exactly four times
+    dup = {v for v in committee_indices if committee_indices.count(v) == 4}
     assert len(dup) > 0
     validator_index = dup.pop()
     positions = [i for i, v in enumerate(committee_indices) if v == validator_index]
     committee_bits[positions[0]] = participate_first_position
     committee_bits[positions[1]] = participate_second_position
+    committee_bits[positions[2]] = participate_first_position
+    committee_bits[positions[3]] = participate_second_position
 
     # Set validator's balance
     state.balances[validator_index] = pre_balance
