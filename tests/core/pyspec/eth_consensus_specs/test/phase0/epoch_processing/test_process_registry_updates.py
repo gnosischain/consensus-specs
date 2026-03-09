@@ -365,7 +365,9 @@ def test_activation_queue_activation_and_ejection__churn_limit(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
     assert churn_limit == spec.config.MIN_PER_EPOCH_CHURN_LIMIT
     activation_churn_limit = get_activation_churn_limit(spec, state)
-    yield from run_test_activation_queue_activation_and_ejection(spec, state, activation_churn_limit)
+    yield from run_test_activation_queue_activation_and_ejection(
+        spec, state, activation_churn_limit
+    )
 
 
 @with_all_phases
@@ -374,7 +376,9 @@ def test_activation_queue_activation_and_ejection__exceed_churn_limit(spec, stat
     churn_limit = spec.get_validator_churn_limit(state)
     assert churn_limit == spec.config.MIN_PER_EPOCH_CHURN_LIMIT
     activation_churn_limit = get_activation_churn_limit(spec, state)
-    yield from run_test_activation_queue_activation_and_ejection(spec, state, activation_churn_limit + 1)
+    yield from run_test_activation_queue_activation_and_ejection(
+        spec, state, activation_churn_limit + 1,
+    )
 
 
 @with_all_phases
