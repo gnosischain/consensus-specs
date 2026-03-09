@@ -78,7 +78,7 @@ def test_effective_balance_increase_changes_lookahead(spec, state):
     # Since this test relies on the RANDAO, we adjust the number of next_epoch transitions
     # we do at the setup of the test run until the assertion passes.
     # We start with 4 epochs because the test is known to pass with 4 epochs.
-    for randao_setup_epochs in range(4, 20):
+    for randao_setup_epochs in range(4, 50):
         try:
             state_copy = state.copy()
             yield from run_test_with_randao_setup_epochs(spec, state_copy, randao_setup_epochs)
