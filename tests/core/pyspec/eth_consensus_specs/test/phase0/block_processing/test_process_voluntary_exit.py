@@ -102,9 +102,7 @@ def run_test_success_exit_queue(spec, state):
     #  when processing an additional exit, it results in an exit in a later epoch
     yield from run_voluntary_exit_processing(spec, state, signed_voluntary_exit)
 
-    last_initial_exit_epoch = max(
-        state.validators[index].exit_epoch for index in initial_indices
-    )
+    last_initial_exit_epoch = max(state.validators[index].exit_epoch for index in initial_indices)
     assert state.validators[validator_index].exit_epoch == last_initial_exit_epoch + 1
 
 
