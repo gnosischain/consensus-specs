@@ -17,10 +17,10 @@ the Altair upgrade, introducing light client support and other improvements.
 
 ## Configuration
 
-| Name                  | Value                                         |
-| --------------------- | --------------------------------------------- |
-| `ALTAIR_FORK_VERSION` | `Version('0x01000064')`                       |
-| `ALTAIR_FORK_EPOCH`   | `Epoch(512)`                                  |
+| Name                  | Value                   |
+| --------------------- | ----------------------- |
+| `ALTAIR_FORK_VERSION` | `Version('0x01000064')` |
+| `ALTAIR_FORK_EPOCH`   | `Epoch(512)`            |
 
 ## Fork to Altair
 

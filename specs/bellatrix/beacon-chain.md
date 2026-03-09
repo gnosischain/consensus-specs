@@ -84,11 +84,11 @@ final, maximum security values.
 
 ### Transition settings
 
-| Name                                   | Value                                                |
-| -------------------------------------- | ---------------------------------------------------- |
+| Name                                   | Value                                                                     |
+| -------------------------------------- | ------------------------------------------------------------------------- |
 | `TERMINAL_TOTAL_DIFFICULTY`            | `8626000000000000000000058750000000000000000000` (Estimated: Dec 5, 2022) |
-| `TERMINAL_BLOCK_HASH`                  | `Hash32()`                                           |
-| `TERMINAL_BLOCK_HASH_ACTIVATION_EPOCH` | `FAR_FUTURE_EPOCH`                                   |
+| `TERMINAL_BLOCK_HASH`                  | `Hash32()`                                                                |
+| `TERMINAL_BLOCK_HASH_ACTIVATION_EPOCH` | `FAR_FUTURE_EPOCH`                                                        |
 
 ## Containers
 

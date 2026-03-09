@@ -90,14 +90,14 @@ We define the following Python custom types for type hinting and readability:
 
 ### Execution
 
-| Name                          | Value                 | Description                                           |
-| ----------------------------- | --------------------- | ----------------------------------------------------- |
+| Name                          | Value                | Description                                           |
+| ----------------------------- | -------------------- | ----------------------------------------------------- |
 | `MAX_WITHDRAWALS_PER_PAYLOAD` | `uint64(2**3)` (= 8) | Maximum amount of withdrawals allowed in each payload |
 
 ### Withdrawals processing
 
-| Name                                   | Value              |
-| -------------------------------------- | ------------------ |
+| Name                                   | Value             |
+| -------------------------------------- | ----------------- |
 | `MAX_VALIDATORS_PER_WITHDRAWALS_SWEEP` | `2**13` (= 8,192) |
 
 ## Containers

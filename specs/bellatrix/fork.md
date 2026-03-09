@@ -16,10 +16,10 @@ This document describes the process of Bellatrix upgrade.
 
 ## Configuration
 
-| Name                     | Value                                          |
-| ------------------------ | ---------------------------------------------- |
-| `BELLATRIX_FORK_VERSION` | `Version('0x02000064')`                        |
-| `BELLATRIX_FORK_EPOCH`   | `Epoch(385536)`                                |
+| Name                     | Value                   |
+| ------------------------ | ----------------------- |
+| `BELLATRIX_FORK_VERSION` | `Version('0x02000064')` |
+| `BELLATRIX_FORK_EPOCH`   | `Epoch(385536)`         |
 
 ## Fork to Bellatrix
 

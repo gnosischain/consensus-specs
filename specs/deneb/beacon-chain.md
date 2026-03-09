@@ -94,8 +94,8 @@ independently defined by `MAX_BLOBS_PER_BLOCK`.
 
 ### Validator cycle
 
-| Name                                   | Value                |
-| -------------------------------------- | -------------------- |
+| Name                                   | Value       |
+| -------------------------------------- | ----------- |
 | `MAX_PER_EPOCH_ACTIVATION_CHURN_LIMIT` | `uint64(2)` |
 
 ## Containers

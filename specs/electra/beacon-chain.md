@@ -193,8 +193,8 @@ specification.
 
 ### Withdrawals processing
 
-| Name                                         | Value                | Description                                                          |
-| -------------------------------------------- | -------------------- | -------------------------------------------------------------------- |
+| Name                                         | Value       | Description                                                          |
+| -------------------------------------------- | ----------- | -------------------------------------------------------------------- |
 | `MAX_PENDING_PARTIALS_PER_WITHDRAWALS_SWEEP` | `uint64(6)` | Maximum number of pending partial withdrawals to process per payload |
 
 ### Pending deposits processing
@@ -216,7 +216,7 @@ specification.
 | Name                                        | Value                                    |
 | ------------------------------------------- | ---------------------------------------- |
 | `MIN_PER_EPOCH_CHURN_LIMIT_ELECTRA`         | `Gwei(2**7 * 10**9)` (= 128,000,000,000) |
-| `MAX_PER_EPOCH_ACTIVATION_EXIT_CHURN_LIMIT` | `Gwei(2**6 * 10**9)` (= 64,000,000,000) |
+| `MAX_PER_EPOCH_ACTIVATION_EXIT_CHURN_LIMIT` | `Gwei(2**6 * 10**9)` (= 64,000,000,000)  |
 
 ## Containers
 

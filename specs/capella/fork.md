@@ -16,10 +16,10 @@ This document describes the process of the Capella upgrade.
 
 ## Configuration
 
-| Name                   | Value                                            |
-| ---------------------- | ------------------------------------------------ |
-| `CAPELLA_FORK_VERSION` | `Version('0x03000064')`                          |
-| `CAPELLA_FORK_EPOCH`   | `Epoch(648704)`                                  |
+| Name                   | Value                   |
+| ---------------------- | ----------------------- |
+| `CAPELLA_FORK_VERSION` | `Version('0x03000064')` |
+| `CAPELLA_FORK_EPOCH`   | `Epoch(648704)`         |
 
 ## Fork to Capella
 
