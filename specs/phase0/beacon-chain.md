@@ -261,7 +261,7 @@ directory.
 | Name                               | Value                     |  Unit  |
 | ---------------------------------- | ------------------------- | :----: |
 | `MIN_ATTESTATION_INCLUSION_DELAY`  | `uint64(2**0)` (= 1)      | slots  |
-| `SLOTS_PER_EPOCH`                  | `uint64(16)`              | slots  |
+| `SLOTS_PER_EPOCH`                  | `uint64(2**4)` (= 16)     | slots  |
 | `MIN_SEED_LOOKAHEAD`               | `uint64(2**0)` (= 1)      | epochs |
 | `MAX_SEED_LOOKAHEAD`               | `uint64(2**2)` (= 4)      | epochs |
 | `MIN_EPOCHS_TO_INACTIVITY_PENALTY` | `uint64(2**2)` (= 4)      | epochs |

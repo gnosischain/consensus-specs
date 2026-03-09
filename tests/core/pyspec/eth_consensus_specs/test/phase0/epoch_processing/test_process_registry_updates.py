@@ -10,8 +10,17 @@ from eth_consensus_specs.test.context import (
 from eth_consensus_specs.test.helpers.constants import MINIMAL
 from eth_consensus_specs.test.helpers.deposits import mock_deposit
 from eth_consensus_specs.test.helpers.epoch_processing import run_epoch_processing_with
-from eth_consensus_specs.test.helpers.forks import is_post_electra
+from eth_consensus_specs.test.helpers.forks import is_post_deneb, is_post_electra
 from eth_consensus_specs.test.helpers.state import next_epoch, next_slots
+
+
+def get_activation_churn_limit(spec, state):
+    """
+    Return the activation churn limit actually used by ``process_registry_updates``.
+    """
+    if is_post_deneb(spec) and not is_post_electra(spec):
+        return spec.get_validator_activation_churn_limit(state)
+    return spec.get_validator_churn_limit(state)
 
 
 def run_process_registry_updates(spec, state):
@@ -90,7 +99,7 @@ def test_activation_queue_no_activation_no_finality(spec, state):
 @with_all_phases
 @spec_state_test
 def test_activation_queue_sorting(spec, state):
-    churn_limit = spec.get_validator_churn_limit(state)
+    churn_limit = get_activation_churn_limit(spec, state)
 
     # try to activate more than the per-epoch churn limit
     mock_activations = churn_limit * 2
@@ -129,7 +138,7 @@ def test_activation_queue_sorting(spec, state):
 
 
 def run_test_activation_queue_efficiency(spec, state):
-    churn_limit = spec.get_validator_churn_limit(state)
+    churn_limit = get_activation_churn_limit(spec, state)
     mock_activations = churn_limit * 2
 
     epoch = spec.get_current_epoch(state)
@@ -143,7 +152,7 @@ def run_test_activation_queue_efficiency(spec, state):
     state.finalized_checkpoint.epoch = epoch + 1
 
     # Churn limit could have changed given the active vals removed via `mock_deposit`
-    churn_limit_0 = spec.get_validator_churn_limit(state)
+    churn_limit_0 = get_activation_churn_limit(spec, state)
 
     # Run first registry update. Do not yield test vectors
     for _ in run_process_registry_updates(spec, state):
@@ -159,7 +168,7 @@ def run_test_activation_queue_efficiency(spec, state):
             assert state.validators[i].activation_epoch == spec.FAR_FUTURE_EPOCH
 
     # Second half should churn in second run of registry update
-    churn_limit_1 = spec.get_validator_churn_limit(state)
+    churn_limit_1 = get_activation_churn_limit(spec, state)
     yield from run_process_registry_updates(spec, state)
     for i in range(churn_limit_0 + churn_limit_1):
         assert state.validators[i].activation_epoch < spec.FAR_FUTURE_EPOCH
@@ -302,6 +311,7 @@ def run_test_activation_queue_activation_and_ejection(spec, state, num_per_statu
     for validator_index in ejection_indices:
         state.validators[validator_index].effective_balance = spec.config.EJECTION_BALANCE
 
+    activation_churn_limit = get_activation_churn_limit(spec, state)
     churn_limit = spec.get_validator_churn_limit(state)
     yield from run_process_registry_updates(spec, state)
 
@@ -312,8 +322,8 @@ def run_test_activation_queue_activation_and_ejection(spec, state, num_per_statu
         assert validator.activation_epoch == spec.FAR_FUTURE_EPOCH
         assert not spec.is_active_validator(validator, spec.get_current_epoch(state))
 
-    # up to churn limit validators get activated for future epoch from the queue
-    for validator_index in activation_indices[:churn_limit]:
+    # up to activation churn limit validators get activated for future epoch from the queue
+    for validator_index in activation_indices[:activation_churn_limit]:
         validator = state.validators[validator_index]
         assert validator.activation_eligibility_epoch != spec.FAR_FUTURE_EPOCH
         assert validator.activation_epoch != spec.FAR_FUTURE_EPOCH
@@ -323,7 +333,7 @@ def run_test_activation_queue_activation_and_ejection(spec, state, num_per_statu
         )
 
     # any remaining validators do not exit the activation queue
-    for validator_index in activation_indices[churn_limit:]:
+    for validator_index in activation_indices[activation_churn_limit:]:
         validator = state.validators[validator_index]
         assert validator.activation_eligibility_epoch != spec.FAR_FUTURE_EPOCH
         # NOTE: activations are gated differently after EIP-7251
@@ -354,7 +364,8 @@ def test_activation_queue_activation_and_ejection__1(spec, state):
 def test_activation_queue_activation_and_ejection__churn_limit(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
     assert churn_limit == spec.config.MIN_PER_EPOCH_CHURN_LIMIT
-    yield from run_test_activation_queue_activation_and_ejection(spec, state, churn_limit)
+    activation_churn_limit = get_activation_churn_limit(spec, state)
+    yield from run_test_activation_queue_activation_and_ejection(spec, state, activation_churn_limit)
 
 
 @with_all_phases
@@ -362,7 +373,8 @@ def test_activation_queue_activation_and_ejection__churn_limit(spec, state):
 def test_activation_queue_activation_and_ejection__exceed_churn_limit(spec, state):
     churn_limit = spec.get_validator_churn_limit(state)
     assert churn_limit == spec.config.MIN_PER_EPOCH_CHURN_LIMIT
-    yield from run_test_activation_queue_activation_and_ejection(spec, state, churn_limit + 1)
+    activation_churn_limit = get_activation_churn_limit(spec, state)
+    yield from run_test_activation_queue_activation_and_ejection(spec, state, activation_churn_limit + 1)
 
 
 @with_all_phases
