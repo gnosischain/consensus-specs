@@ -377,7 +377,9 @@ def test_activation_queue_activation_and_ejection__exceed_churn_limit(spec, stat
     assert churn_limit == spec.config.MIN_PER_EPOCH_CHURN_LIMIT
     activation_churn_limit = get_activation_churn_limit(spec, state)
     yield from run_test_activation_queue_activation_and_ejection(
-        spec, state, activation_churn_limit + 1,
+        spec, 
+        state, 
+        activation_churn_limit + 1,
     )
 
 
