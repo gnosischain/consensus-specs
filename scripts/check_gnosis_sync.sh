@@ -50,12 +50,12 @@ PRESET_FILES="phase0 altair bellatrix capella deneb electra fulu"
 
 for f in $PRESET_FILES; do
     echo "Checking presets/mainnet/$f.yaml..."
-    curl -sf "$SPECS_BASE/preset/gnosis/$f.yaml" -o "$TMPDIR/$f.yaml"
+    curl -sf "$SPECS_BASE/preset/mainnet/$f.yaml" -o "$TMPDIR/$f.yaml"
     check_sync "presets/mainnet/$f.yaml" "$TMPDIR/$f.yaml"
 done
 
 echo "Checking configs/mainnet.yaml..."
-curl -sf "$SPECS_BASE/config/gnosis.yaml" -o "$TMPDIR/config.yaml"
+curl -sf "$SPECS_BASE/config/mainnet.yaml" -o "$TMPDIR/config.yaml"
 check_sync "configs/mainnet.yaml" "$TMPDIR/config.yaml"
 
 if [ $FAIL -ne 0 ]; then

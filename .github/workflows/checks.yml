@@ -2,7 +2,7 @@ name: Checks
 
 defaults:
   run:
-    shell: zsh -e {0}
+    shell: bash
 
 on:
   push:

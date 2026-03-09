@@ -1,3 +1,6 @@
+# Gnosis config
+
+# Extends the mainnet preset
 PRESET_BASE: 'mainnet'
 
 # Free-form short name of the network that this configuration applies to - known
