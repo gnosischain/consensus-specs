@@ -22,8 +22,17 @@ def run_test_effective_balance_increase_changes_lookahead(
     for _ in range(randao_setup_epochs):
         next_epoch(spec, state)
 
-    # Set all active validators to have balance close to the hysteresis threshold
+    # Ensure the chain is not in inactivity leak so attestation rewards are
+    # given.
     current_epoch = spec.get_current_epoch(state)
+    state.finalized_checkpoint = spec.Checkpoint(
+        epoch=current_epoch - spec.MIN_EPOCHS_TO_INACTIVITY_PENALTY,
+        root=state.finalized_checkpoint.root,
+    )
+    for i in range(len(state.inactivity_scores)):
+        state.inactivity_scores[i] = 0
+
+    # Set all active validators to have balance close to the hysteresis threshold
     active_validator_indices = spec.get_active_validator_indices(state, current_epoch)
     for validator_index in active_validator_indices:
         # Set compounding withdrawal credentials for the validator
@@ -78,7 +87,7 @@ def test_effective_balance_increase_changes_lookahead(spec, state):
     # Since this test relies on the RANDAO, we adjust the number of next_epoch transitions
     # we do at the setup of the test run until the assertion passes.
     # We start with 4 epochs because the test is known to pass with 4 epochs.
-    for randao_setup_epochs in range(4, 50):
+    for randao_setup_epochs in range(4, 20):
         try:
             state_copy = state.copy()
             yield from run_test_with_randao_setup_epochs(spec, state_copy, randao_setup_epochs)
