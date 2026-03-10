@@ -55,7 +55,7 @@ def test_is_assigned_to_sync_committee(spec, state):
     )
     # NOTE: only check `disqualified_pubkeys` if SYNC_COMMITTEE_SIZE < validator count
     if disqualified_pubkeys:
-        sample_size = 3
+        sample_size = min(3, len(disqualified_pubkeys))
         assert validator_count >= sample_size
         some_pubkeys = rng.sample(sorted(disqualified_pubkeys), sample_size)
         for pubkey in some_pubkeys:

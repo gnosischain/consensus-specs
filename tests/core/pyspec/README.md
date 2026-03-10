@@ -16,7 +16,7 @@ vectors for client-consumption.
 
 ### How to run tests
 
-To run all tests:
+To run all tests under the mainnet preset (default):
 
 ```shell
 make test
@@ -43,7 +43,7 @@ make test fork=phase0
 Note: these options can be used together, like:
 
 ```shell
-make test preset=minimal k=test_verify_kzg_proof fork=deneb
+make test preset=mainnet k=test_verify_kzg_proof fork=deneb
 ```
 
 ### How to view code coverage report
