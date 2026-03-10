@@ -38,13 +38,13 @@ def test_manifest_decorator_all_params():
 
 def test_manifest_with_defaults():
     """Test that Manifest.with_defaults() works correctly."""
-    defaults = Manifest(fork_name="phase0", preset_name="minimal")
+    defaults = Manifest(fork_name="phase0", preset_name="mainnet")
     partial = Manifest(fork_name="altair", runner_name="test")
 
     result = partial.with_defaults(defaults)
 
     assert result.fork_name == "altair"  # Explicit value takes precedence
-    assert result.preset_name == "minimal"  # Falls back to defaults
+    assert result.preset_name == "mainnet"  # Falls back to defaults
     assert result.runner_name == "test"  # From partial
     assert result.handler_name is None
     assert result.suite_name is None
