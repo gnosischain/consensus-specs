@@ -9,7 +9,7 @@ on:
     inputs:
       repo:
         description: The repository to use (e.g. user/consensus-specs)
-        default: ethereum/consensus-specs
+        default: gnosischain/consensus-specs
         type: string
         required: true
       ref:
@@ -29,7 +29,7 @@ jobs:
       matrix:
         preset:
           - general
-          - minimal
+          # - minimal
           - mainnet
         fork:
           - phase0
@@ -39,8 +39,8 @@ jobs:
           - deneb
           - electra
           - fulu
-          - gloas
-          - heze
+          # - gloas
+          # - heze
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -71,14 +71,14 @@ jobs:
 
   package:
     needs: generate
-    runs-on: [self-hosted-ghr-custom, size-s-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     permissions:
       actions: write
     strategy:
       matrix:
         preset:
           - general
-          - minimal
+          # - minimal
           - mainnet
     steps:
       - name: Download all artifacts
