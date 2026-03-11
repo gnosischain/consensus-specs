@@ -2,7 +2,6 @@
 
 [![Join the chat at https://discord.gg/qGpsxSA](https://img.shields.io/badge/chat-on%20discord-blue.svg)](https://discord.gg/qGpsxSA)
 [![nightly-tests](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-tests.yml/badge.svg?branch=master&event=schedule)](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-tests.yml)
-[![nightly-reftests](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-reftests.yml/badge.svg?branch=master&event=schedule)](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-reftests.yml)
 
 This repository hosts the current Gnosis Chain
 [proof-of-stake](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/)
@@ -54,25 +53,18 @@ functionality can be found in the following repositories:
 
 ### Reference tests
 
-Reference tests built from the executable Python specifications are available in
-the release assets for each release in this repository. There are also *nightly*
-reference tests which are built from the latest version of the specifications
-[here](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-reftests.yml).
+Stable reference tests are available as
+[release assets](https://github.com/ethereum/consensus-specs/releases) and
+unstable reference tests are available as
+[nightly builds](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-tests.yml).
 
 ## Contributors
 
 ### Prerequisites
 
-This project uses `uv` ([docs.astral.sh/uv](https://docs.astral.sh/uv/)) to
-manage its dependencies and virtual environment. `uv` can
-[download Python](https://docs.astral.sh/uv/guides/install-python/#installing-a-specific-version)
-for your target platform if one of the required versions (3.10-3.13) is not
-available natively.
+Install [`uv`](https://docs.astral.sh/uv/) with:
 
-`uv` can be installed via curl (recommended over a pip-install as it can
-self-update and manage Python versions):
-
-```console
+```
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
@@ -86,13 +78,13 @@ git clone https://github.com/gnosischain/consensus-specs.git
 
 Switch to the directory:
 
-```bash
+```
 cd consensus-specs
 ```
 
 View the help output:
 
-```bash
+```
 make help
 ```
 
