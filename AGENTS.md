@@ -298,9 +298,9 @@ and any later forks. This may require multiple commands with different
 `fork=<fork>` options, as there is currently no single command to run tests for
 a given fork and all subsequent forks.
 
-Use `preset=minimal` while developing and iterating on changes.
-Once everything works, run the same targeted tests with `preset=mainnet` (default) as a
-final sanity check before committing.
+Use `preset=minimal` while developing and iterating on changes. Once everything
+works, run the same targeted tests with `preset=mainnet` (default) as a final
+sanity check before committing.
 
 ### Generating reference tests
 
