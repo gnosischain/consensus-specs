@@ -1,10 +1,10 @@
-# Ethereum Proof-of-Stake Consensus Specifications
+# Gnosis Proof-of-Stake Consensus Specifications
 
 [![Join the chat at https://discord.gg/qGpsxSA](https://img.shields.io/badge/chat-on%20discord-blue.svg)](https://discord.gg/qGpsxSA)
 [![nightly-tests](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-tests.yml/badge.svg?branch=master&event=schedule)](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-tests.yml)
 [![nightly-reftests](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-reftests.yml/badge.svg?branch=master&event=schedule)](https://github.com/ethereum/consensus-specs/actions/workflows/nightly-reftests.yml)
 
-This repository hosts the current Ethereum
+This repository hosts the current Gnosis Chain
 [proof-of-stake](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/)
 specifications. Discussions about design rationale and proposed changes can be
 brought up and discussed as issues. Solidified, agreed-upon changes to the
@@ -12,7 +12,7 @@ specifications can be made through pull requests.
 
 ## Specifications
 
-Core specifications for Ethereum proof-of-stake clients can be found in
+Core specifications for Gnosis proof-of-stake clients can be found in
 [specs](specs). These are divided into features. Features are researched and
 developed in parallel, and then consolidated into sequential upgrades when
 ready.
@@ -22,12 +22,12 @@ ready.
 | Seq. | Code Name     | Fork Epoch | Links                                                                                   |
 | ---- | ------------- | ---------- | --------------------------------------------------------------------------------------- |
 | 0    | **Phase0**    | `0`        | [Specs](specs/phase0), [Tests](tests/core/pyspec/eth_consensus_specs/test/phase0)       |
-| 1    | **Altair**    | `74240`    | [Specs](specs/altair), [Tests](tests/core/pyspec/eth_consensus_specs/test/altair)       |
-| 2    | **Bellatrix** | `144896`   | [Specs](specs/bellatrix), [Tests](tests/core/pyspec/eth_consensus_specs/test/bellatrix) |
-| 3    | **Capella**   | `194048`   | [Specs](specs/capella), [Tests](tests/core/pyspec/eth_consensus_specs/test/capella)     |
-| 4    | **Deneb**     | `269568`   | [Specs](specs/deneb), [Tests](tests/core/pyspec/eth_consensus_specs/test/deneb)         |
-| 5    | **Electra**   | `364032`   | [Specs](specs/electra), [Tests](tests/core/pyspec/eth_consensus_specs/test/electra)     |
-| 6    | **Fulu**      | `411392`   | [Specs](specs/fulu), [Tests](tests/core/pyspec/eth_consensus_specs/test/fulu)           |
+| 1    | **Altair**    | `512`      | [Specs](specs/altair), [Tests](tests/core/pyspec/eth_consensus_specs/test/altair)       |
+| 2    | **Bellatrix** | `385536`   | [Specs](specs/bellatrix), [Tests](tests/core/pyspec/eth_consensus_specs/test/bellatrix) |
+| 3    | **Capella**   | `648704`   | [Specs](specs/capella), [Tests](tests/core/pyspec/eth_consensus_specs/test/capella)     |
+| 4    | **Deneb**     | `889856`   | [Specs](specs/deneb), [Tests](tests/core/pyspec/eth_consensus_specs/test/deneb)         |
+| 5    | **Electra**   | `1337856`  | [Specs](specs/electra), [Tests](tests/core/pyspec/eth_consensus_specs/test/electra)     |
+| 6    | **Fulu**      | `TBD`      | [Specs](specs/fulu), [Tests](tests/core/pyspec/eth_consensus_specs/test/fulu)           |
 
 ### In-development Specifications
 
@@ -81,7 +81,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 Clone the repository with:
 
 ```bash
-git clone https://github.com/ethereum/consensus-specs.git
+git clone https://github.com/gnosischain/consensus-specs.git
 ```
 
 Switch to the directory:
@@ -98,8 +98,8 @@ make help
 
 ### Design goals
 
-The following are the broad design goals for the Ethereum proof-of-stake
-consensus specifications:
+The following are the broad design goals for the Gnosis proof-of-stake consensus
+specifications:
 
 - Minimize complexity, even at the cost of some losses in efficiency.
 - Remain live through major network partitions and when very large portions of

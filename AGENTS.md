@@ -275,11 +275,11 @@ the project standards.
 ### Running tests
 
 ```bash
-# Run all minimal preset tests (~30 minutes)
+# Run all mainnet preset tests (~5 hours)
 make test
 
-# Run all mainnet preset tests (~5 hours)
-make test preset=mainnet
+# Run all minimal preset tests (~30 minutes)
+make test preset=minimal
 
 # Run tests for a specific fork
 make test fork=deneb
@@ -298,9 +298,9 @@ and any later forks. This may require multiple commands with different
 `fork=<fork>` options, as there is currently no single command to run tests for
 a given fork and all subsequent forks.
 
-Use `preset=minimal` (the default) while developing and iterating on changes.
-Once everything works, run the same targeted tests with `preset=mainnet` as a
-final sanity check before committing.
+Use `preset=minimal` while developing and iterating on changes. Once everything
+works, run the same targeted tests with `preset=mainnet` (default) as a final
+sanity check before committing.
 
 ### Generating reference tests
 
