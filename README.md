@@ -98,8 +98,7 @@ make help
 
 ### Design goals
 
-The following are the broad design goals for the Gnosis proof-of-stake
-consensus specifications:
+The following are the broad design goals for the Gnosis proof-of-stake consensus specifications:
 
 - Minimize complexity, even at the cost of some losses in efficiency.
 - Remain live through major network partitions and when very large portions of
