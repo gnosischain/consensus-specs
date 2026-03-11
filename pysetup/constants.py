@@ -12,6 +12,7 @@ EIP6800 = "eip6800"
 EIP7441 = "eip7441"
 EIP7928 = "eip7928"
 EIP8025 = "eip8025"
+L1HEADERS = "l1_headers"
 
 
 # The helper functions that are used when defining constants
