@@ -61,12 +61,12 @@ help-verbose:
 	@echo "$(BOLD)make test$(NORM)"
 	@echo ""
 	@echo "  Runs pyspec tests with various configuration options. Tests run in parallel"
-	@echo "  by default using pytest with the minimal preset and fastest BLS library."
+	@echo "  by default using pytest with the mainnet preset and fastest BLS library."
 	@echo ""
 	@echo "  Parameters:"
 	@echo "    k=<test>          Run specific test by name"
 	@echo "    fork=<fork>       Test specific fork (phase0, altair, bellatrix, capella, etc.)"
-	@echo "    preset=<preset>   Use specific preset (mainnet or minimal; default: minimal)"
+	@echo "    preset=<preset>   Use specific preset (mainnet or minimal; default: mainnet)"
 	@echo "    bls=<type>        BLS library type (py_ecc, milagro, arkworks, fastest; default: fastest)"
 	@echo "    kzg=<type>        KZG library type (spec, ckzg; default: ckzg)"
 	@echo "    component=<value> Test component: (all, pyspec, fw; default: all)"
@@ -207,7 +207,7 @@ test: MAYBE_TEST := $(if $(k),-k=$(k))
 # Parallelism makes debugging difficult (print doesn't work).
 test: MAYBE_PARALLEL := $(if $(k),,-n logical --dist=worksteal)
 test: MAYBE_FORK := $(if $(fork),--fork=$(fork))
-test: PRESET := $(if $(filter fw,$(component)),,$(if $(preset),--preset=$(preset),))
+test: PRESET := $(if $(filter fw,$(component)),,$(if $(preset),--preset=$(preset),--preset=mainnet))
 test: BLS := $(if $(filter fw,$(component)),,--bls-type=$(if $(bls),$(bls),fastest))
 test: KZG := $(if $(filter fw,$(component)),,--kzg-type=$(if $(kzg),$(kzg),ckzg))
 test: MAYBE_SPEC := $(if $(filter fw,$(component)),,$(PYSPEC_DIR)/eth_consensus_specs)
@@ -234,7 +234,7 @@ test: _pyspec
 # Coverage
 ###############################################################################
 
-TEST_PRESET_TYPE ?= minimal
+TEST_PRESET_TYPE ?= mainnet
 COV_HTML_OUT=$(PYSPEC_DIR)/.htmlcov
 COV_INDEX_FILE=$(COV_HTML_OUT)/index.html
 COVERAGE_SCOPE := $(foreach S,$(ALL_EXECUTABLE_SPEC_NAMES), --cov=eth_consensus_specs.$S.$(TEST_PRESET_TYPE))

@@ -16,10 +16,10 @@ This document describes the process of the Capella upgrade.
 
 ## Configuration
 
-| Name                   | Value                                            |
-| ---------------------- | ------------------------------------------------ |
-| `CAPELLA_FORK_VERSION` | `Version('0x03000000')`                          |
-| `CAPELLA_FORK_EPOCH`   | `Epoch(194048)` (April 12, 2023, 10:27:35pm UTC) |
+| Name                   | Value                   |
+| ---------------------- | ----------------------- |
+| `CAPELLA_FORK_VERSION` | `Version('0x03000064')` |
+| `CAPELLA_FORK_EPOCH`   | `Epoch(648704)`         |
 
 ## Fork to Capella
 

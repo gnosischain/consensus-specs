@@ -2,14 +2,14 @@ name: Release
 
 defaults:
   run:
-    shell: zsh -e {0}
+    shell: bash
 
 on:
   workflow_dispatch:
 
 jobs:
   setup:
-    runs-on: [self-hosted-ghr-custom, size-s-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: read
@@ -46,7 +46,7 @@ jobs:
   generate:
     needs: setup
     timeout-minutes: 720 # 12 hours
-    runs-on: [self-hosted-ghr-custom, size-s-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
@@ -91,7 +91,7 @@ jobs:
 
   package:
     needs: [setup, generate]
-    runs-on: [self-hosted-ghr-custom, size-s-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     permissions:
       actions: write
       contents: write
@@ -134,7 +134,7 @@ jobs:
 
   publish:
     needs: [setup, package]
-    runs-on: [self-hosted-ghr-custom, size-s-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:

@@ -2,7 +2,7 @@ name: Nightly Tests
 
 defaults:
   run:
-    shell: zsh -e {0}
+    shell: bash
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ on:
 jobs:
   generate:
     timeout-minutes: 720 # 12 hours
-    runs-on: [self-hosted-ghr-custom, size-s-x64, profile-consensusSpecs]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
