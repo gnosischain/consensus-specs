@@ -92,7 +92,7 @@ def pytest_generate_tests(metafunc):
             if metafunc.config.getoption("--reftests", default=False):
                 presets = ["minimal", "mainnet", "general"]
             else:
-                presets = ["minimal"]
+                presets = ["mainnet"]
         metafunc.parametrize("preset", presets, indirect=True)
 
 
