@@ -30,7 +30,7 @@ def run_slash_and_exit(spec, state, slash_index, exit_index, valid=True):
     Helper function to run a test that slashes and exits two validators
     """
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for exit
-    state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
+    state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH * 2
 
     yield "pre", state
 
