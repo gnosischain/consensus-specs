@@ -30,7 +30,7 @@ def run_slash_and_exit(spec, state, slash_index, exit_index, valid=True):
     Helper function to run a test that slashes and exits two validators
     """
     # move state forward SHARD_COMMITTEE_PERIOD epochs to allow for exit
-    state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH * 2
+    state.slot += spec.config.SHARD_COMMITTEE_PERIOD * spec.SLOTS_PER_EPOCH
 
     yield "pre", state
 
@@ -92,7 +92,11 @@ def get_random_attester_slashings(spec, state, rng, slashed_indices=[]):
     if len(indices) < max_slashed_count:
         return []
 
-    slot_range = list(range(state.slot - spec.SLOTS_PER_HISTORICAL_ROOT + 1, state.slot))
+    current_slot = int(state.slot)
+    if current_slot < spec.SLOTS_PER_HISTORICAL_ROOT:
+        return []
+    slot_range = list(range(current_slot - spec.SLOTS_PER_HISTORICAL_ROOT + 1, current_slot))
+
     slashings = [
         get_valid_attester_slashing_by_indices(
             spec,
