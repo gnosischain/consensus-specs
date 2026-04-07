@@ -1,9 +1,5 @@
 name: Checks
 
-defaults:
-  run:
-    shell: bash
-
 on:
   push:
     branches:
