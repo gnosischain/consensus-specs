@@ -112,6 +112,7 @@ jobs:
 
   tests:
     needs: [lint, framework]
+    timeout-minutes: 720
     runs-on: ubuntu-latest
     strategy:
       matrix:
