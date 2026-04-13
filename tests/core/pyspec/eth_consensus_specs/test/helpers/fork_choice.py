@@ -259,8 +259,8 @@ def get_genesis_forkchoice_store_and_block(spec, genesis_state):
     return store, genesis_block
 
 
-def get_block_file_name(block):
-    return f"block_{encode_hex(block.hash_tree_root())}"
+def get_block_file_name(signed_block):
+    return f"block_{encode_hex(signed_block.message.hash_tree_root())}"
 
 
 def get_attestation_file_name(attestation):
@@ -397,6 +397,37 @@ def add_block(
     return store.block_states[signed_block.message.hash_tree_root()]
 
 
+def run_on_execution_payload(spec, store, signed_envelope, valid=True):
+    """Process execution payload envelope through the fork choice store."""
+    if not valid:
+        expect_assertion_error(lambda: spec.on_execution_payload(store, signed_envelope))
+        return
+
+    spec.on_execution_payload(store, signed_envelope)
+
+    # Verify the envelope was processed, block should now have FULL state
+    envelope_root = signed_envelope.message.beacon_block_root
+    assert envelope_root in store.payload_states
+
+
+def get_execution_payload_envelope_file_name(signed_envelope):
+    return f"execution_payload_envelope_{encode_hex(signed_envelope.hash_tree_root())}"
+
+
+def add_execution_payload(spec, store, signed_envelope, test_steps, valid=True):
+    file_name = get_execution_payload_envelope_file_name(signed_envelope)
+    yield file_name, signed_envelope
+
+    if not valid:
+        run_on_execution_payload(spec, store, signed_envelope, valid=False)
+        test_steps.append({"execution_payload": file_name, "valid": False})
+        return
+
+    run_on_execution_payload(spec, store, signed_envelope, valid=True)
+    test_steps.append({"execution_payload": file_name, "valid": True})
+    output_store_checks(spec, store, test_steps)
+
+
 def run_on_attester_slashing(spec, store, attester_slashing, valid=True):
     if not valid:
         expect_assertion_error(lambda: spec.on_attester_slashing(store, attester_slashing))
@@ -461,7 +492,11 @@ def output_store_checks(spec, store, test_steps, with_viable_for_head_weights=Fa
         "proposer_boost_root": encode_hex(store.proposer_boost_root),
     }
 
-    if with_viable_for_head_weights:
+    if is_post_gloas(spec):
+        head = spec.get_head(store)
+        checks["head_payload_status"] = int(head.payload_status)
+
+    if with_viable_for_head_weights and not is_post_gloas(spec):
         filtered_block_roots = spec.get_filtered_block_tree(store).keys()
         leaves_viable_for_head = [
             root
