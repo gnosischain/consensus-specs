@@ -18,7 +18,6 @@
 - [Important commands](#important-commands)
   - [Linting](#linting)
   - [Running tests](#running-tests)
-  - [Generating reference tests](#generating-reference-tests)
   - [Cleaning](#cleaning)
 - [Writing tests](#writing-tests)
   - [Reference tests vs unittests](#reference-tests-vs-unittests)
