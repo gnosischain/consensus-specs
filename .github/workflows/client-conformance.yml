@@ -112,3 +112,20 @@ jobs:
           echo "| nimbus | ${{ needs.nimbus.result }} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| teku | ${{ needs.teku.result }} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| lodestar | ${{ needs.lodestar.result }} |" >> "$GITHUB_STEP_SUMMARY"
+      - name: Gate on client results
+        run: |
+          # Fail the conformance run if any client did not pass, so this single job
+          # can be used as a required status / clear pass-fail signal.
+          failed=""
+          for r in "lighthouse:${{ needs.lighthouse.result }}" "nimbus:${{ needs.nimbus.result }}" "teku:${{ needs.teku.result }}" "lodestar:${{ needs.lodestar.result }}"; do
+            name="${r%%:*}"; result="${r#*:}"
+            if [ "$result" != "success" ]; then
+              echo "::error::${name} conformance result: ${result}"
+              failed="${failed} ${name}"
+            fi
+          done
+          if [ -n "$failed" ]; then
+            echo "Gnosis conformance failed for:${failed}"
+            exit 1
+          fi
+          echo "All clients passed the Gnosis-preset spec tests."
