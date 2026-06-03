@@ -1,7 +1,7 @@
 {
-  "$comment": "Single source of truth for the Gnosis-preset client-conformance setup. Bump these deliberately. 'vectorVersion' is the gnosischain/consensus-specs release tag whose gnosis.tar.gz each client consumes; 'ref' is the branch/tag of each gnosischain client fork carrying the Gnosis spec-test wiring. A known skew exists: clients currently track spec ~v1.7.0-alpha.7/alpha.8 while the Gnosis vectors are alpha.4 — align by cutting a matching gnosischain/consensus-specs release.",
+  "$comment": "Single source of truth for the Gnosis-preset client-conformance setup. Bump these deliberately. 'vectorVersion' is the gnosischain/consensus-specs release tag whose gnosis.tar.gz each client consumes; 'ref' is the branch of each gnosischain client fork carrying the Gnosis spec-test wiring. The fork is synced to upstream alpha.8; clients are pinned to the matching v1.7.0-alpha.8 vectors.",
   "vectorRepo": "gnosischain/consensus-specs",
-  "vectorVersion": "v1.7.0-alpha.4",
+  "vectorVersion": "v1.7.0-alpha.8",
   "clients": {
     "lighthouse": {
       "repo": "gnosischain/lighthouse",
