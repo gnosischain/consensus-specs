@@ -1,4 +1,10 @@
-from eth_consensus_specs.test.context import always_bls, spec_state_test, with_gloas_and_later
+from eth_consensus_specs.test.context import (
+    always_bls,
+    GLOAS,
+    spec_state_test,
+    with_gloas_and_later,
+    with_phases,
+)
 from eth_consensus_specs.test.gloas.block_processing.test_process_payload_attestation import (
     prepare_signed_payload_attestation,
 )
@@ -11,6 +17,7 @@ from eth_consensus_specs.test.helpers.execution_requests import (
 )
 from eth_consensus_specs.test.helpers.keys import builder_privkeys, privkeys
 from eth_consensus_specs.test.helpers.state import (
+    next_epoch,
     next_epoch_with_full_participation,
     state_transition_and_sign_block,
 )
@@ -156,6 +163,114 @@ def test_missed_payload_next_block_with_withdrawals_satisfying_payload(spec, sta
     # A payload with Block 1's stale withdrawals (W_1) is accepted
     satisfying = spec.List[spec.Withdrawal, spec.MAX_WITHDRAWALS_PER_PAYLOAD](block_1_withdrawals)
     assert _attempt_payload_with_withdrawals(spec, state, satisfying)
+
+
+@with_gloas_and_later
+@spec_state_test
+def test_missed_payload_recovery_resumes_with_remaining_withdrawals(spec, state):
+    """
+    Block 1: has withdrawal-eligible validators (more than MAX_WITHDRAWALS_PER_PAYLOAD).
+    Payload for Block 1 does not arrive.
+    Block 2: remaining validators are still withdrawal-eligible and must still accept
+    Block 1's stale withdrawals (W_1).
+    Block 3: declares Block 2 as a FULL parent, causing Block 2's payload to be
+    applied during normal block processing. Withdrawals then resume normally and
+    compute a fresh set for the remaining validators.
+    """
+    # Set up MAX + 2 validators. Block 1 processes exactly MAX, leaving 2 remaining.
+    pre_state, signed_block_1, block_1_withdrawals = _setup_missed_payload_with_withdrawals(
+        spec, state, num_withdrawal_validators=spec.MAX_WITHDRAWALS_PER_PAYLOAD + 2
+    )
+
+    # Process Block 2 (parent empty -> process_withdrawals returns early)
+    block_2 = build_empty_block_for_next_slot(spec, state)
+    signed_block_2 = state_transition_and_sign_block(spec, state, block_2)
+
+    # Block 2 must still accept Block 1's stale withdrawals.
+    satisfying = spec.List[spec.Withdrawal, spec.MAX_WITHDRAWALS_PER_PAYLOAD](block_1_withdrawals)
+    assert _attempt_payload_with_withdrawals(spec, state, satisfying)
+
+    # Build Block 3 so block processing treats Block 2 as a FULL parent.
+    # This triggers process_parent_execution_payload for Block 2 before
+    # process_withdrawals computes Block 3's fresh expected withdrawals.
+    block_3 = build_empty_block_for_next_slot(spec, state)
+    block_3.body.signed_execution_payload_bid.message.parent_block_hash = (
+        state.latest_execution_payload_bid.block_hash
+    )
+    signed_block_3 = state_transition_and_sign_block(spec, state, block_3)
+
+    yield "pre", pre_state
+    yield "blocks", [signed_block_1, signed_block_2, signed_block_3]
+    yield "post", state
+
+    # Block 3 applied Block 2's payload, so the parent is now marked FULL.
+    block_2_hash = signed_block_2.message.body.signed_execution_payload_bid.message.block_hash
+    assert state.latest_block_hash == block_2_hash
+
+    resumed_withdrawals = list(state.payload_expected_withdrawals)
+    assert len(resumed_withdrawals) > 0
+    assert resumed_withdrawals != block_1_withdrawals
+
+    # Exactly two validators remained after Block 1's full payload-sized sweep.
+    assert len(resumed_withdrawals) == 2
+
+    resumed = spec.List[spec.Withdrawal, spec.MAX_WITHDRAWALS_PER_PAYLOAD](resumed_withdrawals)
+    assert _attempt_payload_with_withdrawals(spec, state, resumed)
+
+    # Once recovery resumes, Block 1's stale withdrawals must be rejected.
+    assert not _attempt_payload_with_withdrawals(spec, state, satisfying)
+
+
+@with_gloas_and_later
+@spec_state_test
+def test_missed_payload_recovery_resumes_without_remaining_withdrawals(spec, state):
+    """
+    Block 1: has withdrawal-eligible validators.
+    Payload for Block 1 does not arrive.
+    Block 2: no new withdrawal-eligible validators and must still accept
+    Block 1's stale withdrawals (W_1).
+    Block 3: declares Block 2 as a FULL parent, causing Block 2's payload to be
+    applied during normal block processing. Withdrawals then resume normally and
+    compute an empty set.
+    """
+    # Set up MAX validators. Block 1 processes exactly MAX, leaving 0 remaining.
+    pre_state, signed_block_1, block_1_withdrawals = _setup_missed_payload_with_withdrawals(
+        spec, state, num_withdrawal_validators=spec.MAX_WITHDRAWALS_PER_PAYLOAD
+    )
+
+    # Process Block 2 (parent empty -> process_withdrawals returns early)
+    block_2 = build_empty_block_for_next_slot(spec, state)
+    signed_block_2 = state_transition_and_sign_block(spec, state, block_2)
+
+    # Block 2 must still accept Block 1's stale withdrawals.
+    satisfying = spec.List[spec.Withdrawal, spec.MAX_WITHDRAWALS_PER_PAYLOAD](block_1_withdrawals)
+    assert _attempt_payload_with_withdrawals(spec, state, satisfying)
+
+    # Build Block 3 so block processing treats Block 2 as a FULL parent.
+    # This triggers process_parent_execution_payload for Block 2 before
+    # process_withdrawals computes Block 3's fresh expected withdrawals.
+    block_3 = build_empty_block_for_next_slot(spec, state)
+    block_3.body.signed_execution_payload_bid.message.parent_block_hash = (
+        state.latest_execution_payload_bid.block_hash
+    )
+    signed_block_3 = state_transition_and_sign_block(spec, state, block_3)
+
+    yield "pre", pre_state
+    yield "blocks", [signed_block_1, signed_block_2, signed_block_3]
+    yield "post", state
+
+    # Block 3 applied Block 2's payload, so the parent is now marked FULL.
+    block_2_hash = signed_block_2.message.body.signed_execution_payload_bid.message.block_hash
+    assert state.latest_block_hash == block_2_hash
+
+    resumed_withdrawals = list(state.payload_expected_withdrawals)
+    assert resumed_withdrawals == []
+
+    empty_withdrawals = spec.List[spec.Withdrawal, spec.MAX_WITHDRAWALS_PER_PAYLOAD]()
+    assert _attempt_payload_with_withdrawals(spec, state, empty_withdrawals)
+
+    # Once recovery is complete, the stale Block 1 withdrawals must no longer be accepted.
+    assert not _attempt_payload_with_withdrawals(spec, state, satisfying)
 
 
 @with_gloas_and_later
@@ -482,3 +597,46 @@ def test_voluntary_exit_fails_after_parent_payload_withdrawal_request(spec, stat
     signed_block = state_transition_and_sign_block(spec, state, block, expect_fail=True)
     yield "blocks", [signed_block]
     yield "post", None
+
+
+@with_phases([GLOAS])
+@spec_state_test
+def test_proposer_lookahead_excludes_slashed_validators(spec, state):
+    """
+    Test that slashed validators are excluded from the proposer lookahead.
+    """
+    for _ in range(2):
+        next_epoch(spec, state)
+
+    current_epoch = spec.get_current_epoch(state)
+    new_half_epoch = current_epoch + spec.MIN_SEED_LOOKAHEAD + 1
+
+    # Slash some validators
+    for validator_index in range(len(state.validators) // 2):
+        state.validators[validator_index].slashed = True
+
+    # Fulu includes slashed validators
+    proposers_in_fulu = spec.fulu.get_beacon_proposer_indices(state, new_half_epoch)
+    assert any(state.validators[v].slashed for v in proposers_in_fulu)
+
+    # Gloas excludes slashed validators
+    proposers_in_gloas = spec.get_beacon_proposer_indices(state, new_half_epoch)
+    assert not any(state.validators[v].slashed for v in proposers_in_gloas)
+
+    # Cross into the next epoch with a block, picking a slot whose proposer is
+    # not one of the validators we slashed so the block is valid
+    epoch_n1_proposers = list(state.proposer_lookahead[spec.SLOTS_PER_EPOCH :])
+    offset = next(i for i, p in enumerate(epoch_n1_proposers) if not state.validators[p].slashed)
+    block_slot = (current_epoch + 1) * spec.SLOTS_PER_EPOCH + offset
+
+    yield "pre", state
+
+    block = build_empty_block(spec, state, slot=block_slot)
+    signed_block = state_transition_and_sign_block(spec, state, block)
+
+    yield "blocks", [signed_block]
+    yield "post", state
+
+    # The newly appended lookahead epoch matches the Gloas selection
+    last_epoch_start = len(state.proposer_lookahead) - spec.SLOTS_PER_EPOCH
+    assert list(state.proposer_lookahead[last_epoch_start:]) == list(proposers_in_gloas)
