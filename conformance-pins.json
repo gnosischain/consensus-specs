@@ -5,25 +5,25 @@
   "clients": {
     "lighthouse": {
       "repo": "gnosischain/lighthouse",
-      "ref": "gnosis-spec-tests",
+      "ref": "stable",
       "command": "make test-ef-gnosis",
       "vectorVersionPin": "GNOSIS_SPECS_TEST_VERSION (testing/ef_tests/Makefile)"
     },
     "nimbus": {
       "repo": "gnosischain/nimbus-eth2",
-      "ref": "gnosis-spec-tests",
+      "ref": "unstable",
       "command": "make test-gnosis",
       "vectorVersionPin": "GNOSIS_SPECS_TEST_VERSION (scripts/setup_scenarios.sh)"
     },
     "teku": {
       "repo": "gnosischain/teku",
-      "ref": "gnosis-spec-tests",
+      "ref": "master",
       "command": "ENV_SPEC=gnosis ./gradlew :eth-reference-tests:referenceTest",
       "vectorVersionPin": "gnosisRefTestVersion (build.gradle)"
     },
     "lodestar": {
       "repo": "gnosischain/lodestar",
-      "ref": "gnosis-spec-tests",
+      "ref": "unstable",
       "command": "pnpm test:spec:gnosis",
       "vectorVersionPin": "gnosisConsensusSpecsTests.specVersion (spec-tests-version.json)"
     }
