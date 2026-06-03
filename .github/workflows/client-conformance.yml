@@ -50,7 +50,11 @@ jobs:
           make -j$(nproc) QUICK_AND_DIRTY_COMPILER=1 update
           ./env.sh nim --version
       - name: Run Gnosis-preset spec tests
-        run: make -j$(nproc) V=1 test-gnosis
+        run: |
+          # Build the gnosis-preset spec-test binary, fetch the Gnosis vectors, and run it.
+          make -j$(nproc) consensus_spec_tests_gnosis
+          scripts/setup_scenarios.sh
+          DISABLE_TEST_FIXTURES_SCRIPT=1 ./build/consensus_spec_tests_gnosis
 
   teku:
     name: teku (gnosis reference tests)
@@ -64,7 +68,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 25
       - name: Expand Gnosis reference tests
         run: ./gradlew expandRefTestsGnosis
       - name: Run Gnosis-preset reference tests
