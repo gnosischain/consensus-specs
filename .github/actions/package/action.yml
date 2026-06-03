@@ -35,6 +35,22 @@ runs:
         path: ${{ inputs.source-path }}
         merge-multiple: true
 
+    - name: Prune vacuous (manifest-only) test cases
+      shell: bash
+      run: |
+        # Some test cases are not reachable under a given preset (e.g. consolidation-churn
+        # "incorrect_*" cases under the Gnosis preset), so pyspec emits a manifest.yaml with no
+        # pre/post/operation data. Client ef-test runners crash trying to load the missing files,
+        # so drop these empty case directories before packaging.
+        pruned=0
+        while IFS= read -r m; do
+          d=$(dirname "$m")
+          if [ "$(find "$d" -maxdepth 1 -type f | wc -l)" -le 1 ]; then
+            rm -rf "$d"; pruned=$((pruned+1))
+          fi
+        done < <(find ${{ inputs.source-path }} -name manifest.yaml 2>/dev/null)
+        echo "Pruned ${pruned} vacuous (manifest-only) case directories."
+
     - name: Archive tests
       shell: bash
       run: |
