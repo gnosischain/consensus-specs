@@ -35,6 +35,23 @@ runs:
         path: ${{ inputs.source-path }}
         merge-multiple: true
 
+    - name: Prune non-Gnosis forks
+      shell: bash
+      run: |
+        # Gnosis defines presets only through Fulu (see gnosischain/specs: no
+        # gloas/heze preset, and the gnosis config sets GLOAS/HEZE_FORK_EPOCH to
+        # 2**64-1). Those fork directories are generated from the upstream mainnet
+        # preset values, so they are not valid Gnosis vectors -- drop them from the
+        # published gnosis tarball. No-op for the general/minimal/mainnet presets.
+        if [ "${{ inputs.name }}" = "gnosis" ]; then
+          for fork in gloas heze; do
+            if [ -d "${{ inputs.source-path }}/$fork" ]; then
+              rm -rf "${{ inputs.source-path }}/$fork"
+              echo "Removed non-Gnosis fork: $fork"
+            fi
+          done
+        fi
+
     - name: Prune vacuous (manifest-only) test cases
       shell: bash
       run: |
