@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from .constants import (
     ALTAIR,
@@ -6,6 +7,7 @@ from .constants import (
     CAPELLA,
     DENEB,
     EIP8025,
+    EIP8148,
     ELECTRA,
     FULU,
     GLOAS,
@@ -23,7 +25,8 @@ PREVIOUS_FORK_OF = {
     FULU: ELECTRA,
     GLOAS: FULU,
     HEZE: GLOAS,
-    EIP8025: FULU,
+    EIP8025: GLOAS,
+    EIP8148: HEZE,
 }
 
 ALL_FORKS = list(PREVIOUS_FORK_OF.keys())
@@ -56,10 +59,10 @@ def is_post_fork(a, b) -> bool:
 
 def get_fork_directory(fork):
     dir1 = f"specs/{fork}"
-    if os.path.exists(dir1):
+    if Path(dir1).exists():
         return dir1
     dir2 = f"specs/_features/{fork}"
-    if os.path.exists(dir2):
+    if Path(dir2).exists():
         return dir2
     raise FileNotFoundError(f"No directory found for fork: {fork}")
 
@@ -80,7 +83,7 @@ def get_md_doc_paths(spec_fork: str) -> str:
             for root, _, files in os.walk(get_fork_directory(fork)):
                 filepaths = []
                 for filename in files:
-                    filepath = os.path.join(root, filename)
+                    filepath = str(Path(root) / filename)
                     filepaths.append(filepath)
                 for filepath in sorted(filepaths, key=sort_key):
                     if filepath.endswith(".md") and filepath not in IGNORE_SPEC_FILES:

@@ -56,6 +56,7 @@
     - [Modified `compute_proposer_indices`](#modified-compute_proposer_indices)
     - [New `compute_ptc`](#new-compute_ptc)
   - [Beacon state accessors](#beacon-state-accessors)
+    - [Modified `get_beacon_proposer_indices`](#modified-get_beacon_proposer_indices)
     - [Modified `get_next_sync_committee_indices`](#modified-get_next_sync_committee_indices)
     - [Modified `get_attestation_participation_flag_indices`](#modified-get_attestation_participation_flag_indices)
     - [New `get_ptc`](#new-get_ptc)
@@ -118,6 +119,8 @@ Gloas is a consensus-layer upgrade containing a number of features. Including:
 - [EIP-7732](https://eips.ethereum.org/EIPS/eip-7732): Enshrined
   Proposer-Builder Separation
 - [EIP-7843](https://eips.ethereum.org/EIPS/eip-7843): SLOTNUM opcode
+- [EIP-8045](https://eips.ethereum.org/EIPS/eip-8045): Exclude slashed
+  validators from proposing
 - [EIP-8061](https://eips.ethereum.org/EIPS/eip-8061): Increase exit and
   consolidation churn
 
@@ -197,9 +200,9 @@ Gloas is a consensus-layer upgrade containing a number of features. Including:
 
 ### Time parameters
 
-| Name                                | Value                 |  Unit  |
-| ----------------------------------- | --------------------- | :----: |
-| `MIN_BUILDER_WITHDRAWABILITY_DELAY` | `uint64(2**6)` (= 64) | epochs |
+| Name                                | Value                     |  Unit  |
+| ----------------------------------- | ------------------------- | :----: |
+| `MIN_BUILDER_WITHDRAWABILITY_DELAY` | `uint64(2**13)` (= 8,192) | epochs |
 
 ## Containers
 
@@ -447,7 +450,7 @@ class ExecutionPayload(Container):
 
 ```python
 @dataclass
-class ExpectedWithdrawals(object):
+class ExpectedWithdrawals:
     withdrawals: Sequence[Withdrawal]
     # [New in Gloas:EIP7732]
     processed_builder_withdrawals_count: uint64
@@ -520,7 +523,7 @@ def is_valid_indexed_payload_attestation(
     """
     # Verify indices are non-empty and sorted
     indices = attestation.attesting_indices
-    if len(indices) == 0 or not indices == sorted(indices):
+    if len(indices) == 0 or indices != sorted(indices):
         return False
 
     # Verify aggregate signature
@@ -536,11 +539,11 @@ def is_valid_indexed_payload_attestation(
 Implementations SHOULD cache verification results to avoid repeated work.
 
 ```python
-def is_pending_validator(state: BeaconState, pubkey: BLSPubkey) -> bool:
+def is_pending_validator(pending_deposits: Sequence[PendingDeposit], pubkey: BLSPubkey) -> bool:
     """
     Check if a pending deposit with a valid signature is in the queue for the given pubkey.
     """
-    for pending_deposit in state.pending_deposits:
+    for pending_deposit in pending_deposits:
         if pending_deposit.pubkey != pubkey:
             continue
         if is_valid_deposit_signature(
@@ -681,6 +684,29 @@ def compute_ptc(state: BeaconState, slot: Slot) -> Vector[ValidatorIndex, PTC_SI
 ```
 
 ### Beacon state accessors
+
+#### Modified `get_beacon_proposer_indices`
+
+*Note*: `get_beacon_proposer_indices` is modified to exclude slashed validators
+from the candidate pool before invoking `compute_proposer_indices`, so the newly
+computed proposer indices only contain active and unslashed validators.
+
+```python
+def get_beacon_proposer_indices(
+    state: BeaconState, epoch: Epoch
+) -> Vector[ValidatorIndex, SLOTS_PER_EPOCH]:
+    """
+    Return the proposer indices for the given ``epoch``.
+    """
+    # [Modified in Gloas:EIP8045]
+    indices = [
+        index
+        for index in get_active_validator_indices(state, epoch)
+        if not state.validators[index].slashed
+    ]
+    seed = get_seed(state, epoch, DOMAIN_BEACON_PROPOSER)
+    return compute_proposer_indices(state, epoch, seed, indices)
+```
 
 #### Modified `get_next_sync_committee_indices`
 
@@ -994,16 +1020,6 @@ def process_pending_deposits(state: BeaconState) -> None:
     finalized_slot = compute_start_slot_at_epoch(state.finalized_checkpoint.epoch)
 
     for deposit in state.pending_deposits:
-        # Do not process deposit requests if Eth1 bridge deposits are not yet applied.
-        if (
-            # Is deposit request
-            deposit.slot > GENESIS_SLOT
-            and
-            # There are pending Eth1 bridge deposits
-            state.eth1_deposit_index < state.deposit_requests_start_index
-        ):
-            break
-
         # Check if deposit has been finalized, otherwise, stop processing.
         if deposit.slot > finalized_slot:
             break
@@ -1483,16 +1499,7 @@ calls to `process_deposit_request`, `process_withdrawal_request`, and
 
 ```python
 def process_operations(state: BeaconState, body: BeaconBlockBody) -> None:
-    # Disable former deposit mechanism once all prior deposits are processed
-    eth1_deposit_index_limit = min(
-        state.eth1_data.deposit_count, state.deposit_requests_start_index
-    )
-    if state.eth1_deposit_index < eth1_deposit_index_limit:
-        assert len(body.deposits) == min(
-            MAX_DEPOSITS, eth1_deposit_index_limit - state.eth1_deposit_index
-        )
-    else:
-        assert len(body.deposits) == 0
+    assert len(body.deposits) == 0
 
     def for_ops(operations: Sequence[Any], fn: Callable[[BeaconState, Any], None]) -> None:
         for operation in operations:
@@ -1503,7 +1510,6 @@ def process_operations(state: BeaconState, body: BeaconBlockBody) -> None:
     for_ops(body.attester_slashings, process_attester_slashing)
     # [Modified in Gloas:EIP7732]
     for_ops(body.attestations, process_attestation)
-    for_ops(body.deposits, process_deposit)
     # [Modified in Gloas:EIP7732]
     for_ops(body.voluntary_exits, process_voluntary_exit)
     for_ops(body.bls_to_execution_changes, process_bls_to_execution_change)
@@ -1557,7 +1563,7 @@ def add_builder_to_registry(
 
 *Note*: Builder indices are reusable. When a builder exits, its index may later
 be reassigned to a different builder with a new public key. Any deposit sent to
-an exited builder is refunded to the builder’s execution address. Exited
+an exited builder will be withdrawn to the builder’s execution address. Exited
 builders cannot be reactivated, although a newly registered builder’s public key
 may have previously appeared in the builder set. Implementations that rely on
 caching should account for this behavior.
@@ -1598,7 +1604,7 @@ def process_deposit_request(state: BeaconState, deposit_request: DepositRequest)
     if is_builder or (
         is_builder_withdrawal_credential(deposit_request.withdrawal_credentials)
         and not is_validator
-        and not is_pending_validator(state, deposit_request.pubkey)
+        and not is_pending_validator(state.pending_deposits, deposit_request.pubkey)
     ):
         # Apply builder deposits immediately
         apply_deposit_for_builder(
@@ -1689,11 +1695,11 @@ def process_attestation(state: BeaconState, attestation: Attestation) -> None:
     for committee_index in committee_indices:
         assert committee_index < get_committee_count_per_slot(state, data.target.epoch)
         committee = get_beacon_committee(state, data.slot, committee_index)
-        committee_attesters = set(
+        committee_attesters = {
             attester_index
             for i, attester_index in enumerate(committee)
             if attestation.aggregation_bits[committee_offset + i]
-        )
+        }
         assert len(committee_attesters) > 0
         committee_offset += len(committee)
 
