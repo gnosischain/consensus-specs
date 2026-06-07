@@ -51,6 +51,21 @@ runs:
         done < <(find ${{ inputs.source-path }} -name manifest.yaml 2>/dev/null)
         echo "Pruned ${pruned} vacuous (manifest-only) case directories."
 
+    - name: Prune malformed gossip cases
+      shell: bash
+      run: |
+        # Under the Gnosis preset the sync-committee gossip generators emit some
+        # reject_wrong_subnet / reject_aggregator_not_in_subcommittee cases with an empty
+        # meta.yaml (no messages/contributions list), so client gossip executors crash loading
+        # them. Drop any networking/gossip case whose meta.yaml carries no message list.
+        pruned=0
+        while IFS= read -r m; do
+          if ! grep -qE "messages:|contributions:" "$m"; then
+            rm -rf "$(dirname "$m")"; pruned=$((pruned+1))
+          fi
+        done < <(find ${{ inputs.source-path }} -path '*networking/gossip*' -name meta.yaml 2>/dev/null)
+        echo "Pruned ${pruned} malformed gossip case directories."
+
     - name: Archive tests
       shell: bash
       run: |

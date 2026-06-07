@@ -82,6 +82,14 @@ jobs:
         # does not schedule gloas/heze, so those reference cases cannot build a spec.
         # expandRefTestsGnosis extracts into the referenceTest resources dir.
         run: find eth-reference-tests/src/referenceTest/resources/consensus-spec-tests -type d \( -name gloas -o -name heze \) -prune -exec rm -rf {} +
+      - name: Prune malformed gnosis gossip cases
+        # The gnosis-preset generator emits reject_wrong_subnet / reject_aggregator_not_in_subcommittee
+        # sync-committee gossip cases with an empty meta.yaml (no messages/contributions list), which
+        # NPE in teku's gossip executor. Drop any gossip case whose meta.yaml carries no message list.
+        run: |
+          find eth-reference-tests/src/referenceTest/resources/consensus-spec-tests/tests/gnosis \
+            -path '*networking/gossip*' -name meta.yaml \
+            -exec sh -c 'grep -qE "messages:|contributions:" "$1" || rm -rf "$(dirname "$1")"' _ {} +
       - name: Run Gnosis-preset reference tests
         env:
           ENV_SPEC: gnosis
