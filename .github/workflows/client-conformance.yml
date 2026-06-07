@@ -6,6 +6,12 @@ name: Client conformance (Gnosis preset)
 #   lighthouse -> gnosis-conformance-alpha8  (spec alpha.8, v1.7.0-alpha.8 vectors)
 #   teku / nimbus / lodestar -> gnosis-conformance-alpha10 (spec alpha.10, v1.7.0-alpha.10 vectors)
 # Bump these deliberately as the clients advance (see conformance-pins.json).
+#
+# Gnosis adopts forks only through Fulu (gnosischain/specs has no gloas/heze preset; the gnosis
+# config sets GLOAS/HEZE_FORK_EPOCH to 2**64-1). The published gnosis vectors still ship gloas/heze
+# dirs (generated from upstream mainnet preset values) for clients like nimbus whose harness tests
+# every fork. Clients whose gnosis config/harness can't support those forks prune them locally:
+# lighthouse in its ef_tests Makefile, teku and lodestar in the steps below.
 
 on:
   workflow_dispatch:
@@ -71,6 +77,10 @@ jobs:
           java-version: 25
       - name: Expand Gnosis reference tests
         run: ./gradlew expandRefTestsGnosis
+      - name: Prune non-Gnosis forks (gloas/heze)
+        # Gnosis adopts forks only through Fulu. teku's bundled gnosis network config
+        # does not schedule gloas/heze, so those reference cases cannot build a spec.
+        run: find eth-reference-tests/build -type d \( -name gloas -o -name heze \) -prune -exec rm -rf {} +
       - name: Run Gnosis-preset reference tests
         env:
           ENV_SPEC: gnosis
@@ -96,6 +106,9 @@ jobs:
       - name: Download Gnosis spec tests
         run: pnpm download-spec-tests:gnosis
         working-directory: packages/beacon-node
+      - name: Prune non-Gnosis forks (gloas/heze)
+        # Gnosis adopts forks only through Fulu; gloas/heze are out of scope.
+        run: find packages/beacon-node -type d \( -name gloas -o -name heze \) -prune -exec rm -rf {} +
       - name: Run Gnosis-preset spec tests
         run: NODE_OPTIONS='--max-old-space-size=4096' pnpm test:spec:gnosis
         working-directory: packages/beacon-node
