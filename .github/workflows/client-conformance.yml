@@ -89,7 +89,7 @@ jobs:
         run: |
           find eth-reference-tests/src/referenceTest/resources/consensus-spec-tests/tests/gnosis \
             -path '*networking/gossip*' -name meta.yaml \
-            -exec sh -c 'grep -qE "messages:|contributions:" "$1" || rm -rf "$(dirname "$1")"' _ {} +
+            -exec sh -c 'for f in "$@"; do grep -qE "messages:|contributions:" "$f" || rm -rf "$(dirname "$f")"; done' _ {} +
       - name: Run Gnosis-preset reference tests
         env:
           ENV_SPEC: gnosis
