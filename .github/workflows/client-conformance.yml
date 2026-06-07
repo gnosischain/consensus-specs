@@ -4,7 +4,7 @@ name: Client conformance (Gnosis preset)
 # pinned to a frozen branch at a known spec version and to the matching gnosis vector release
 # (per-client version matching, since the clients track different spec versions):
 #   lighthouse -> gnosis-conformance-alpha8  (spec alpha.8, v1.7.0-alpha.8 vectors)
-#   teku / nimbus / lodestar -> gnosis-conformance-alpha9  (spec alpha.9, v1.7.0-alpha.9 vectors)
+#   teku / nimbus / lodestar -> gnosis-conformance-alpha10 (spec alpha.10, v1.7.0-alpha.10 vectors)
 # Bump these deliberately as the clients advance (see conformance-pins.json).
 
 on:
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           repository: gnosischain/nimbus-eth2
-          ref: gnosis-conformance-alpha9
+          ref: gnosis-conformance-alpha10
           submodules: recursive
       - name: Build Nim + deps
         run: |
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           repository: gnosischain/teku
-          ref: gnosis-conformance-alpha9
+          ref: gnosis-conformance-alpha10
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           repository: gnosischain/lodestar
-          ref: gnosis-conformance-alpha9
+          ref: gnosis-conformance-alpha10
       - name: Set up Node + pnpm
         uses: actions/setup-node@v4
         with:

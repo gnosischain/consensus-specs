@@ -1,29 +1,32 @@
 {
-  "$comment": "Single source of truth for the Gnosis-preset client-conformance setup. Bump these deliberately. 'vectorVersion' is the gnosischain/consensus-specs release tag whose gnosis.tar.gz each client consumes; 'ref' is the branch of each gnosischain client fork carrying the Gnosis spec-test wiring. The fork is synced to upstream alpha.8; clients are pinned to the matching v1.7.0-alpha.8 vectors.",
+  "$comment": "Single source of truth for the Gnosis-preset client-conformance setup. Bump deliberately. Per-client version matching: the clients track different upstream spec versions, so each is pinned to a frozen gnosischain-fork branch carrying the Gnosis spec-test wiring AND to the matching gnosischain/consensus-specs gnosis.tar.gz release ('vectorVersion'). 'ref' is the branch run by .github/workflows/client-conformance.yml.",
   "vectorRepo": "gnosischain/consensus-specs",
-  "vectorVersion": "v1.7.0-alpha.8",
   "clients": {
     "lighthouse": {
       "repo": "gnosischain/lighthouse",
-      "ref": "stable",
+      "ref": "gnosis-conformance-alpha8",
+      "vectorVersion": "v1.7.0-alpha.8",
       "command": "make test-ef-gnosis",
       "vectorVersionPin": "GNOSIS_SPECS_TEST_VERSION (testing/ef_tests/Makefile)"
     },
     "nimbus": {
       "repo": "gnosischain/nimbus-eth2",
-      "ref": "unstable",
-      "command": "make test-gnosis",
+      "ref": "gnosis-conformance-alpha10",
+      "vectorVersion": "v1.7.0-alpha.10",
+      "command": "make consensus_spec_tests_gnosis && scripts/setup_scenarios.sh && ./build/consensus_spec_tests_gnosis",
       "vectorVersionPin": "GNOSIS_SPECS_TEST_VERSION (scripts/setup_scenarios.sh)"
     },
     "teku": {
       "repo": "gnosischain/teku",
-      "ref": "master",
+      "ref": "gnosis-conformance-alpha10",
+      "vectorVersion": "v1.7.0-alpha.10",
       "command": "ENV_SPEC=gnosis ./gradlew :eth-reference-tests:referenceTest",
       "vectorVersionPin": "gnosisRefTestVersion (build.gradle)"
     },
     "lodestar": {
       "repo": "gnosischain/lodestar",
-      "ref": "unstable",
+      "ref": "gnosis-conformance-alpha10",
+      "vectorVersion": "v1.7.0-alpha.10",
       "command": "pnpm test:spec:gnosis",
       "vectorVersionPin": "gnosisConsensusSpecsTests.specVersion (spec-tests-version.json)"
     }
