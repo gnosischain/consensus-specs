@@ -80,7 +80,8 @@ jobs:
       - name: Prune non-Gnosis forks (gloas/heze)
         # Gnosis adopts forks only through Fulu. teku's bundled gnosis network config
         # does not schedule gloas/heze, so those reference cases cannot build a spec.
-        run: find eth-reference-tests/build -type d \( -name gloas -o -name heze \) -prune -exec rm -rf {} +
+        # expandRefTestsGnosis extracts into the referenceTest resources dir.
+        run: find eth-reference-tests/src/referenceTest/resources/consensus-spec-tests -type d \( -name gloas -o -name heze \) -prune -exec rm -rf {} +
       - name: Run Gnosis-preset reference tests
         env:
           ENV_SPEC: gnosis
