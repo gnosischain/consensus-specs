@@ -1,9 +1,17 @@
 from eth_consensus_specs.test.context import (
     always_bls,
+    default_activation_threshold,
+    single_phase,
     spec_state_test,
+    spec_test,
     with_altair_and_later,
+    with_custom_state,
 )
-from eth_consensus_specs.test.helpers.gossip import get_filename, get_seen
+from eth_consensus_specs.test.helpers.gossip import (
+    get_filename,
+    get_seen,
+    sync_committee_gossip_balances,
+)
 from eth_consensus_specs.test.helpers.keys import privkeys
 from eth_consensus_specs.utils import bls
 
@@ -196,14 +204,40 @@ def test_gossip_sync_committee_message__ignore_past_slot(spec, state):
 
 
 @with_altair_and_later
-@spec_state_test
+@spec_test
+@with_custom_state(
+    balances_fn=sync_committee_gossip_balances,
+    threshold_fn=default_activation_threshold,
+)
+@single_phase
 def test_gossip_sync_committee_message__reject_wrong_subnet(spec, state):
     """Test that a sync committee message on the wrong subnet is rejected."""
+    # Pick a sync committee member that does NOT occupy every subnet, so a "wrong"
+    # subnet exists. With small-state presets (Gnosis: 128 validators across 512
+    # sync committee positions) the first member can span all subnets, so search
+    # for a suitable one up front. Determining the scenario before emitting anything
+    # ensures the test yields either a complete case or nothing (never a partial one).
+    validator_index = None
+    wrong_subnet_id = None
+    for candidate in range(len(state.validators)):
+        subnets = set(spec.compute_subnets_for_sync_committee(state, candidate))
+        if not subnets:
+            continue
+        wrong = next(
+            (s for s in range(spec.SYNC_COMMITTEE_SUBNET_COUNT) if s not in subnets),
+            None,
+        )
+        if wrong is not None:
+            validator_index = candidate
+            wrong_subnet_id = wrong
+            break
+    if validator_index is None:
+        return
+
     yield "topic", "meta", "sync_committee"
     yield "state", state
 
     seen = get_seen(spec)
-    validator_index, correct_subnet_id = get_sync_committee_member(spec, state)
     message = create_valid_sync_committee_message(spec, state, validator_index)
 
     yield get_filename(message), message
@@ -211,17 +245,6 @@ def test_gossip_sync_committee_message__reject_wrong_subnet(spec, state):
     current_time_ms = spec.compute_time_at_slot_ms(state, state.slot)
 
     yield "current_time_ms", "meta", int(current_time_ms)
-
-    # Use a wrong subnet_id. With small state sizes (Gnosis preset: 128
-    # validators across 512 sync committee positions) a validator can occupy
-    # every subnet, leaving no "wrong" subnet to pick — skip gracefully.
-    validator_subnets = set(spec.compute_subnets_for_sync_committee(state, validator_index))
-    wrong_subnet_id = next(
-        (s for s in range(spec.SYNC_COMMITTEE_SUBNET_COUNT) if s not in validator_subnets),
-        None,
-    )
-    if wrong_subnet_id is None:
-        return
 
     result, reason = run_validate_sync_committee_message_gossip(
         spec,

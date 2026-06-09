@@ -53,6 +53,20 @@ def run_validate_beacon_block_gossip(
         return "reject", str(e)
 
 
+def sync_committee_gossip_balances(spec):
+    """Validator set large enough for sync-committee subnet/subcommittee scenarios.
+
+    The default state size (``SLOTS_PER_EPOCH * 8``) yields only 128 validators under the
+    Gnosis preset (``SLOTS_PER_EPOCH=16``), which is too few for ``SYNC_COMMITTEE_SIZE=512``:
+    every sync committee member ends up occupying all subnets and a subcommittee covers every
+    validator, so the "wrong subnet" / "aggregator not in subcommittee" cases cannot be built.
+    Scale the count up so those scenarios are constructible. This is a no-op for mainnet (which
+    already uses 256) and for minimal.
+    """
+    num_validators = max(spec.SLOTS_PER_EPOCH * 8, spec.SYNC_COMMITTEE_SIZE // 2)
+    return [spec.MAX_EFFECTIVE_BALANCE] * num_validators
+
+
 def get_seen(spec):
     """Create an empty Seen object for gossip validation."""
     kwargs = dict(

@@ -1,11 +1,19 @@
 from eth_consensus_specs.test.context import (
     always_bls,
+    default_activation_threshold,
+    single_phase,
     spec_state_test,
+    spec_test,
     with_altair_and_later,
+    with_custom_state,
     with_presets,
 )
 from eth_consensus_specs.test.helpers.constants import MAINNET
-from eth_consensus_specs.test.helpers.gossip import get_filename, get_seen
+from eth_consensus_specs.test.helpers.gossip import (
+    get_filename,
+    get_seen,
+    sync_committee_gossip_balances,
+)
 from eth_consensus_specs.test.helpers.keys import privkeys
 from eth_consensus_specs.utils import bls
 
@@ -520,30 +528,25 @@ def test_gossip_sync_committee_contribution_and_proof__reject_not_aggregator(spe
 
 
 @with_altair_and_later
-@spec_state_test
+@spec_test
+@with_custom_state(
+    balances_fn=sync_committee_gossip_balances,
+    threshold_fn=default_activation_threshold,
+)
+@single_phase
 def test_gossip_sync_committee_contribution_and_proof__reject_aggregator_not_in_subcommittee(
     spec, state
 ):
     """Test that a contribution where the aggregator is not in the subcommittee is rejected."""
-    yield "topic", "meta", "sync_committee_contribution_and_proof"
-    yield "state", state
-
+    # Determine the full scenario up front (before emitting anything) so the test
+    # yields either a complete case or nothing — never a partial one. Under small-state
+    # presets (Gnosis: 128 validators, subcommittee size 128) a given subcommittee may
+    # cover every validator, so search aggregators for one whose subcommittee leaves a
+    # validator outside it to serve as the (invalid) aggregator.
     seen = get_seen(spec)
     aggregator_index, subcommittee_index, subcommittee_pubkeys = get_sync_committee_aggregator(
         spec, state
     )
-
-    signed_cap = create_valid_signed_contribution_and_proof(
-        spec,
-        state,
-        aggregator_index,
-        subcommittee_index,
-        subcommittee_pubkeys,
-    )
-
-    # Find a validator NOT in this subcommittee. If the default test state has
-    # ≤ subcommittee_size validators (Gnosis preset: 128 validators, subcommittee
-    # also 128) every validator is in the subcommittee — skip gracefully.
     outside_index = next(
         (
             vi
@@ -554,6 +557,17 @@ def test_gossip_sync_committee_contribution_and_proof__reject_aggregator_not_in_
     )
     if outside_index is None:
         return
+
+    yield "topic", "meta", "sync_committee_contribution_and_proof"
+    yield "state", state
+
+    signed_cap = create_valid_signed_contribution_and_proof(
+        spec,
+        state,
+        aggregator_index,
+        subcommittee_index,
+        subcommittee_pubkeys,
+    )
     signed_cap.message.aggregator_index = outside_index
 
     yield get_filename(signed_cap), signed_cap
